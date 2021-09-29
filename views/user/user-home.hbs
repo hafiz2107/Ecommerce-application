@@ -1,0 +1,390 @@
+ 
+     
+{{!-- ADvertisesment Top Starts --}}
+      <section id="hero" class="hero">
+          <a href="#">
+        <div id="hero-slider" class="hero-slider">
+          <div class="slide">
+            <div class="bg-section">
+              <img src="assets/images/sliders/7.jpg" alt="Background" />
+            </div>
+          </div>
+
+          <div class="slide">
+            <div class="bg-section">
+              <img src="assets/images/sliders/4.jpg" alt="Background" />
+            </div>
+          </div>
+
+          <div class="slide">
+            <div class="bg-section">
+            <img src="assets/images/sliders/1.jpg" alt="Background" />
+            </div>
+          </div>
+        </div>
+        </a>
+      </section>
+{{!-- ADvertisesment Top Ends --}}
+
+
+
+
+      <section id="shopgrid" class="shop shop-grid shop-items">
+        <div class="container heading">
+          <div class="row">
+            <div class="col-xs-12 col-sm-12 col-md-12">
+              {{!-- <p class="subheading">we get</p> --}}
+              <h2><i class="bi bi-chevron-double-right"></i>    New Arrivals</h2>
+            </div>
+          </div>
+        </div>
+
+
+        <div class="container">
+          <div class="row">
+            
+            {{#each products}}
+            <div class="col-xs-6 col-sm-6 col-md-4 product">
+               
+              <div class="product-img">
+                 <img src="/uploads/{{this._id}}__1.jpg" alt="Product" style="height: 430px;"/>
+               
+              <div class="product-hover" onclick="window.location='/productview/{{this._id}}';" style="cursor: pointer;">
+                  <div class="product-action">
+                    <a class="btn btn-primary" href="#">Add To Cart</a>
+                    <a class="btn btn-primary" href="#">Item Details</a>
+                  </div>
+                </div>
+               
+              </div>
+             
+
+              <div class="product-bio">
+                <div class="prodcut-cat">
+                  <a href="/productview/{{this._id}}">{{this.productbrand}}</a>
+                </div>
+
+                <div class="prodcut-title">
+                  <h3>
+                    <a href="/productview/{{this._id}}">{{this.productname}}</a>
+                  </h3>
+                </div>
+
+                <div class="product-price">
+                  <span class="symbole">₹ </span><span>{{this.productprice}}</span>
+                </div>
+              </div>
+            </div>
+            {{/each}}
+          </div>
+        </div>
+
+
+      </section>
+
+      <section id="clients" class="clients bg-gray">
+        <div class="container heading">
+          <div class="row">
+            <div class="col-xs-6 col-sm-12 col-md-12">
+              <p class="subheading">Awesome</p>
+              <h2>Our Brands</h2>
+            </div>
+          </div>
+  {{!-- Client Description --}}
+          <div class="row heading-desc">
+              <div class="dropdown" style="display: inline; float: right; margin-right: 5px;">
+                    <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" > 
+                        Shop by Brands
+                        <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu myScroll" aria-labelledby="dropdownMenu1">
+                        <li><a href="#">Action</a></li>
+                        <li><a href="#">Another action</a></li>
+                        <li><a href="#">Something else here</a></li>
+                        <li role="separator" class="divider"></li>
+                        <li><a href="#">Separated link</a></li>
+                    </ul>
+            </div>  
+             <div class="dropdown" style="display: inline; float: right; margin-right: 5px;">
+                    <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" >
+                        Shop by Model
+                        <span class="caret"></span>
+                    </button>
+                            <ul class="dropdown-menu myScroll" aria-labelledby="dropdownMenu1">
+                                <li><a href="#">KTM</a></li>
+                                <li><a href="#">Bajaj</a></li>
+                                <li><a href="#">Honda</a></li>
+                                {{!-- <li role="separator" class="divider"></li> --}}
+                                <li><a href="#">Others</a></li>
+                                <li><a href="#">Others</a></li>
+                            </ul>
+            </div>  
+            </div>
+        </div>
+{{!-- Client Description End--}}
+      {{!-- Client Section --}}
+    <section class="client" style="margin-top: -60px;"> 
+        <div class="container">
+          <div class="clients-bg" style="height: 150px;">
+            <div class="row">
+              <div class="col-xs-12 colsm-12 col-md-12 client-carousel">
+                <div class="client">
+                  <img src="assets/images/clients/1.jpg" alt="client" style="height: 100px;"/>
+                  <H6 style="justify-content: last baseline;margin-top: 8px;" >Bajaj</H6>
+                </div>
+                 
+                <div class="client">
+                    <div class="slide">
+                  <img src="assets/images/clients/2.jpg" alt="client" style="height: 100px;"/>
+                   <H6 style="justify-content: last baseline;margin-top: 8px;" >BMW</H6>
+                    </div>
+                </div>
+                
+                <div class="client">
+                  <img src="assets/images/clients/3.jpg" alt="client" style="height: 100px";/>
+                   <H6 style="justify-content: last baseline;margin-top: 8px;" >Hero</H6>
+                </div>
+
+                <div class="client">
+                  <img src="assets/images/clients/4.jpg" alt="client" style="height: 100px";/>
+                   <H6 style="justify-content: last baseline;margin-top: 8px;" >Honda</H6>
+                </div>
+                <div class="client">
+                  <img src="assets/images/clients/6.jpg" alt="client" style="height: 100px";/>
+                   <H6 style="justify-content: last baseline;margin-top: 8px;" >KTM</H6>
+                </div>
+
+                <div class="client">
+                  <img src="assets/images/clients/7.jpg" alt="client" style="height: 100px"/>
+                   <H6 style="justify-content: last baseline;margin-top: 8px;" >Royal enfield</H6>
+                </div>
+
+                <div class="client">
+                  <img src="assets/images/clients/8.png" alt="client" style="height: 100px"/>
+                   <H6 style="justify-content: last baseline;margin-top: 8px;" >Yamaha</H6>
+                </div>
+                    <div class="client">
+                  <img src="assets/images/clients/5.jpg" alt="client" style="height: 100px";/>
+                   <H6 style="justify-content: last baseline;margin-top: 8px;" >Others</H6>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+</section>
+{{!-- Client section End --}}
+
+{{!-- Advertisement 2 Bottom --}}
+    <section id="hero" class="hero container">
+          <a href="#">
+        <div id="hero-slider" class="hero-slider">
+          <div class="slide">
+            <div class="bg-section">
+              <img src="assets/images/sliders/7.jpg" alt="Background" class="image-fluid"/>
+            </div>
+          </div>
+
+          <div class="slide">
+            <div class="bg-section">
+              <img src="assets/images/sliders/4.jpg" alt="Background" />
+            </div>
+          </div>
+
+          <div class="slide">
+            <div class="bg-section">
+            <img src="assets/images/sliders/1.jpg" alt="Background" />
+            </div>
+          </div>
+        </div>
+        </a>
+      </section>
+{{!-- Advertisement 2 Ends --}}
+
+      <section id="offers" class="offers">
+        <div class="container">
+          <div class="row">
+            <div class="col-xs-12 col-sm-12 col-md-3">
+              <div class="widget widget-recent-products">
+                <div class="widget-title">
+                  <h5>Special Offer</h5>
+                </div>
+                <div class="widget-content">
+                  <div class="product">
+                    <img src="assets/images/shop/thumb/4.jpg" alt="product" />
+                    <div class="product-desc">
+                      <div class="product-title">
+                        <a href="#">Front LIGHTING Name Goes Here</a>
+                      </div>
+                      <div class="product-meta">
+                        <span class="color-theme">$13.99</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="product">
+                    <img src="assets/images/shop/thumb/5.jpg" alt="product" />
+                    <div class="product-desc">
+                      <div class="product-title">
+                        <a href="#">Thermal Fan Name Goes Here</a>
+                      </div>
+                      <div class="product-meta">
+                        <span class="color-theme">$15.99</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="product">
+                    <img src="assets/images/shop/thumb/6.jpg" alt="product" />
+                    <div class="product-desc">
+                      <div class="product-title">
+                        <a href="#">Cold Air System Name Goes Here</a>
+                      </div>
+                      <div class="product-meta">
+                        <span class="color-theme">$11.99</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-xs-12 col-sm-12 col-md-3">
+              <div class="widget widget-recent-products">
+                <div class="widget-title">
+                  <h5>Best Sellers</h5>
+                </div>
+                <div class="widget-content">
+                  <div class="product">
+                    <img src="assets/images/shop/thumb/7.jpg" alt="product" />
+                    <div class="product-desc">
+                      <div class="product-title">
+                        <a href="#">Front LIGHTING Name Goes Here </a>
+                      </div>
+                      <div class="product-meta">
+                        <span class="color-theme">$103.99</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="product">
+                    <img src="assets/images/shop/thumb/8.jpg" alt="product" />
+                    <div class="product-desc">
+                      <div class="product-title">
+                        <a href="#">Thermal Fan Name Goes Here </a>
+                      </div>
+                      <div class="product-meta">
+                        <span class="color-theme">$150.99</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="product">
+                    <img src="assets/images/shop/thumb/9.jpg" alt="product" />
+                    <div class="product-desc">
+                      <div class="product-title">
+                        <a href="#">Cold Air System Name Goes Here </a>
+                      </div>
+                      <div class="product-meta">
+                        <span class="color-theme">$61.99</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-xs-12 col-sm-12 col-md-3">
+              <div class="widget widget-recent-products">
+                <div class="widget-title">
+                  <h5>Featured</h5>
+                </div>
+                <div class="widget-content">
+                  <div class="product">
+                    <img src="assets/images/shop/thumb/4.jpg" alt="product" />
+                    <div class="product-desc">
+                      <div class="product-title">
+                        <a href="#">Front LIGHTING Name Goes Here</a>
+                      </div>
+                      <div class="product-meta">
+                        <span class="color-theme">$13.99</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="product">
+                    <img src="assets/images/shop/thumb/5.jpg" alt="product" />
+                    <div class="product-desc">
+                      <div class="product-title">
+                        <a href="#">Thermal Fan Name Goes Here</a>
+                      </div>
+                      <div class="product-meta">
+                        <span class="color-theme">$95.99</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="product">
+                    <img src="assets/images/shop/thumb/6.jpg" alt="product" />
+                    <div class="product-desc">
+                      <div class="product-title">
+                        <a href="#">Cold Air System Name Goes Here</a>
+                      </div>
+                      <div class="product-meta">
+                        <span class="color-theme">$71.99</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-xs-12 col-sm-12 col-md-3">
+              <div class="widget widget-recent-products">
+                <div class="widget-title">
+                  <h5>Sales</h5>
+                </div>
+                <div class="widget-content">
+                  <div class="product">
+                    <img src="assets/images/shop/thumb/7.jpg" alt="product" />
+                    <div class="product-desc">
+                      <div class="product-title">
+                        <a href="#">Front LIGHTING Name Goes Here</a>
+                      </div>
+                      <div class="product-meta">
+                        <span class="discount">$300.99</span
+                        ><span class="color-theme">$198.99</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="product">
+                    <img src="assets/images/shop/thumb/8.jpg" alt="product" />
+                    <div class="product-desc">
+                      <div class="product-title">
+                        <a href="#">Thermal Fan Name Goes Here</a>
+                      </div>
+                      <div class="product-meta">
+                        <span class="discount">$60.99</span
+                        ><span class="color-theme">$19.99</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="product">
+                    <img src="assets/images/shop/thumb/9.jpg" alt="product" />
+                    <div class="product-desc">
+                      <div class="product-title">
+                        <a href="#">Cold Air System Name Goes Here</a>
+                      </div>
+                      <div class="product-meta">
+                        <span class="discount">$100.99</span
+                        ><span class="color-theme">$71.99</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+     

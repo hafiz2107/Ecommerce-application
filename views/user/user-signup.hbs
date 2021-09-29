@@ -1,0 +1,91 @@
+{{!-- User Login page --}}
+
+
+<center>
+    <section id="signIn" class="sign mysign" style="margin-top: -95px;">
+      <div class="container">
+        <div class="row">
+          <div class="col-xs-12  col-sm-12  col-md-12">
+                  <div class="modal-body">
+                    
+                   
+                    <img src="/images/logo.png" alt="" class="myImg2">
+                    <h6>Registration Area</h6>
+                    <div class="sign-form" style="width: 50%;height: 100vh;">
+
+
+                      <form class="mb-0 myLoginForm" action="/signup" method="POST" id="signupform">
+                      {{#if userNameAlreadyExist}}
+                        <span>Username already exist</span>
+                      {{/if}}
+                        <div class="form-group">
+                          <input type="text" class="form-control " id="username" name="username" placeholder="User Name">
+                        </div>
+                       <div class="form-group">
+                            <input type="email" class="form-control" id="email" name="email" placeholder="Email"/>
+                        </div>
+                          <div class="form-group">
+                            <input type="tel" class="form-control" id="mobile" name="mobile" placeholder="Mobile No"/>
+                        </div>
+                          <div class="form-group">
+                            <input type="password" class="form-control" id="pwd" name="pwd"  placeholder="Password"/>
+                          </div>
+                          <div class="form-group">
+                            <input type="password" class="form-control" id="pwdc" name="pwdc" placeholder="Confirm Password"/>
+                          </div>
+                          <div class="checkbox">
+                            <label>
+                              <input type="checkbox" />I Agree To
+                              <a href="#">The Terms Of Use ?</a>
+                            </label>
+                          </div>
+                        
+                     
+                        <button type="submit" class="btn btn-primary btn-block" style="margin-top: 15px;">Sign Up</button>
+                      
+                      </form>
+                        <div class="form-links text-center">
+                          <a href="/login">Have an account? Login Here</a>
+                        </div>
+                    </div>
+                  </div>
+         </div>
+        </div>
+      </div>
+    </section>
+</center>
+        <script src="/javascripts/jquery.js"></script>
+        <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/jquery.validate.js"></script>
+        <script src="/javascripts/plugin.js"></script>
+        <script src="/javascripts/script.js"></script>
+<script>
+  $(document).ready(function(){
+    $('#signupform').validate({
+      rules : {
+      username : {
+        required : true,
+        minlenght : 5
+      },
+      pwd : {
+        required: true,
+        minlenght : 6,
+      },
+      pwdc : {
+        required : true,
+        minlength : 6,
+        equalto : '#pass',
+      },
+      email : {
+        email : true,
+        required : true,
+        minlength : 11,
+      },
+      mobile :{
+        required : true,
+        minlength : 10,
+      }
+      }
+    })
+  })
+</script>

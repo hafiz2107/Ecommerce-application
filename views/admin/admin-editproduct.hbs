@@ -1,0 +1,212 @@
+
+{{#if productDetails}}
+<center>
+<section  class="col-sm-12 col-lg-12 col-md-12 ml-5 mt-5">
+      
+
+    <form style="width: 70%;" method="POST" action="/admin/edit-product/{{productDetails._id}}" enctype="multipart/form-data">
+
+  <div class="form-row">
+    <div class="form-group col-md-6">
+        <label for="">Product Name</label>
+      <input type="text" class="form-control" id="productname" name="productname" placeholder="" value="{{productDetails.productname}}">
+    </div>
+  </div>
+
+                  <div class="mb-3 form-row mt-3">
+                      <input type="radio" id="" name="category" value="bikeaccessory" checked>
+                      <label for="" class="pr-2">Bike Accessory</label>
+                      <input type="radio" id="" name="category" value="touringaccessory">
+                      <label for="">Touring Accessory</label>                       
+                    </div>
+  <div class="form-row mt-3">
+    
+     <div class="form-group col-md-6">
+       <select name="productbrand" id="" class="btn btn-primary text-light custom-select">
+        <option value="" class="dropdown-item text-dark bg-" selected disabled>Please select a bike brand</option>
+        <option value="jbracing" class="dropdown-item">JB Racing</option>
+      </select>
+
+
+      <select name="suitablebikebrand" id="bikebrand" class="btn btn-primary text-light custom-select">
+        <option value="" name="" class="dropdown-item text-dark bg-light" selected disabled>Select a bike brand</option>
+        <option value="ktm" >KTM</option>
+        <option value="Honda" >Honda</option>
+        <option value="Hero" >Hero</option>
+        <option value="BMW" >BMW</option>
+        <option value="others" >Others</option>
+      </select>
+
+      <select name="suitablebikemodel" id="bikemodel" class="btn text-light btn-primary  custom-select">
+        <option value="{{{productDetails.suitablebikemodel}}}" name="" class="dropdown-item text-dark bg-light" selected='true' disabled>Suitable bike model</option>
+        {{!-- <option value="duke200" class="dropdown-item">Duke 200</option>
+        <option value="duke390" class="dropdown-item">Duke 390</option>
+        <option value="duke250" class="dropdown-item">Duke 250</option> --}}
+      </select>
+
+    
+
+    </div>
+  </div>
+
+
+  <div class="form-row mt-2">
+    <div class="form-group col-md-6">
+        <label for="">Price</label>
+      <input type="text" class="form-control" name="productprice" id="productprice" placeholder="" value="{{{productDetails.productprice}}}">
+    </div>
+  </div>
+  <div class="form-row mt-2">
+    <div class="form-group col-md-6">
+        <label for="">Offer Price</label>
+      <input type="text" class="form-control" name="productofferprice" id="productofferprice" placeholder="" value="{{{productDetails.productofferprice}}}">
+    </div>
+  </div>
+
+  <div class="form-row mt-2">
+    <div class="form-group col-md-6">
+        <label for="">Quantity</label>
+      <input type="number" class="form-control" name="productquantity" id="productquantity" placeholder="" value="{{{productDetails.productquantity}}}">
+    </div>
+  </div>
+
+  <div class="form-row mt-2">
+    <div class="form-group col-md-6  btn">
+      <h6>Uploading Date And Time</h6>
+      <input type="date" class="form-control" name="productdate" id="productdate" placeholder="" value="{{{date}}}">
+    </div>
+  </div>
+
+  <div class="form-row mt-4">
+    <div class="form-group col-md-6">
+        <label for="">Description</label>
+      <input type="textarea" class="form-control" name="productdes" id="productdes" placeholder="" value="{{productDetails.productdes}}">
+    </div>
+  </div>
+
+  
+
+
+  <div class="form-row mt-5">
+    <div class="form-group col-md-6">
+      <div id="error1"></div>
+      <img src="/uploads/{{productDetails._id}}__1.jpg" alt="" style="height: 100px;display: block;" id="productimage1">
+      <label for="picture1" class="btn btn-primary">Image 1</label>
+      <input type="file" class="form-control bg-primary" id="picture1" name="productimage1" placeholder="image 1" onchange="preview1(event);return fileValidation1(event)">
+       
+       <div id="error2"></div>
+       <img src="/uploads/{{productDetails._id}}__2.jpg" alt="" style="height: 100px;display: block;" id="productimage2">
+       <label for="picture2" class="btn btn-primary">Image 2</label>
+      <input type="file" class="form-control bg-primary" id="picture2" name="productimage2" placeholder="image 2" onchange="preview2(event);return fileValidation2(event)">
+
+      <div id="error3"></div>
+      <img src="/uploads/{{productDetails._id}}__3.jpg" alt="" style="height: 100px;display: block;" id="productimage3">
+      <label for="picture3" class="btn btn-primary">Image 3</label>
+      <input type="file" class="form-control bg-primary" id="picture3" name="productimage3" placeholder="image 3" onchange="preview3(event);return fileValidation3(event)">
+    </div>
+  </div>
+  
+  <button type="submit" class="btn btn-success">Edit product</button>
+  <a href="/admin/view-product" class="btn btn-danger" >Cancel</a>
+</form>
+
+
+
+</section>
+</center>
+<script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
+<script>
+
+   function fileValidation1(event) {
+    
+            var fileInput = document.getElementById('picture1')
+
+            var filePath = fileInput.value;
+     
+            // Allowing file type
+            var allowedExtensions =  /(\.jpg|\.jpeg|\.png|\.gif)$/i;
+
+            if (!allowedExtensions.exec(filePath)) {
+              console.log("HIJIBIBIIHIHIHFSIF")
+                document.getElementById('error1').innerHTML = '<p style="color:red;display: block" >Invalid File type</p>'
+                fileInput.value = '';
+                return false;
+            }else{
+              document.getElementById('error1').innerHTML = ''
+               preview1(event)
+            } 
+
+        }
+   function fileValidation2(event) {
+    
+            var fileInput = document.getElementById('picture2')
+
+            var filePath = fileInput.value;
+     
+            // Allowing file type
+            var allowedExtensions =  /(\.jpg|\.jpeg|\.png|\.gif)$/i;
+
+            if (!allowedExtensions.exec(filePath)) {
+                document.getElementById('error2').innerHTML = '<p style="color:red;display: block" id="display2">Invalid File type</p>'
+                fileInput.value = '';
+                return false;
+            }else{
+              document.getElementById('display2').style.display = 'none'
+               preview2(event)
+            } 
+
+        }
+   function fileValidation3(event) {
+    
+            var fileInput = document.getElementById('picture3')
+
+            var filePath = fileInput.value;
+     
+            // Allowing file type
+            var allowedExtensions =  /(\.jpg|\.jpeg|\.png|\.gif)$/i;
+
+            if (!allowedExtensions.exec(filePath)) {
+                document.getElementById('error3').innerHTML = '<p style="color:red;display: block" id="display3">Invalid File type</p>'
+                fileInput.value = '';
+                return false;
+            }else{
+              document.getElementById('display3').style.display = 'none'
+               preview3(event)
+            } 
+
+        }
+    
+
+  function preview1(event) {
+    document.getElementById('productimage1').src = URL.createObjectURL(event.target.files[0])
+  }
+  function preview2(event) {
+    document.getElementById('productimage2').src = URL.createObjectURL(event.target.files[0])
+  }
+  function preview3(event) {
+    document.getElementById('productimage3').src = URL.createObjectURL(event.target.files[0])
+  }
+
+  $(document).ready(function () {
+    $("#bikebrand").change(function () {
+        var val = $(this).val();
+        if (val == "ktm") {
+            $("#bikemodel").html("<option value='duke200'>Duke 200</option><option value='duke390'>Duke 390</option><option value='duke250'>Duke 250</option><option value='duke125'>Duke 125</option><option value='rc390'>RC 390</option>");
+        } else if (val == "Honda") {
+            $("#bikemodel").html("<option value='cbr250'>CBR 250</option><option value='cb300'>CB 300</option><option value='hnesscb350'>H'ness CB 350</option>");
+        } else if (val == "Hero") {
+            $("#bikemodel").html("<option value='xpulse'>Xpulse</option><option value='impulse'>Impulse</option>");
+        } else if (val == "BMW") {
+            $("#bikemodel").html("<option value='g310gs'>G 310 GS</option><option value='g310r'>G 310 R</option>");
+        }else if (val == "bajaj") {
+            $("#bikemodel").html("<option value='dominar400'>Dominar 400</option><option value='rs200'>RS 200</option><option value='ns200'>NS 200</option>");
+        }else if (val == "yamaha") {
+            $("#bikemodel").html("<option value='r15v3'>R 15V3</option><option value='r3'>R 3</option><option value='mt15'>MT 15</option>");
+        }else if (val == "others") {
+            $("#bikemodel").html("<option value='jawa'>Jawa</option><option value='ninja300'>Ninja 300</option>");
+        }
+    });
+});
+</script>
+
+{{/if}}

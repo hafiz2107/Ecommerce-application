@@ -1,0 +1,238 @@
+
+<center>
+<section  class="col-sm-12 col-lg-12 col-md-12 ml-5 mt-5">
+      
+
+<form style="width: 70%;" method="POST" action="/admin/add-product" enctype="multipart/form-data">
+
+  <div class="form-row">
+    <div class="form-group col-md-6">
+      <label for="">Product Name</label>
+      <input type="text" class="form-control" id="productname" name="productname" placeholder="">
+    </div>
+  </div>
+  <div class="form-row mt-3">
+    <div class="form-group col-md-6">
+      <label for="">Product Code</label>
+      <input type="text" class="form-control" id="productcode" name="productcode" placeholder="">
+    </div>
+  </div>
+
+                  <div class="mb-3 form-row mt-3">
+                     
+                      <input type="radio" id="" name="category" value="bikeaccessory">
+                      <label for="" class="pr-2">Bike Accessory</label>
+                      <input type="radio" id="" name="category" value="touringaccessory">
+                      <label for="">Touring Accessory</label>
+                     
+                                              
+                    </div>
+  <div class="form-row mt-3">
+    
+     <div class="form-group col-md-6">
+       <select name="productbrand" id="" class="btn btn-primary text-light custom-select">
+        <option value="" class="dropdown-item text-dark bg-">Product Brand </option>
+        <option value="jbracing" class="dropdown-item">JB Racing</option>
+      </select>
+
+
+      <select name="suitablebikebrand" id="bikebrand" class="btn btn-primary text-light custom-select">
+        <option value="" name="" class="dropdown-item text-dark bg-light">Suitable bike Brand </option>
+        <option value="ktm" >KTM</option>
+        <option value="Honda" >Honda</option>
+        <option value="Hero" >Hero</option>
+        <option value="BMW" >BMW</option>
+        <option value="bajaj" >Bajaj</option>
+        <option value="yamaha" >Yamaha</option>
+        <option value="others" >Others</option>
+      </select>
+
+      <select name="suitablebikemodel" id="bikemodel" class="btn text-light btn-primary  custom-select">
+        {{!-- <option value="" name="" class="dropdown-item text-dark bg-light">Suitable bike model</option>
+        <option value="duke200" class="dropdown-item"></option>
+        <option value="duke390" class="dropdown-item"></option>
+        <option value="duke250" class="dropdown-item"></option> --}}
+      </select>
+
+    
+
+    </div>
+  </div>
+
+
+  <div class="form-row mt-2">
+    <div class="form-group col-md-6">
+      <label for="">Price</label>
+      <input type="text" class="form-control" name="productprice" id="productprice" placeholder="">
+    </div>
+  </div>
+  <div class="form-row mt-2">
+    <div class="form-group col-md-6">
+      <label for="">Offer Price</label>
+      <input type="text" class="form-control" name="productofferprice" id="productofferprice" placeholder="">
+    </div>
+  </div>
+  <div class="form-row mt-2">
+    <div class="form-group col-md-6">
+      <label for="">Quantity</label>
+      <input type="number" class="form-control" name="productquantity" id="productquantity" placeholder="">
+    </div>
+  </div>
+
+  <div class="form-row mt-2">
+    <div class="form-group col-md-6  btn">
+      <h6>Uploading Date And Time</h6>
+      <input type="date" class="form-control" name="productdate" id="productdate" placeholder="" value="{{{date}}}">
+    </div>
+  </div>
+
+  <div class="form-row mt-4">
+    <div class="form-group col-md-6">
+      <label for="">Description</label>
+      <input type="textarea" class="form-control" name="productdes" id="productdes" placeholder="" >
+    </div>
+  </div>
+
+  
+
+
+  <div class="form-row mt-5">
+    <div class="form-group col-md-6">
+
+      <div id="productimage1"></div>
+      <label for="image1" class="btn btn-primary">Image 1</label>
+      <input type="file" class="form-control bg-primary imageinput" id="image1" name="productimage1" placeholder="image 1"  onchange="return fileValidation1()">
+
+       <div id="productimage2"></div>
+       <label for="image2" class="btn btn-primary">Image 2</label>
+      <input type="file" class="form-control bg-primary imageinput" id="image2" name="productimage2" placeholder="image 2" onchange="return fileValidation2()">
+
+      <div id="productimage3"> </div>
+      <label for="image3" class="btn btn-primary">Image 3</label>
+      <input type="file" class="form-control bg-primary imageinput" id="image3" name="productimage3" placeholder="image 3"  onchange="return fileValidation3()">
+    </div>
+  </div>
+
+   <button type="submit" class="btn btn-success">Add product</button>
+  <a href="/admin/view-product" class="btn btn-danger">Cancel</a>
+ 
+</form>
+
+
+</section>
+</center>
+<script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
+
+ <script>
+
+  </script>
+   
+<script>
+
+
+      function fileValidation1() {
+              var fileInput = document.getElementById('image1')
+
+              var filePath = fileInput.value;
+      
+              // Allowing file type
+              var allowedExtensions =  /(\.jpg|\.jpeg|\.png|\.gif)$/i;
+                    
+                
+              if (!allowedExtensions.exec(filePath)) {
+                  document.getElementById('productimage1').innerHTML = '<p style="color:red">Invalid File type</p>'
+                  fileInput.value = '';
+                  return false;
+              } 
+              else 
+              {
+                
+                  // Image preview
+                  if (fileInput.files && fileInput.files[0]) {
+                      var reader = new FileReader();
+                      reader.onload = function(e) {
+                          document.getElementById('productimage1').innerHTML = '<img src="' + e.target.result+ '"style="height: 100px; display: block;"/>';
+                      };
+                        
+                      reader.readAsDataURL(fileInput.files[0]);
+                  }
+              }
+          }
+      function fileValidation2() {
+              var fileInput = document.getElementById('image2')
+
+              var filePath = fileInput.value;
+      
+              // Allowing file type
+              var allowedExtensions =  /(\.jpg|\.jpeg|\.png|\.gif)$/i;
+                    
+                
+              if (!allowedExtensions.exec(filePath)) {
+                  document.getElementById('productimage2').innerHTML = '<p style="color:red">Invalid File type</p>'
+                  fileInput.value = '';
+                  return false;
+              } 
+              else 
+              {
+                
+                  // Image preview
+                  if (fileInput.files && fileInput.files[0]) {
+                      var reader = new FileReader();
+                      reader.onload = function(e) {
+                          document.getElementById('productimage2').innerHTML = '<img src="' + e.target.result+ '"style="height: 100px; display: block;"/>';
+                      };
+                        
+                      reader.readAsDataURL(fileInput.files[0]);
+                  }
+              }
+          }
+      function fileValidation3() {
+              var fileInput = document.getElementById('image3')
+
+              var filePath = fileInput.value;
+      
+              // Allowing file type
+              var allowedExtensions =  /(\.jpg|\.jpeg|\.png|\.gif)$/i;
+                    
+                
+              if (!allowedExtensions.exec(filePath)) {
+                  document.getElementById('productimage3').innerHTML = '<p style="color:red">Invalid File type</p>'
+                  fileInput.value = '';
+                  return false;
+              } 
+              else 
+              {
+                
+                  // Image preview
+                  if (fileInput.files && fileInput.files[0]) {
+                      var reader = new FileReader();
+                      reader.onload = function(e) {
+                          document.getElementById('productimage3').innerHTML = '<img src="' + e.target.result+ '"style="height: 100px; display: block;"/>';
+                      };
+                        
+                      reader.readAsDataURL(fileInput.files[0]);
+                  }
+              }
+          }
+
+  $(document).ready(function () {
+    $("#bikebrand").change(function () {
+        var val = $(this).val();
+        if (val == "ktm") {
+            $("#bikemodel").html("<option value='duke200'>Duke 200</option><option value='duke390'>Duke 390</option><option value='duke250'>Duke 250</option><option value='duke125'>Duke 125</option><option value='rc390'>RC 390</option>");
+        } else if (val == "Honda") {
+            $("#bikemodel").html("<option value='cbr250'>CBR 250</option><option value='cb300'>CB 300</option><option value='hnesscb350'>H'ness CB 350</option>");
+        } else if (val == "Hero") {
+            $("#bikemodel").html("<option value='xpulse'>Xpulse</option><option value='impulse'>Impulse</option>");
+        } else if (val == "BMW") {
+            $("#bikemodel").html("<option value='g310gs'>G 310 GS</option><option value='g310r'>G 310 R</option>");
+        }else if (val == "bajaj") {
+            $("#bikemodel").html("<option value='dominar400'>Dominar 400</option><option value='rs200'>RS 200</option><option value='ns200'>NS 200</option>");
+        }else if (val == "yamaha") {
+            $("#bikemodel").html("<option value='r15v3'>R 15V3</option><option value='r3'>R 3</option><option value='mt15'>MT 15</option>");
+        }else if (val == "others") {
+            $("#bikemodel").html("<option value='jawa'>Jawa</option><option value='ninja300'>Ninja 300</option>");
+        }
+    });
+});
+</script>

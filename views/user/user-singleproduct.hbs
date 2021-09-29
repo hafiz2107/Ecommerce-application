@@ -1,0 +1,235 @@
+
+
+      <section id="shopgrid" class="shop shop-single">
+        <div class="container shop-content">
+{{!-- Product Main single image --}}
+          <div class="row">
+            <div class="col-xs-12 col-sm-12 col-md-5">
+              <div class="prodcut-images">
+                <div class="product-img-slider">
+                   <img src="/uploads/{{singleProduct._id}}__1.jpg" alt="product image" class="zoom-image"/>
+                  <img src="/uploads/{{singleProduct._id}}__2.jpg" alt="product image" class="zoom-image"/>
+                  <img src="/uploads/{{singleProduct._id}}__3.jpg" alt="product image" class="zoom-image"/>
+                 
+                </div>
+
+                {{!-- Product nav images --}}
+                <div class="product-img-nav">
+                  <img src="/uploads/{{singleProduct._id}}__1.jpg" alt="product image" style="height: 70px;" class="small-image"/>
+                  <img src="/uploads/{{singleProduct._id}}__2.jpg" alt="product image" style="height: 70px;" class="small-imagec"/>
+                  <img src="/uploads/{{singleProduct._id}}__3.jpg" alt="product image" style="height: 70px;" class="small-image"/>
+                 
+                </div>
+              </div>
+            </div>
+            <div class="col-xs-12 col-sm-12 col-md-7">
+              <div class="product-title text-center-xs">
+                <h3>{{singleProduct.productname}}</h3>
+                {{#lte singleProduct.productquantity '0'}}
+                  <h4 class="text-danger">Sold Out</h4>
+                  {{/lte}}
+
+              </div>
+
+              <div class="product-meta mb-30">
+                <div class="product-price pull-left pull-none-xs">
+                  <p><span class="discount">₹ {{singleProduct.productofferprice}}</span>₹{{singleProduct.productprice}}</p>
+                </div>
+              </div><br>
+
+              <div class="product-desc text-center-xs">
+                <p class="mb-0">{{singleProduct.productdes}}</p>
+              </div>
+
+              <hr class="mt-30 mb-30" />
+              <div class="product-details text-center-xs">
+                <h5>Other Details :</h5>
+                <ul class="list-unstyled">
+                  <li>Product : <span>{{singleProduct.productname}}</span></li>
+                  <li>Code : <span>{{singleProduct.productcode}}</span></li>
+
+                    <li>Availabiltity : {{#lte singleProduct.productquantity '0'}} <span style="font-size:20px !important; color: red !important">Sold Out</span>{{else}}Available{{/lte}} </li>
+
+
+                  <li>Brand : <span>{{singleProduct.productbrand}}</span></li>
+                </ul>
+              </div>
+
+              <hr class="mt-30 mb-30" />
+              <div class="product-action">
+                <div class="product-quantity pull-left pull-none-xs">
+                  <span class="qua">Quantity:</span>
+                  <span>
+                    {{#gt singleProduct.productquantity '0'}}
+                    <a onclick="valueminus()" style="cursor: pointer;"><i class="fa fa-minus"></i></a>
+                    <input type="number"  id="pro-count" readonly />
+                    <a onclick="valueadd()" style="cursor: pointer;"><i class="fa fa-plus"></i></a>
+                    {{else}}
+                     <a onclick="noincrease()" style="cursor: pointer;"><i class="fa fa-minus"></i></a>
+                    <input type="number"  id="pro-count" readonly/>
+                    <a onclick="noincrease()" style="cursor: pointer;"><i class="fa fa-plus"></i></a>
+                    {{/gt}}
+                  </span>
+                </div>
+                <div class="product-cta text-right text-center-xs">
+                  {{#gt singleProduct.productquantity '0'}}
+                  <a class="btn btn-primary" href="#">Buy Now</a>
+                  {{/gt}}
+                  <a class="btn btn-primary bordered" href="#">wishlist</a>
+                  {{#gt singleProduct.productquantity '0'}}
+                  <a class="btn btn-primary bordered" href="#">Add to cart</a>
+                  {{/gt}}
+                </div>
+              </div>
+
+              <hr class="mt-30 mb-30" />
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-xs-12 col-sm-12 col-md-12">
+              <div class="product-tabs">
+
+                <ul class="nav nav-tabs" role="tablist">
+                  <li role="presentation" class="active">
+                    <a href="#description" aria-controls="description" role="tab" data-toggle="tab">description</a>
+                  </li>
+                  <li role="presentation">
+                    <a href="#details" aria-controls="details" role="tab" data-toggle="tab">details</a>
+                    </li>
+                </ul>
+
+                <div class="tab-content">
+                  <div role="tabpanel" class="tab-pane active" id="description">
+                    <p>{{singleProduct.productdes}}</p>
+                    
+                  </div>
+
+                  <div role="tabpanel" class="tab-pane" id="details">
+                    <h5>Technical Details</h5>
+                    <table class="table table-striped">
+                      <tbody>
+                        <tr>
+                          <td>Part Number</td>
+                          <td>60-MCTE</td>
+                        </tr>
+                        <tr>
+                          <td>Item Weight</td>
+                          <td>54 pounds</td>
+                        </tr>
+                        <tr>
+                          <td>Product Dimensions</td>
+                          <td>92.8 x 92.8 x 92.8 inches</td>
+                        </tr>
+                        <tr>
+                          <td>Item model number</td>
+                          <td>60-MCTE</td>
+                        </tr>
+                        <tr>
+                          <td>Item Package Quantity</td>
+                          <td>1</td>
+                        </tr>
+                        <tr>
+                          <td>Number of Handles</td>
+                          <td>1</td>
+                        </tr>
+                        <tr>
+                          <td>Batteries Required?</td>
+                          <td>No</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+
+              </div>
+
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-xs-12 col-sm-12 col-md-12 pager">
+              <div class="page-prev">
+                <a href="#"><i class="fa fa-angle-left"></i></a>
+              </div>
+              <div class="page-next">
+                <a href="#"><i class="fa fa-angle-right"></i></a>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-xs-12 col-sm-12 col-md-12">
+              <div class="widget-related-product">
+                <div class="widget-title">
+                  <h4>Related Products</h4>
+                </div>
+                <div class="widget-content">
+                  <div class="row">
+
+                    {{#each relatedProduct}}
+                      
+                    <div class="col-xs-12 col-sm-6 col-md-3 product">
+                      <div class="product-img">
+
+                        <img src="/uploads/{{this._id}}__1.jpg" alt="Product"/>
+
+                        <div class="product-hover">
+                          <div class="product-action">
+                            <a class="btn btn-primary" href="">Add To Cart</a>
+                            <a class="btn btn-primary" href="">Item Details</a>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="product-bio">
+                        <div class="prodcut-cat">
+                          <a href="/productview/{{this._id}}">{{this.productbrand}}</a>
+                        </div>
+
+                        <div class="prodcut-title">
+                          <h3>
+                            <a href="/productview/{{this._id}}">{{this.productname}}</a>
+                          </h3>
+                        </div>
+
+                        <div class="product-price">
+                          <span class="symbole">₹ </span><span>{{this.productprice}}</span>
+                        </div>
+
+                      </div>
+
+                    </div>
+                     {{/each}}
+
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </section>
+
+      
+      <script>
+       function valueadd(){
+        extValue = document.getElementById('pro-count').value
+          document.getElementById('pro-count').value = +extValue+1
+      }
+      function valueminus(){
+        
+        extValue = document.getElementById('pro-count').value
+        if(extValue == 0){
+          document.getElementById('pro-count').value = 0
+        }else{
+          document.getElementById('pro-count').value = extValue-1
+        }
+        
+      }
+      function noincrease(){
+        document.getElementById('pro-count').value = 0
+      }
+
+      </script>

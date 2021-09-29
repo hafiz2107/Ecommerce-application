@@ -1,0 +1,90 @@
+    
+    <div>
+    <div class="sidebar" data-color="danger" data-background-color="white" >
+     
+      <div class="logo">
+        <a href="#" class="simple-text logo-normal" style="text-decoration: none;">
+          <img src="/images/logo.png" alt="" >
+          <h3>Admin Panel</h3>
+          <h6>Date : {{date}}</h6>
+        </a>
+      </div>
+      <div class="sidebar-wrapper">
+        <ul class="nav">
+          <li class="nav-item active  ">
+            <a class="nav-link" href="./dashboard.html">
+              <i class="material-icons">dashboard</i>
+              <p>Home</p>
+            </a>
+          </li>
+          <li class="nav-item ">
+            <a class="nav-link" href="./user.html">
+              <i class="material-icons">person</i>
+             User Management
+            </a>
+          </li>
+
+
+          <li class="" id="productManagement">
+                  <a href="#" data-toggle="dropdown" class="dropdown-toggle nav-link"> <i class="material-icons">content_paste</i> Product Management</a>
+                
+                  <ul class="dropdown-menu dropdown"  id="navContent">  
+                    <li> 
+                      <a href="/admin/add-product" class="text-center"><i class="bi bi-plus-circle" style="font-size: 21px;"></i> Add Product</a>
+                    </li>
+                    <li>
+                      <a href="/admin/view-product" class="text-center"> <i class="bi bi-eye" style="font-size: 21px;"></i> View Products</a>
+                    </li>
+
+                  </ul>
+              
+           </li>
+   
+
+
+          <li class="nav-item ">
+            <a class="nav-link" href="./typography.html">
+              <i class="material-icons">library_books</i>
+              <p>Brand Management</p>
+            </a>
+          </li>
+          <li class="nav-item ">
+            <a class="nav-link" href="./icons.html">
+              <i class="material-icons">bubble_chart</i>
+              <p>Advertisement Management</p>
+            </a>
+          </li>
+          {{!-- <li class="nav-item ">
+            <a class="nav-link" href="#">
+              <i class="material-icons">location_ons</i>
+              <p>Maps</p>
+            </a>
+          </li> --}}
+          <li class="nav-item ">
+            <a class="nav-link" href="./notifications.html">
+              <i class="material-icons">notifications</i>
+              <p>Sales Report</p>
+            </a>
+          </li>
+          <li class="nav-item ">
+            <a class="nav-link" href="./notifications.html">
+              <i class="material-icons">notifications</i>
+              <p>Coupon Management</p>
+            </a>
+          </li>
+          <!-- <li class="nav-item active-pro ">
+                <a class="nav-link" href="./upgrade.html">
+                    <i class="material-icons">unarchive</i>
+                    <p>Upgrade to PRO</p>
+                </a>
+            </li> -->
+        </ul>
+      </div>
+    </div>
+
+<script>
+  function show(){
+    document.getElementById('navContent').style.display = inline  
+  }
+</script>
+</div>

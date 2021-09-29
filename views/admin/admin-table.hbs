@@ -1,0 +1,112 @@
+
+<div class="content">
+<div class="container-fluid">
+<div class="row">
+<div class="col-md-12">
+              <div class="card">
+                <div class="card-header card-header-primary">
+                  <h4 class="card-title ">Simple Table</h4>
+                  <p class="card-category"> Here is a subtitle for this table</p>
+                </div>
+                <div class="card-body">
+                  <div class="table-responsive">
+                            <form style="width: 70%;" method="POST" action="/admin/add-product" enctype="multipart/form-data">
+
+  <div class="form-row">
+    <div class="form-group col-md-6">
+      <input type="text" class="form-control" id="productname" name="productname" placeholder="Product Name">
+    </div>
+
+  </div>  
+
+                  <div class="mb-3 form-row mt-3">
+                     
+                      <input type="radio" id="" name="category" value="bikeaccessory">
+                      <label for="" class="pr-2">Bike Accessory</label>
+                      <input type="radio" id="" name="category" value="touringaccessory">
+                      <label for="">Touring Accessory</label>
+                     
+                                              
+                    </div>
+  <div class="form-row mt-3">
+    
+     <div class="form-group col-md-6">
+       <select name="productbrand" id="" class="btn btn-primary text-light custom-select">
+        <option value="" class="dropdown-item text-dark bg-">Product Brand </option>
+        <option value="jbracing" class="dropdown-item">JB Racing</option>
+      </select>
+
+
+      <select name="suitablebikebrand" id="" class="btn btn-primary text-light custom-select">
+        <option value="" name="" class="dropdown-item text-dark bg-light">Suitable bike Brand </option>
+        <option value="ktm" >KTM</option>
+        <option value="Honda" >Honda</option>
+        <option value="Hero" >Hero</option>
+        <option value="BMW" >BMW</option>
+        <option value="others" >Others</option>
+      </select>
+
+      <select name="suitablebikemodel" id="" class="btn text-light btn-primary  custom-select">
+        <option value="" name="" class="dropdown-item text-dark bg-light">Suitable bike model</option>
+        <option value="duke200" class="dropdown-item">Duke 200</option>
+        <option value="duke390" class="dropdown-item">Duke 390</option>
+        <option value="duke250" class="dropdown-item">Duke 250</option>
+      </select>
+
+    
+
+    </div>
+  </div>
+
+
+  <div class="form-row mt-2">
+    <div class="form-group col-md-6">
+      <input type="text" class="form-control" name="productprice" id="productprice" placeholder="Price">
+    </div>
+  </div>
+  <div class="form-row mt-2">
+    <div class="form-group col-md-6">
+      <input type="number" class="form-control" name="productquantity" id="productquantity" placeholder="Quantity">
+    </div>
+  </div>
+
+  <div class="form-row mt-2">
+    <div class="form-group col-md-6  btn">
+      <h6>Uploading Date And Time</h6>
+      <input type="date" class="form-control" name="productdate" id="productdate" placeholder="" value="{{{date}}}">
+    </div>
+  </div>
+
+  <div class="form-row mt-4">
+    <div class="form-group col-md-6">
+      <input type="textarea" class="form-control" name="productdes" id="productdes" placeholder="Description" >
+    </div>
+  </div>
+
+  
+
+
+  <div class="form-row mt-5">
+    <div class="form-group col-md-6">
+
+      <label for="image1" class="btn btn-primary">Image 1</label>
+      <input type="file" class="form-control bg-primary" id="image1" name="productimage1" placeholder="image 1">
+       
+       <label for="image2" class="btn btn-primary">Image 2</label>
+      <input type="file" class="form-control bg-primary" id="image2" name="productimage2" placeholder="image 2">
+
+      <label for="image3" class="btn btn-primary">Image 3</label>
+      <input type="file" class="form-control bg-primary" id="image3" name="productimage3" placeholder="image 3">
+    </div>
+  </div>
+  
+  <button type="submit" class="btn btn-danger">Add product</button>
+</form>
+
+                  </div>
+                </div>
+              </div>
+            </div>
+            </div>
+</div>
+</div>
