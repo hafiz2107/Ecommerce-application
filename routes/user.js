@@ -129,12 +129,14 @@ router.post('/forgotpassword',(req,res)=>{
       client.verify.services(keys.serviceid)
         .verifications
         .create({ to: '+'+mobile, channel: 'sms' }).then((data)=>{
-        console.log("THe data after sending message : ",data)
+          // Data will  be recieved with The send status adn all
           res.render('user/user-otp', { title: 'Forgot Password', loginAndSignup: true, typeOfPersonUser: true , mobile})
       }).catch((err)=>{
+        // If there is any error THe actch block will catch it
         console.log("The error in sending message : ",err);
       })
     }else{
+      // Mobile number entered is wrong
       mobileError = true
       res.render('user/user-forgotpassword',{ title: 'Forgot Password', loginAndSignup: true, typeOfPersonUser: true ,mobileError})
       mobileError = false
@@ -148,10 +150,13 @@ router.post('/forgotpassword',(req,res)=>{
 
 // Posting The verified OTP adn redirecting to home page
 router.post('/otpverify',(req,res)=>{
+
+  // Checking whether the Entered OTP Is wrong
   client.verify
     .services(keys.serviceid)
     .verificationChecks.create({ to: '+'+req.body.phone, code: req.body.otp })
     .then((verification_check) => {
+      // If the OTP is wright It will give status as Approved else it will give status as Pending
       if (verification_check.status  == 'approved') {
         res.redirect('/')
       }else{
