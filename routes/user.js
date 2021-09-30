@@ -8,19 +8,31 @@ const keys = require('../config/otpkeys');
 const { parse } = require('dotenv');
 const client = require('twilio')(keys.accountsid, keys.authtoken);
 
-var mobile ;
+var userToresetPass
+var currentUser
+
 /* GET home page. */
 router.get('/', function(req, res, next) {
   if(req.session.LoggedIn){
-    console.log("1.Home page loaded");
-    var currentUser = req.session.user
+    console.log("1.Home page loaded at if");
+    currentUser = req.session.user
     userHelpers.getAllProducts().then((products) => {
       console.log("inside : get all products");
       res.render('user/user-home', { title: 'Home', user: true, currentUser, typeOfPersonUser: true, products});
     })
     
-  }else{
-    console.log("1.Home page loaded");
+  } else if (req.session.LoggedInThruOtp){
+    console.log("1.Home page loaded at else if");
+    req.session.LoggedIn = true
+    userHelpers.getAllProducts().then((products) => {
+      console.log("inside : get all products");
+      currentUser = req.session.resetUser
+      console.log("The myran iis : ",currentUser);
+      res.render('user/user-home', { title: 'Home', user: true, currentUser, typeOfPersonUser: true, products });
+    })
+  }
+  else{
+    console.log("1.1Home page loaded at else");
     var currentUser = req.session.user
     userHelpers.getAllProducts().then((products) => {
       console.log("inside : get all products");
@@ -66,7 +78,6 @@ router.post('/login',(req,res)=>{
     }else if(response.passError){
       req.session.loggedInErr = true
       req.session.passError = response.passError
-
       console.log("At else in the login post");
       res.redirect('/login');
     }else if(response.emailError){
@@ -122,15 +133,15 @@ router.post('/forgotpassword',(req,res)=>{
   mobileError = false
   mobile = parseInt(''+req.body.countryCode + req.body.mobileno)
   
-  console.log("The mobile no. is : ",mobile);
-  userHelpers.checkMobNo(req.body).then((response)=>{
-    if(response){
+  userHelpers.checkMobNo(req.body).then((user)=>{
+    userToresetPass = user;
+    if(user){
       // If response is true sending the OTP Message
       client.verify.services(keys.serviceid)
         .verifications
         .create({ to: '+'+mobile, channel: 'sms' }).then((data)=>{
           // Data will  be recieved with The send status adn all
-          res.render('user/user-otp', { title: 'Forgot Password', loginAndSignup: true, typeOfPersonUser: true , mobile})
+          res.render('user/user-otp', { title: 'Forgot Password', loginAndSignup: true, typeOfPersonUser: true , mobile })
       }).catch((err)=>{
         // If there is any error THe actch block will catch it
         console.log("The error in sending message : ",err);
@@ -144,13 +155,11 @@ router.post('/forgotpassword',(req,res)=>{
   })
 })
 
-// Getting Otp Entering page
-
-
 
 // Posting The verified OTP adn redirecting to home page
 router.post('/otpverify',(req,res)=>{
-
+  var user = req.body
+  // userHelpers.checkMobNo(req.body)
   // Checking whether the Entered OTP Is wrong
   client.verify
     .services(keys.serviceid)
@@ -158,7 +167,8 @@ router.post('/otpverify',(req,res)=>{
     .then((verification_check) => {
       // If the OTP is wright It will give status as Approved else it will give status as Pending
       if (verification_check.status  == 'approved') {
-        res.redirect('/')
+        console.log("RESET : ", userToresetPass)
+        res.render('user/user-resetpassword', { title: 'Forgot Password', loginAndSignup: true, typeOfPersonUser: true})
       }else{
         mobile = req.body.phone
         otpError = true
@@ -168,6 +178,29 @@ router.post('/otpverify',(req,res)=>{
     }).catch((err)=>{
       console.log(err);
     })
+})
+
+// Posting reseting password that user entered
+router.post('/resetpassword',(req,res)=>{
+  console.log("user ro : ", userToresetPass);
+  console.log("Patch : ",req.body);
+
+  userHelpers.updatePassword(req.body,userToresetPass).then((result)=>{
+    if(result){
+      currentUser = userToresetPass
+      resetSuccess = true
+      req.session.LoggedIn = false
+      req.session.LoggedInThruOtp = true
+      req.session.resetUser = currentUser
+      console.log("OPOPOPO : ",currentUser)
+      res.redirect('/')
+      
+    }else{
+      newPassError = true
+      res.render('user/user-user-resetpassword', { title: 'Forgot Password', loginAndSignup: true, typeOfPersonUser: true , newPassError})
+      newPassError = false
+    }
+  })
 })
 
 // Getting product single view page
@@ -183,6 +216,7 @@ router.get('/productview/:id', (req, res) => {
 router.get('/logout',(req,res)=>{
   console.log("Loggin out");
   req.session.LoggedIn = false
+  req.session.LoggedInThruOtp = false
   req.session.loggedInErr = false
   res.redirect('/');
 })

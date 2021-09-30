@@ -66,7 +66,6 @@ module.exports = {
     getAllProducts : ()=>{
         return new Promise(async(resolve, reject)=>{
             var allProducts = await db.get().collection(collection.newproducts).find().toArray();
-            console.log("All producst are : ",allProducts);
             resolve(allProducts)
         })
     },
@@ -87,12 +86,25 @@ module.exports = {
         return new Promise(async(resolve,reject)=>{
             var mobile = data.mobileno
             var country = data.countryCode
-            var user = await db.get().collection(collection.userDatabase).findOne({mobile : mobile})
+            var user = await db.get().collection(collection.userDatabase).findOne({mobile : mobile},{countryCode : country})
             console.log(user);
             if(user){
-                resolve(true)
+                resolve(user)
             }else{
-                resolve(true)
+                resolve(false)
+            }
+        })
+    },
+    updatePassword :  (body , user)=>{
+        return new Promise(async (resolve, reject) => {
+         
+            body.newpass = await bcrypt.hash(body.newpass, 10)
+            data = await db.get().collection(collection.userDatabase).updateOne({_id : objectId(user._id)},{$set:{pwd : body.newpass}})
+            console.log("Data after setting password : ",data)
+            if(data){
+                resolve(data)
+            }else{
+                resolve(false)
             }
         })
     }

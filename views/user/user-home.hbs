@@ -385,6 +385,13 @@
             </div>
           </div>
         </div>
+        {{#if resetSuccess}}
+          <div onload="alert()"></div>
+        {{/if}}
       </section>
 
-     
+<script>
+  function alert(){
+    alert("Your password has been successfully changed")
+  }
+</script>

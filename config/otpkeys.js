@@ -1,6 +1,6 @@
 module.exports = {
-    serviceid: 'VA75bb04fed96b7b38756b8fe66af6dbe5',
-    accountsid: 'ACdd49ab3e999f61b611ad6436151881d7',
-    authtoken: '668df1c174cb85a0c297bb60893c7c75',
+    serviceid: 'VA1554fa83f30746356a6fecd9b89ffe0a',
+    accountsid: 'AC37ea0c6069a3a20862705a054df2581c',
+    authtoken: '06435d0275889603bdb795056a732be7',
     from: '+16572982972'
 }
