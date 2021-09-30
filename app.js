@@ -11,6 +11,8 @@ var session = require('express-session');
 var fileUpload = require('express-fileupload');  
 const collection = require('./config/collection');
 var helper = require('handlebars-helpers')();
+var otpkeys = require('./config/otpkeys.js')
+var twilio = require('twilio')(otpkeys.accountsid , otpkeys.authtoken)
 
 
 // Creating an helper for HBS

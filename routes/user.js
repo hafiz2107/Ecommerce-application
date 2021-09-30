@@ -1,8 +1,14 @@
 const { response } = require('express');
 var express = require('express');
+const otpkeys = require('../config/otpkeys.js');
+
 var router = express.Router();
 var userHelpers = require('../helpers/user-helpers')
+const keys = require('../config/otpkeys');
+const { parse } = require('dotenv');
+const client = require('twilio')(keys.accountsid, keys.authtoken);
 
+var mobile ;
 /* GET home page. */
 router.get('/', function(req, res, next) {
   if(req.session.LoggedIn){
@@ -103,6 +109,60 @@ router.post('/signup',(req,res)=>{
 
   })
 
+})
+
+// Getting Forgot password PAge
+router.get('/forgotpassword',(req,res)=>{
+  console.log(req.body)
+  res.render('user/user-forgotpassword', { title: 'Forgot Password', loginAndSignup: true, typeOfPersonUser: true })
+})
+
+// Posting Forgot password PAge
+router.post('/forgotpassword',(req,res)=>{
+  mobileError = false
+  mobile = parseInt(''+req.body.countryCode + req.body.mobileno)
+  
+  console.log("The mobile no. is : ",mobile);
+  userHelpers.checkMobNo(req.body).then((response)=>{
+    if(response){
+      // If response is true sending the OTP Message
+      client.verify.services(keys.serviceid)
+        .verifications
+        .create({ to: '+'+mobile, channel: 'sms' }).then((data)=>{
+        console.log("THe data after sending message : ",data)
+          res.render('user/user-otp', { title: 'Forgot Password', loginAndSignup: true, typeOfPersonUser: true , mobile})
+      }).catch((err)=>{
+        console.log("The error in sending message : ",err);
+      })
+    }else{
+      mobileError = true
+      res.render('user/user-forgotpassword',{ title: 'Forgot Password', loginAndSignup: true, typeOfPersonUser: true ,mobileError})
+      mobileError = false
+    }
+  })
+})
+
+// Getting Otp Entering page
+
+
+
+// Posting The verified OTP adn redirecting to home page
+router.post('/otpverify',(req,res)=>{
+  client.verify
+    .services(keys.serviceid)
+    .verificationChecks.create({ to: '+'+req.body.phone, code: req.body.otp })
+    .then((verification_check) => {
+      if (verification_check.status  == 'approved') {
+        res.redirect('/')
+      }else{
+        mobile = req.body.phone
+        otpError = true
+        res.render('user/user-otp', { title: 'Forgot Password', loginAndSignup: true, typeOfPersonUser: true, mobile ,otpError})
+        otpError = false
+      }
+    }).catch((err)=>{
+      console.log(err);
+    })
 })
 
 // Getting product single view page

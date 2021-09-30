@@ -74,9 +74,26 @@ module.exports = {
     singleProduct : (productId)=>{
         return new Promise(async(resolve, reject)=>{
             var product = await db.get().collection(collection.newproducts).findOne({_id:objectId(productId)})
+
             console.log("THe categpry is : ",product.category);
             var relatedProduct = await db.get().collection(collection.newproducts).find({category:product.category}).limit(4).toArray()
             resolve([product , relatedProduct])
+        })
+    },
+    forgotPassword : ()=>{
+
+    },checkMobNo : (data)=>{
+        console.log("The mobile number is : ",data)
+        return new Promise(async(resolve,reject)=>{
+            var mobile = data.mobileno
+            var country = data.countryCode
+            var user = await db.get().collection(collection.userDatabase).findOne({mobile : mobile})
+            console.log(user);
+            if(user){
+                resolve(true)
+            }else{
+                resolve(true)
+            }
         })
     }
 }
