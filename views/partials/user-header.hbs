@@ -8,7 +8,7 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
               </button>
-              <a class="logo" href="index.html">
+              <a class="logo" href="/">
                 <img src="/images/logo.png" alt="Autoshop" />
               </a>
             </div>
@@ -104,30 +104,31 @@
                 <div class="cart-icon">
                   <a href="/cart" style="color: #404040;"><i class="fa fa-shopping-cart"></i></a>
                   <span class="title">shop cart</span>
-                  <span class="cart-label">2</span>
+                  {{#gte cartCount '0'}}
+                    <span class="cart-label" id="cartCount">{{cartCount}}</span>  
+                  {{/gte}}
+                  
                 </div>
                
                 <div class="cart-box">
                   <div class="cart-overview">
                     <ul class="list-unstyled">
+                      {{#if cartItems}}
+                       {{#each cartItems}}
                       <li>
-                        <img class="img-responsive" src="assets/images/shop/thumb/1.jpg" alt="product" />
+                        <img class="img-responsive" src="{{this._id}}__1.jpg" alt="product" />
                         <div class="product-meta">
-                          <h5 class="product-title">Belt Car Engine</h5>
-                          <p class="product-price">Price: $68.00</p>
-                          <p class="product-quantity">Quantity: 2</p>
+                          <h5 class="product-title">{{this.productname}}</h5>
+                          <p class="product-price">{{this.productprice}}</p>
+                          {{!-- <p class="product-quantity">Quantity: 2</p> --}}
                         </div>
                         <a class="cancel" href="#">cancel</a>
                       </li>
-                      <li>
-                        <img class="img-responsive" src="assets/images/shop/thumb/2.jpg" alt="product" />
-                        <div class="product-meta">
-                          <h5 class="product-title">OIL FILTER</h5>
-                          <p class="product-price">Price: $180.00</p>
-                          <p class="product-quantity">Quantity: 1</p>
-                        </div>
-                        <a class="cancel" href="#">cancel</a>
-                      </li>
+                      {{/each}}
+
+                      {{else}}
+                      <h6 style="color: red;">The cart is empty</h6>
+                      {{/if}}
                     </ul>
                   </div>
                   <div class="cart-total">
@@ -153,7 +154,7 @@
                 <div class="cart-icon">
                   <a href="/login" style="color: #404040;"><i class="fa fa-shopping-cart"></i></a>
                   <span class="title">shop cart</span>
-                  <span class="cart-label">2</span>
+                  {{!-- <span class="cart-label"></span> --}}
                 </div>
               </div>
 {{/if}}

@@ -110,17 +110,33 @@ module.exports = {
         })
     },
     addToCart : (proId , userId) =>{
+        let proObj = {
+            item : objectId(proId),
+            quantity : 1
+        }
         return new Promise(async(resolve,reject)=>{
             let userCart =  await db.get().collection(collection.cartItems).findOne({user : objectId(userId)})
 
             if(userCart){
-                db.get().collection(collection.cartItems).updateOne({user : objectId(userId)},{$push : {products  : objectId(proId)}}).then((response)=>{
-                    resolve();
-                })
-            }else{
+                let proExist = userCart.products.findIndex(product => product.item == proId)
+                console.log("indec : ",proExist)
+
+                if(proExist != -1){
+                    db.get().collection(collection.cartItems).updateOne({ 'products.item': objectId(proId) }, { $inc: { 'products.$.quantity': 1 } }).then(() => {
+                         resolve() 
+                    })
+                }
+                else{
+                    db.get().collection(collection.cartItems).updateOne({ user: objectId(userId) }, { $inc: { products: objectId(proId) } }).then((response) => {
+                        resolve();
+                    })
+                }
+                  
+            }
+            else{
                 let cartObj = {
                     user : objectId(userId),
-                    products : [objectId(proId)]
+                    products : [proObj]
                 }
                 db.get().collection(collection.cartItems).insertOne(cartObj).then((response)=>{
                     resolve(response)
@@ -138,37 +154,40 @@ module.exports = {
                     $match : {user : objectId(userId)}
                 },
                 {
-                    // Going to another collection newproducts
-                    $lookup : {
-                        // Taking new products collection
+                    $unwind:'$products'
+                },{
+                    $project:{
+                        item : '$products.item',
+                        quantity : '$products.quantity'
+                    }
+                },{
+                    $lookup: {
                         from : collection.newproducts,
-
-                        // Its an array from the cart collection , so it is stored in a variable
-                        let  : {proList : '$products'},
-
-                        // Then we are doing the opertion with that  collection amd the let object's key proList variable array
-                        pipeline : [
-                           {
-                               $match : {
-                                //  Then we are creating an expression to match the products id in the 
-                                // cart item collection and new prducts collection.
-                                   $expr : {
-                                    //    the 'in' takes the id of produts from the proList that is stored with the array of products
-                                    // that we are stored in the variable prolist.
-                                        $in : ["$_id","$$proList"]
-                                   }
-                                //    And all the id that we have stored proList variable will be compared with the 
-                                // Products that we have in our new products collection.
-                               }
-                           }
-                        ],
-                        // And at last the matched items will be stored in the cartItem in the 
-                        // cartItems collection.
-                        as : 'cartItems2'
+                        localField : 'item',
+                        foreignField : '_id',
+                        as : 'product'
                     }
                 }
+                   
+                
+                
             ]).toArray()
-            resolve(cartItems[0].cartItems2)
+            if(cartItems[0]){
+                resolve(cartItems)
+            }else{
+                resolve(false)
+            }
+            
+        })
+    },
+    getCartCount : (userId) =>{
+        return new Promise(async(resolve,reject)=>{
+            let count = 0
+            let cart = await db.get().collection(collection.cartItems).findOne({user : objectId(userId)})
+             if(cart){
+                count = cart.products.length
+             }
+             resolve(count)
         })
     }
     

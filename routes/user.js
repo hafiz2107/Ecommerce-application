@@ -10,14 +10,20 @@ var userToresetPass
 var currentUser
 
 /* GET home page. */
-router.get('/', function(req, res, next) {
+router.get('/',async function(req, res, next) {
   if(req.session.LoggedIn){
     console.log("1.Home page loaded at if");
+    
     currentUser = req.session.user
     logStatus = req.session.LoggedIn
+    userId = req.session.userDetails
+    // Calling function to get the cart count
+    let cartCount =await userHelpers.getCartCount(req.session.userDetails)
+
+
     userHelpers.getAllProducts().then((products) => {
       console.log("inside : get all products");
-      res.render('user/user-home', { title: 'Home', user: true, currentUser, typeOfPersonUser: true, products,logStatus});
+      res.render('user/user-home', { title: 'Home', user: true, currentUser, typeOfPersonUser: true, products,logStatus,cartCount});
     })
     
   } else if (req.session.LoggedInThruOtp){
@@ -217,23 +223,34 @@ router.get('/productview/:id', (req, res) => {
 // Gettign the cart page
 router.get('/cart',async(req,res)=>{
   user = req.session.userDetails
-  console.log("III",user);
+  logStatus = req.session.LoggedIn
+  currentUser = req.session.user
+ 
+  if (req.session.LoggedIn){
+    let products = await userHelpers.getCartProducts(req.session.userDetails).then((cartItems) => {
+      if (cartItems) {
+        res.render('user/user-cart', { title: 'Product', cartItems, user: true, typeOfPersonUser: true, currentUser})
+      }
+      else {
+        res.render('user/user-cart', { title: 'Product', currentUser, user: true, typeOfPersonUser: true,logStatus})
+      }
+
+    })
+  }else{
+    res.redirect('/login')
+  }
   
-  let products = await userHelpers.getCartProducts(req.session.userDetails).then((cartItems)=>{
-    console.log("THe cart items are : ",cartItems); 
-    res.render('user/user-cart', { title: 'Product', user: true, typeOfPersonUser: true })
-  })
  
   
 })
 
 // Adding items to the cart
 router.get('/add-to-cart/:id',(req,res)=>{
+  console.log("apoi call")
       user = req.session.userDetails
   // console.log("IDDD : ",user);
     userHelpers.addToCart(req.params.id,req.session.userDetails).then(()=>{
-    console.log("GHGHGHG")
-    res.redirect('/')
+    res.json({status:true})
   })
 })
 
