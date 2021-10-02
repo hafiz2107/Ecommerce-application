@@ -3,6 +3,7 @@ var db = require('../config/connection')
 var objectId = require('mongodb').ObjectId
 
 module.exports = {
+    // TO add a product
    addProduct : (productData)=>{
        
        return new Promise((resolve, reject) =>{
@@ -11,12 +12,14 @@ module.exports = {
            })
        })
    },
+//    To get all products in view products
    getAllproducts : ()=>{
        return new Promise(async(resolve, reject) =>{
            var productData = await db.get().collection(collection.newproducts).find().toArray();
            resolve(productData);
        })
    },
+//    To get a product on edit product page
    getProductToEdit : (productId)=>{
        return new Promise(async(resolve, reject) =>{
            await db.get().collection(collection.newproducts).findOne({_id: objectId(productId)}).then((response)=>{
@@ -26,6 +29,7 @@ module.exports = {
            
        })
    },
+//    To make upload the changes made to the product
    updateProduct : (productId,data)=>{
        return new Promise((resolve, reject,)=>{
            console.log("asdas",productId);
@@ -36,6 +40,7 @@ module.exports = {
            })
        })
    },
+// To delte a product
    deleteproduct : (productId)=>{
        return new Promise((resolve, reject)=>{
            db.get().collection(collection.newproducts).deleteOne({ _id: objectId(productId) }).then((result) => {
@@ -44,5 +49,5 @@ module.exports = {
        })
        
        })
-   }
+   },
 }

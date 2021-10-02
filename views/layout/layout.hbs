@@ -16,6 +16,35 @@
   <meta name="description" content="construction html5 template" />
   <link href="assets/images/favicon/favicon.ico" rel="icon" />
 
+  {{!-- Zoom --}}
+  <script src="https://code.jquery.com/jquery-3.6.0.js"integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous" defer></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+  <script src="/javascripts/zoomsl.js" type="text/javascript" defer></script>
+
+
+<script>
+
+
+	$(document).ready(function(){
+		$(".small-image").hover(function(){
+			$(".zoom-image").attr('src',$(this).attr('src'))
+		})
+
+	})
+
+
+</script>
+
+<script>
+	$(document).ready(function(){
+		$(".zoom-image").imagezoomsl({
+			zoomrange:[1,1]
+		})
+	})
+
+</script>
+{{!-- Zoom end --}}
   <link
     href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i,800,800i%7CRaleway:100,100i,200,200i,300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i%7CUbuntu:300,300i,400,400i,500,500i,700,700i"
     rel="stylesheet" type="text/css" />

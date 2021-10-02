@@ -91,7 +91,7 @@ router.get('/remove-product/:id', (req, res) => {
       console.log("Product Details : ", productDetails);
       res.render('admin/admin-editproduct', { productDetails,typeOfPersonAdmin: true, adminHeader: true, adminNav: true })
   })
-
+// TO get the product to edit when clicked on the on the edit button 
 router.post('/edit-product/:id',async(req,res)=>{
   console.log("AT EDit product POST");
   // var proId = req.params.id
@@ -108,14 +108,10 @@ router.post('/edit-product/:id',async(req,res)=>{
      
   })
 })
-
-
-
+// TO logout
 router.get('/logout',(req,res)=>{
   req.session.adminLoggedIn = false;
   res.redirect('/admin/login')
 })
-
-
 
 module.exports = router;  

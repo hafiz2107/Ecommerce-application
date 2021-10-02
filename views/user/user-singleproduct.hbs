@@ -16,7 +16,7 @@
                 {{!-- Product nav images --}}
                 <div class="product-img-nav">
                   <img src="/uploads/{{singleProduct._id}}__1.jpg" alt="product image" style="height: 70px;" class="small-image"/>
-                  <img src="/uploads/{{singleProduct._id}}__2.jpg" alt="product image" style="height: 70px;" class="small-imagec"/>
+                  <img src="/uploads/{{singleProduct._id}}__2.jpg" alt="product image" style="height: 70px;" class="small-image"/>
                   <img src="/uploads/{{singleProduct._id}}__3.jpg" alt="product image" style="height: 70px;" class="small-image"/>
                  
                 </div>
@@ -77,7 +77,7 @@
                   {{/gt}}
                   <a class="btn btn-primary bordered" href="#">wishlist</a>
                   {{#gt singleProduct.productquantity '0'}}
-                  <a class="btn btn-primary bordered" href="#">Add to cart</a>
+                  <a class="btn btn-primary bordered" href="/add-to-cart/{{singleProduct._id}}">Add to cart</a>
                   {{/gt}}
                 </div>
               </div>
@@ -176,7 +176,7 @@
 
                         <div class="product-hover">
                           <div class="product-action">
-                            <a class="btn btn-primary" href="">Add To Cart</a>
+                            <a class="btn btn-primary" href="/add-to-cart/{{this._id}}">Add To Cart</a>
                             <a class="btn btn-primary" href="">Item Details</a>
                           </div>
                         </div>

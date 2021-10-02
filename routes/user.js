@@ -1,7 +1,5 @@
 const { response } = require('express');
 var express = require('express');
-const otpkeys = require('../config/otpkeys.js');
-
 var router = express.Router();
 var userHelpers = require('../helpers/user-helpers')
 const keys = require('../config/otpkeys');
@@ -16,9 +14,10 @@ router.get('/', function(req, res, next) {
   if(req.session.LoggedIn){
     console.log("1.Home page loaded at if");
     currentUser = req.session.user
+    logStatus = req.session.LoggedIn
     userHelpers.getAllProducts().then((products) => {
       console.log("inside : get all products");
-      res.render('user/user-home', { title: 'Home', user: true, currentUser, typeOfPersonUser: true, products});
+      res.render('user/user-home', { title: 'Home', user: true, currentUser, typeOfPersonUser: true, products,logStatus});
     })
     
   } else if (req.session.LoggedInThruOtp){
@@ -27,7 +26,7 @@ router.get('/', function(req, res, next) {
     userHelpers.getAllProducts().then((products) => {
       console.log("inside : get all products");
       currentUser = req.session.resetUser
-      console.log("The myran iis : ",currentUser);
+      
       res.render('user/user-home', { title: 'Home', user: true, currentUser, typeOfPersonUser: true, products });
     })
   }
@@ -69,8 +68,10 @@ router.get('/login',(req,res)=>{
 router.post('/login',(req,res)=>{
   console.log("1.2 Posting logged in users data");
   userHelpers.doLogin(req.body).then((response)=>{
-    
+        
     if(response.status){
+      
+      req.session.userDetails = response.user._id;
       req.session.user = req.body;
       var userSession = req.session.user;
       req.session.LoggedIn = true
@@ -128,7 +129,7 @@ router.get('/forgotpassword',(req,res)=>{
   res.render('user/user-forgotpassword', { title: 'Forgot Password', loginAndSignup: true, typeOfPersonUser: true })
 })
 
-// Posting Forgot password PAge
+// Posting Forgot password PAge and checking the user exist or not 
 router.post('/forgotpassword',(req,res)=>{
   mobileError = false
   mobile = parseInt(''+req.body.countryCode + req.body.mobileno)
@@ -137,13 +138,15 @@ router.post('/forgotpassword',(req,res)=>{
     userToresetPass = user;
     if(user){
       // If response is true sending the OTP Message
-      client.verify.services(keys.serviceid)
+        client.verify.services(keys.serviceid)
         .verifications
         .create({ to: '+'+mobile, channel: 'sms' }).then((data)=>{
           // Data will  be recieved with The send status adn all
           res.render('user/user-otp', { title: 'Forgot Password', loginAndSignup: true, typeOfPersonUser: true , mobile })
+         
       }).catch((err)=>{
         // If there is any error THe actch block will catch it
+        res.redirect('/404')
         console.log("The error in sending message : ",err);
       })
     }else{
@@ -168,7 +171,7 @@ router.post('/otpverify',(req,res)=>{
       // If the OTP is wright It will give status as Approved else it will give status as Pending
       if (verification_check.status  == 'approved') {
         console.log("RESET : ", userToresetPass)
-        res.render('user/user-resetpassword', { title: 'Forgot Password', loginAndSignup: true, typeOfPersonUser: true})
+        res.render('user/user-resetpassword', { title: 'Verify OTP', loginAndSignup: true, typeOfPersonUser: true})
       }else{
         mobile = req.body.phone
         otpError = true
@@ -192,12 +195,11 @@ router.post('/resetpassword',(req,res)=>{
       req.session.LoggedIn = false
       req.session.LoggedInThruOtp = true
       req.session.resetUser = currentUser
-      console.log("OPOPOPO : ",currentUser)
       res.redirect('/')
       
     }else{
       newPassError = true
-      res.render('user/user-user-resetpassword', { title: 'Forgot Password', loginAndSignup: true, typeOfPersonUser: true , newPassError})
+      res.render('user/user-user-resetpassword', { title: 'Reset password', loginAndSignup: true, typeOfPersonUser: true , newPassError})
       newPassError = false
     }
   })
@@ -212,6 +214,29 @@ router.get('/productview/:id', (req, res) => {
   })
 })
 
+// Gettign the cart page
+router.get('/cart',async(req,res)=>{
+  user = req.session.userDetails
+  console.log("III",user);
+  
+  let products = await userHelpers.getCartProducts(req.session.userDetails).then((cartItems)=>{
+    console.log("THe cart items are : ",cartItems); 
+    res.render('user/user-cart', { title: 'Product', user: true, typeOfPersonUser: true })
+  })
+ 
+  
+})
+
+// Adding items to the cart
+router.get('/add-to-cart/:id',(req,res)=>{
+      user = req.session.userDetails
+  // console.log("IDDD : ",user);
+    userHelpers.addToCart(req.params.id,req.session.userDetails).then(()=>{
+    console.log("GHGHGHG")
+    res.redirect('/')
+  })
+})
+
 // Logout
 router.get('/logout',(req,res)=>{
   console.log("Loggin out");
@@ -221,4 +246,8 @@ router.get('/logout',(req,res)=>{
   res.redirect('/');
 })
 
+
+router.get('/404',(req, res)=>{
+  res.render('404', { title: 'Error 404', loginAndSignup: true, typeOfPersonUser: true })
+})
 module.exports = router;

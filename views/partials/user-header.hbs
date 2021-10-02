@@ -99,13 +99,14 @@
                 </div>
               </div>
 
- 
+  {{#if logStatus}}
               <div class="module module-cart pull-left">
                 <div class="cart-icon">
-                  <i class="fa fa-shopping-cart"></i>
+                  <a href="/cart" style="color: #404040;"><i class="fa fa-shopping-cart"></i></a>
                   <span class="title">shop cart</span>
                   <span class="cart-label">2</span>
                 </div>
+               
                 <div class="cart-box">
                   <div class="cart-overview">
                     <ul class="list-unstyled">
@@ -139,20 +140,40 @@
                   </div>
                   <div class="clearfix"></div>
                   <div class="cart-control">
-                    <a class="btn btn-primary btn-block text-center" href="#" >view cart</a>
-                    <a class="btn btn-secondary btn-block text-center" href="#" >check out</a >
+                     <a class="btn btn-primary btn-block" href="/cart">view cart</a>
+                    <a class="btn btn-secondary btn-block" href="#">check out</a>
                   </div>
                 </div>
               </div>
 
+              {{else}}
 
 
-       <div class="module module-search pull-left">
+             <div class="module module-cart pull-left">
+                <div class="cart-icon">
+                  <a href="/login" style="color: #404040;"><i class="fa fa-shopping-cart"></i></a>
+                  <span class="title">shop cart</span>
+                  <span class="cart-label">2</span>
+                </div>
+              </div>
+{{/if}}
+
+  {{#if logStatus}}
+            <div class="module module-search pull-left">
                 <div class="search-icon">
                         <a href="" class=""><i class="fa fa-heart"></i></a>
+                            <span class="title">Wishlist</span>
+                </div>
+            </div> 
+            {{else}}
+            <div class="module module-search pull-left">
+                <div class="search-icon">
+                        <a href="/login" class=""><i class="fa fa-heart"></i></a>
                         <span class="title">Wishlist</span>
                 </div>
             </div> 
+  {{/if}}
+
 
             <div class="module module-search pull-left">
                 <div class="search-icon">

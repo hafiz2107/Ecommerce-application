@@ -1,0 +1,106 @@
+      <section id="shopcart" class="shop shop-cart">
+        <div class="container">
+          <div class="row">
+            <div class="col-xs-12 col-sm-12 col-md-12">
+              <div class="cart-table table-responsive">
+                <table class="table table-bordered">
+                  <thead>
+                    <tr class="cart-product">
+                      <th class="cart-product-item">Product</th>
+                      <th class="cart-product-price">Price</th>
+                      <th class="cart-product-quantity">Quantity</th>
+                      <th class="cart-product-total">Total</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr class="cart-product">
+                      <td class="cart-product-item">
+                        <div class="cart-product-remove">
+                          <i class="fa fa-close"></i>
+                        </div>
+                        <div class="cart-product-img">
+                          <img src="assets/images/shop/thumb/1.jpg" alt="product"/>
+                        </div>
+                        <div class="cart-product-name">
+                          <h6>Belt Car Engine</h6>
+                        </div>
+                      </td>
+                      <td class="cart-product-price">$ 10.00</td>
+                      <td class="cart-product-quantity">
+                        <div class="product-quantity">
+                          <a href="#"><i class="fa fa-minus"></i></a>
+                          <input type="text" value="2" id="pro1-qunt" readonly/>
+                          <a href="#"><i class="fa fa-plus"></i></a>
+                        </div>
+                      </td>
+                      <td class="cart-product-total">$ 20.00</td>
+                    </tr>
+                    <tr class="cart-product">
+                      <td class="cart-product-item">
+                        <div class="cart-product-remove">
+                          <i class="fa fa-close"></i>
+                        </div>
+                        <div class="cart-product-img">
+                          <img src="assets/images/shop/thumb/2.jpg" alt="product"/>
+                        </div>
+                        <div class="cart-product-name">
+                          <h6>OIL FILTER</h6>
+                        </div>
+                      </td>
+                      <td class="cart-product-price">$ 40.00</td>
+                      <td class="cart-product-quantity">
+                        <div class="product-quantity">
+                          <a href="#"><i class="fa fa-minus"></i></a>
+                          <input type="text"  value="3" id="pro2-qunt" readonly/>
+                          <a href="#"><i class="fa fa-plus"></i></a>
+                        </div>
+                      </td>
+                      <td class="cart-product-total">$ 120.00</td>
+                    </tr>
+                    <tr class="cart-product-action">
+                      <td colspan="4">
+                        <div class="row clearfix">
+
+
+{{!-- Apply coupon --}}
+                          {{!-- <div class="col-xs-12 col-sm-6 col-md-6">
+                            <form class="form-inline">
+                              <input type="text" class="form-control" id="coupon" placeholder="Coupon Code"/>
+                              <button type="submit" class="btn btn-primary">
+                                Apply Coupon
+                              </button>
+                            </form>
+                          </div> --}}
+
+                          <div class="col-xs-12 col-sm-6 col-md-6 text-right">
+                            <a class="btn btn-secondary" href="#">update cart</a>
+                            <a class="btn btn-primary" href="#">Proceed To Checkout</a>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+
+
+            <div class="col-xs-12 col-sm-12 col-md-6">
+              <div class="cart-total-amount">
+                <h6>Cart Totals :</h6>
+                <ul class="list-unstyled">
+                  <li>Cart Subtotal :<span class="pull-right text-right">$ 140.00</span>
+                  </li>
+                  <li>Shipping :<span class="pull-right text-right">Free Shipping</span>
+                  </li>
+                  <li>Order Total :<span class="pull-right text-right">$ 140.00</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      
