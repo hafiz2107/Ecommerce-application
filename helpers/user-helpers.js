@@ -127,7 +127,7 @@ module.exports = {
                     })
                 }
                 else{
-                    db.get().collection(collection.cartItems).updateOne({ user: objectId(userId) }, { $inc: { products: objectId(proId) } }).then((response) => {
+                    db.get().collection(collection.cartItems).updateOne({ user: objectId(userId) }, { $push: { products: proObj } }).then((response) => {
                         resolve();
                     })
                 }

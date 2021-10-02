@@ -227,15 +227,14 @@ router.get('/cart',async(req,res)=>{
   currentUser = req.session.user
  
   if (req.session.LoggedIn){
-    let products = await userHelpers.getCartProducts(req.session.userDetails).then((cartItems) => {
-      if (cartItems) {
-        res.render('user/user-cart', { title: 'Product', cartItems, user: true, typeOfPersonUser: true, currentUser})
+    let products = await userHelpers.getCartProducts(req.session.userDetails)
+      if (products) {
+        res.render('user/user-cart', { title: 'Product', products, user: true, typeOfPersonUser: true, currentUser})
       }
       else {
         res.render('user/user-cart', { title: 'Product', currentUser, user: true, typeOfPersonUser: true,logStatus})
       }
 
-    })
   }else{
     res.redirect('/login')
   }

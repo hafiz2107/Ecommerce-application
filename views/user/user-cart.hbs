@@ -1,9 +1,10 @@
       <section id="shopcart" class="shop shop-cart">
         <div class="container">
-          {{#if cartItems}}
+          {{#if products}}
           
           <div class="row">
               {{#if emptycart}}
+                <img src="/images/3298067.jpg" alt="">
                 <h2>Sorry ! your cart is empty</h2>
               {{else}}
             <div class="col-xs-12 col-sm-12 col-md-12">
@@ -20,7 +21,7 @@
                     </tr>
                   </thead>
                   <tbody>
-                    {{#each cartItems}}
+                    {{#each products}}
                     <tr class="cart-product">
                    
                       {{#each this.product}}
@@ -97,8 +98,8 @@
           {{else}}
           <center>
             <h1 style="color: red;">Sorry your cart is empty</h1>
-                       
-                            <a class="btn btn-primary" href="/">Add some products</a>
+                       <img src="/images/3298067.jpg" alt="" style="height: 250px;"><br>
+                            <a class="btn btn-primary" href="/" style="margin-top: 67px;">Add some products</a>
                    
           </center>
            {{/if}}
