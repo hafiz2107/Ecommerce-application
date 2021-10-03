@@ -253,6 +253,13 @@ router.get('/add-to-cart/:id',(req,res)=>{
   })
 })
 
+router.post('/change-product-quantity',(req,res)=>{
+  console.log("SAISoooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo : ",req.body)
+  userHelpers.changeProductQuantity(req.body).then((response)=>{
+    res.json(response)
+  })
+})
+
 // Logout
 router.get('/logout',(req,res)=>{
   console.log("Loggin out");
