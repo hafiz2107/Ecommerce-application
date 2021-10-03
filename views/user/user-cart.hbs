@@ -32,7 +32,7 @@
                       
                       <td class="cart-product-item">
                         <div class="cart-product-remove">
-                          <i class="fa fa-close"></i>
+                         <i class="bi bi-trash" onclick="deleteCartItem('{{this._id}}','{{this.product._id}}')"></i>
                         </div>
                         <div class="cart-product-img">
                           <img src="/uploads/{{this.product._id}}__1.jpg" alt="product" style="height: 50px;"/>
