@@ -1,6 +1,6 @@
-function addToCart(proId) {
+function addToCart(proId,proPrice) {
     $.ajax({
-        url: ' /add-to-cart/'+proId,
+        url: ' /add-to-cart/'+proId+'/'+proPrice,
         method: 'get',
         success: (response) => {
             if(response.status){

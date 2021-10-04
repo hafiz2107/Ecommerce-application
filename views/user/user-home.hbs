@@ -42,12 +42,12 @@
 
         <div class="product-img">
           <img src="/uploads/{{this._id}}__1.jpg" alt="Product" style="height: 430px;" />
-           {{!-- onclick="window.location productview/{{this._id}}';" --}}
+           
           <input type="text" hidden class="product-id" value="{{this._id}}">
           <div class="product-hover "style="cursor: pointer;">
             <div class="product-action">
               <a class="btn btn-primary payment" >Item Details</a>
-              <a class="btn btn-primary add-to-cart" onclick="addToCart('{{this._id}}')">Add To Cart</a>
+              <a class="btn btn-primary add-to-cart" onclick="addToCart('{{this._id}}','{{this.productprice}}')">Add To Cart</a>
             </div>
           </div>
   

@@ -44,7 +44,7 @@
                       
 
 
-                      <td class="cart-product-price">{{this.productprice}}</td>
+                      <td class="cart-product-price" style="color: brown;">₹  {{this.price}}</td>
                       <td class="cart-product-quantity">
                         <div class="product-quantity">
                           <button id="minus" onclick="changeQuantity('{{this._id}}','{{this.product._id}}',-1)"><i class="fa fa-minus"></i></button>
@@ -72,8 +72,8 @@
                           </div> --}}
 
                           <div class="col-xs-12 col-sm-6 col-md-6 text-right">
-                            <a class="btn btn-secondary" href="#">update cart</a>
-                            <a class="btn btn-primary" href="#">Proceed To Checkout</a>
+                            <h6>Cart Totals :</h6>
+                            <a class="btn btn-primary" href="#" style="float: right;">Proceed To Checkout</a>
                           </div>
                         </div>
                       </td>

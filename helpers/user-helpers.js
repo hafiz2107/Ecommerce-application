@@ -108,10 +108,11 @@ module.exports = {
             }
         })
     },
-    addToCart: (proId, userId) => {
+    addToCart: (proId, userId ,proPrice) => {
         let proObj = {
             item: objectId(proId),
-            quantity: 1
+            quantity: 1,
+            price:proPrice
         }
         return new Promise(async (resolve, reject) => {
             let userCart = await db.get().collection(collection.cartItems).findOne({ user: objectId(userId) })
@@ -121,7 +122,7 @@ module.exports = {
                 console.log("indec : ", proExist)
 
                 if (proExist != -1) {
-                    db.get().collection(collection.cartItems).updateOne({ user: objectId(userId), 'products.item': objectId(proId) }, { $inc: { 'products.$.quantity': 1 } }).then(() => {
+                    db.get().collection(collection.cartItems).updateOne({ user: objectId(userId), 'products.item': objectId(proId) , 'products.price' : proPrice}, { $inc: { 'products.$.quantity': 1 } }).then(() => {
                         resolve()
                     })
                 }
@@ -157,7 +158,8 @@ module.exports = {
                 }, {
                     $project: {
                         item: '$products.item',
-                        quantity: '$products.quantity'
+                        quantity: '$products.quantity',
+                        price: '$products.price'
                     }
                 }, {
                     $lookup: {
@@ -170,6 +172,7 @@ module.exports = {
                     $project: {
                         item: 1,
                         quantity: 1,
+                        price : 1,
                         product: { $arrayElemAt: ['$product', 0] }
                     }
                 }
@@ -177,7 +180,7 @@ module.exports = {
 
 
             ]).toArray()
-            console.log(cartItems);
+            console.log(" HIIIIIIIIIIi",cartItems);
             if (cartItems[0]) {
                 resolve(cartItems)
             } else {

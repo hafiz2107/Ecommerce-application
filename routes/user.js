@@ -244,11 +244,11 @@ router.get('/cart', async (req, res) => {
 })
 
 // Adding items to the cart
-router.get('/add-to-cart/:id', (req, res) => {
-  console.log("apoi call")
+router.get('/add-to-cart/:id/:proPrice', (req, res) => {
+  console.log("apoi call", req.params.proPrice)
   user = req.session.userDetails
   // console.log("IDDD : ",user);
-  userHelpers.addToCart(req.params.id, req.session.userDetails).then(() => {
+  userHelpers.addToCart(req.params.id, req.session.userDetails, req.params.proPrice).then(() => {
     res.json({ status: true })
   })
 })
