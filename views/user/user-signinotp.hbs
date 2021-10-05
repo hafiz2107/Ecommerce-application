@@ -1,31 +1,29 @@
 {{!-- User Login page --}}
-
-
 <center>
-    <section id="signIn" class="sign mysign" style="margin-top: -95px;">
+    <section id="signIn" class="sign ">
       <div class="container">
         <div class="row">
-          <div class="col-xs-12  col-sm-12  col-md-12">
-                  <div class="modal-body">
+          <div class="col-xs-12  col-sm-12  col-md-12 mysign" style="background-color: rgba(255, 0, 0, 0);">
+                  <div class="modal-body" style="background-color: rgba(0, 0, 255, 0);">
                     
-                   
-                    <img src="/images/logo.png" alt="" class="myImg2">
-                    <h6>Registration Area</h6>
-                    <div class="sign-form" style="width: 50%;height: 100vh;">
+                    {{!-- <p>Welcome Back</p> --}}
+                    <img src="/images/logo.png" alt="" class="myImg1">
+                    <h6 style="margin-top: 25px;">Sign in with OTP</h6>
 
+                    <p style="color: rgb(129, 129, 129);">Enter the mobile phone number associated with your Rideofy account.</p>
+                    <div class="sign-form" style="width: 50%;">
+                        
+                        {{#if mobileError}}
+                            <p>Invalid Mobile Number</p>
+                        {{/if}}   
+                            
 
-                      <form class="mb-0 myLoginForm" action="/signup" method="POST" id="signupform">
-                      {{#if userNameAlreadyExist}}
-                        <span>Username already exist</span>
-                      {{/if}}
-                        <div class="form-group">
-                          <input type="text" class="form-control " id="username" name="username" placeholder="User Name">
-                        </div>
-                       <div class="form-group">
-                            <input type="email" class="form-control" id="email" name="email" placeholder="Email"/>
-                        </div>
-                          <div class="form-group">
-                          <select class="btn" name="countryCode" id="country" style="width: 105px;float: left;display: inline-block;">
+                        {{!-- Signin Form --}}
+                      <form class="mb-0 myLoginForm" action="/signinotp" method="POST" id="loginform" style="display: inline;">
+                        <div class="form-group" style="display: table;">
+                            
+                            <div style="display: table-cell; ">
+                             <select class="btn" name="countryCode" id="country" style="width: 105px;position: absolute;margin-left: -41px;">
 	<option data-countryCode="GB" value="44" Selected>UK (+44)</option>
 	<option data-countryCode="US" value="1">USA (+1)</option>
 	<optgroup label="Other countries">
@@ -114,7 +112,7 @@
 		<option data-countryCode="HK" value="852">Hong Kong (+852)</option>
 		<option data-countryCode="HU" value="36">Hungary (+36)</option>
 		<option data-countryCode="IS" value="354">Iceland (+354)</option>
-		<option data-countryCode="IN" value="91">India (+91)</option>
+		<option data-countryCode="IN" value="91" selected>IN (+91)</option>
 		<option data-countryCode="ID" value="62">Indonesia (+62)</option>
 		<option data-countryCode="IR" value="98">Iran (+98)</option>
 		<option data-countryCode="IQ" value="964">Iraq (+964)</option>
@@ -244,69 +242,36 @@
 		<option data-countryCode="ZM" value="260">Zambia (+260)</option>
 		<option data-countryCode="ZW" value="263">Zimbabwe (+263)</option>
 	</optgroup>
-                          </select>
-                            <input style="display: inline;width: auto;" type="tel" class="form-control" id="mobile" name="mobile" placeholder="Mobile No"/>
+                            </select>
+                            </div>
+                          <input type="text" class="form-control " id="username" name="mobileno" style="margin-left: 80px;" placeholder="Registered Mobile Number">
                         </div>
-                          <div class="form-group">
-                            <input type="password" class="form-control" id="pwd" name="pwd"  placeholder="Password"/>
-                          </div>
-                          <div class="form-group">
-                            <input type="password" class="form-control" id="pwdc" name="pwdc" placeholder="Confirm Password"/>
-							<input type="hidden" value="false" name="block">
-                          </div>
-                          <div class="checkbox">
-                            <label>
-                              <input type="checkbox" />I Agree To
-                              <a href="#">The Terms Of Use ?</a>
-                            </label>
-                          </div>
-                        
-                     
-                        <button type="submit" class="btn btn-primary btn-block" style="margin-top: 15px;">Sign Up</button>
-                      
+                          
+
+                        <button type="submit" class="btn btn-primary btn-block">Submit</button>
                       </form>
-                        <div class="form-links text-center">
-                          <a href="/login">Have an account? Login Here</a>
-                        </div>
                     </div>
                   </div>
          </div>
         </div>
       </div>
     </section>
-</center>
-        <script src="/javascripts/jquery.js"></script>
-        <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
-        <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/jquery.validate.js"></script>
-        <script src="/javascripts/plugin.js"></script>
-        <script src="/javascripts/script.js"></script>
-<script>
-  $(document).ready(function(){
-    $('#signupform').validate({
-      rules : {
-      username : {
-        required : true,
-        minlenght : 5
-      },
-      pwd : {
-        required: true,
-        minlenght : 6,
-      },
-      pwdc : {
-        required : true,
-        minlength : 6,
-        equalto : '#pass',
-      },
-      email : {
-        email : true,
-        required : true,
-        minlength : 11,
-      },
-      mobile :{
-        required : true,
-        minlength : 10,
-      }
-      }
+    </center>
+
+  <script>
+    $(document).ready(function(){
+      $('#loginform').validate({
+        rules:{
+          username : {
+            required : true,
+            minlenght : 5,
+          },
+          pwd : {
+            required : true,
+            minlength : 6,
+          } 
+        }
+      })
     })
-  })
-</script>
+  </script>
+

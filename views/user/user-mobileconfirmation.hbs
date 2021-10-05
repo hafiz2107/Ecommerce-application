@@ -1,0 +1,49 @@
+{{!-- User Login page --}}
+<center>
+    <section id="signIn" class="sign ">
+      <div class="container">
+        <div class="row">
+          <div class="col-xs-12  col-sm-12  col-md-12 mysign" style="background-color: rgba(255, 0, 0, 0);">
+                  <div class="modal-body" style="background-color: rgba(0, 0, 255, 0);">
+                    
+                    {{!-- <p>Welcome Back</p> --}}
+                    <img src="/images/logo.png" alt="" class="myImg1">
+                    <h6 style="margin-top: 25px;">Enter the OTP</h6>
+                    <div class="sign-form" style="width: 50%;">
+                        {{#if otpError}}
+                            <p>The OTP Is invalid</p>
+                        {{/if}}
+
+                        {{!-- Signin Form --}}
+                      <form class="mb-0 myLoginForm" action="/mobileConfirmation" method="POST" id="loginform">
+                        <div class="form-group">
+                          <input type="text" class="form-control " id="username" name="otp" placeholder="OTP Recieved in your mobile number">
+                          <input type="hidden" value="{{mobile}}" name="phone" >
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-block">Submit</button>
+                      </form>
+                    </div>
+                  </div>
+         </div>
+        </div>
+      </div>
+    </section>
+    </center>
+
+  <script>
+    $(document).ready(function(){
+      $('#loginform').validate({
+        rules:{
+          username : {
+            required : true,
+            minlenght : 5,
+          },
+          pwd : {
+            required : true,
+            minlength : 6,
+          } 
+        }
+      })
+    })
+  </script>
+

@@ -94,6 +94,15 @@ module.exports = {
                 resolve(false)
             }
         })
+    }, findUser : (mobile)=>{
+        return new Promise(async(resolve,reject)=>{
+            var user = await db.get().collection(collection.userDatabase).findOne({ mobile: mobile })
+            if(user){
+                resolve(user)
+            }else{
+                resolve(false)
+            }
+        })
     },
     // TO update the password When clicking  the forgotpassword
     updatePassword: (body, user) => {
@@ -112,7 +121,8 @@ module.exports = {
         let proObj = {
             item: objectId(proId),
             quantity: 1,
-            price:proPrice
+            price:parseInt(proPrice),
+            totalprice: parseInt(proPrice),
         }
         return new Promise(async (resolve, reject) => {
             let userCart = await db.get().collection(collection.cartItems).findOne({ user: objectId(userId) })
@@ -122,7 +132,7 @@ module.exports = {
                 console.log("indec : ", proExist)
 
                 if (proExist != -1) {
-                    db.get().collection(collection.cartItems).updateOne({ user: objectId(userId), 'products.item': objectId(proId) , 'products.price' : proPrice}, { $inc: { 'products.$.quantity': 1 } }).then(() => {
+                    db.get().collection(collection.cartItems).updateOne({ user: objectId(userId), 'products.item': objectId(proId)}, { $inc: { 'products.$.quantity': 1 } }).then(() => {
                         resolve()
                     })
                 }
@@ -159,7 +169,8 @@ module.exports = {
                     $project: {
                         item: '$products.item',
                         quantity: '$products.quantity',
-                        price: '$products.price'
+                        price: '$products.price',
+                        totalprice : '$products.totalprice'
                     }
                 }, {
                     $lookup: {
@@ -173,6 +184,7 @@ module.exports = {
                         item: 1,
                         quantity: 1,
                         price : 1,
+                        totalprice : 1,
                         product: { $arrayElemAt: ['$product', 0] }
                     }
                 }
@@ -199,11 +211,13 @@ module.exports = {
             resolve(count)
         })
     },
+
     changeProductQuantity: (details) => {
-        console.log("Teh detaisl are : ", details)
+        
         details.count = parseInt(details.count)
         details.quantity = parseInt(details.quantity)
-
+        details.price = parseInt(details.price)
+        console.log("Teh detaisl are : ", details.price)
 
         return new Promise((resolve, reject) => {
 
@@ -215,16 +229,40 @@ module.exports = {
                 ).then((response) => {
                     resolve({ removeProduct: true })
                 })
-            } else {
+            }else if(details.count == -1){
+                db.get().collection(collection.cartItems).updateOne({ _id: objectId(details.cart), 'products.item': objectId(details.product_id) },
+                    {
+                        $inc: { 'products.$.quantity': details.count, 'products.$.totalprice': details.price*details.count }
+                    }
+                ).then((response) => {
+                    console.log("The details : ", details.price * details.count );
+
+                    resolve(true)
+                })
+            } 
+            else {
                 console.log("The details are :  ", details);
                 db.get().collection(collection.cartItems).updateOne({ _id: objectId(details.cart), 'products.item': objectId(details.product_id) },
                     {
-                        $inc: { 'products.$.quantity': details.count }
+                        $inc: { 'products.$.quantity': details.count, 'products.$.totalprice': details.price}
                     }
                 ).then((response) => {
+                    console.log("The details : ",details.quantity*details.price);
+
                     resolve(true)
                 })
             }
+        })
+    },
+    deleteProduct : (details)=>{
+        return new Promise((resolve,reject)=>{
+            db.get().collection(collection.cartItems).updateOne({ _id: objectId(details.cart)},
+            {
+                $pull : { products: { item: objectId(details.product_id)}}
+            }
+            ).then((response)=>{
+                resolve(true)
+            })
         })
     }
 

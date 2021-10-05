@@ -9,9 +9,11 @@ const client = require('twilio')(keys.accountsid, keys.authtoken);
 var userToresetPass
 var currentUser
 
+
+
 /* GET home page. */
 router.get('/', async function (req, res, next) {
-  if (req.session.LoggedIn) {
+  if (req.session.LoggedIn && req.session.unblock) {
     console.log("1.Home page loaded at if");
 
     currentUser = req.session.user
@@ -33,7 +35,7 @@ router.get('/', async function (req, res, next) {
       console.log("inside : get all products");
       currentUser = req.session.resetUser
 
-      res.render('user/user-home', { title: 'Home', user: true, currentUser, typeOfPersonUser: true, products });
+      res.render('user/user-home', { title: 'Home', user: true, currentUser, typeOfPersonUser: true, products, cartCount });
     })
   }
   else {
@@ -45,7 +47,6 @@ router.get('/', async function (req, res, next) {
     })
 
   }
-
 });
 
 // Getting login page
@@ -58,14 +59,16 @@ router.get('/login', (req, res) => {
     loggedInErr = req.session.loggedInErr
     emailError = req.session.emailError;
     passError = req.session.passError;
-
-    res.render('user/user-login', { title: 'Login', loginAndSignup: true, loggedInErr, typeOfPersonUser: true, emailError, passError })
+   
+    res.render('user/user-login', { title: 'Login', loginAndSignup: true, loggedInErr, typeOfPersonUser: true, emailError, passError ,block:req.session.block})
+    req.session.block = false
     emailError = false
     req.session.emailError = false;
     passError = false
     req.session.passError = false;
     loggedInErr = false;
     req.session.loggedInErr = false
+ 
   }
 
 })
@@ -74,14 +77,28 @@ router.get('/login', (req, res) => {
 router.post('/login', (req, res) => {
   console.log("1.2 Posting logged in users data");
   userHelpers.doLogin(req.body).then((response) => {
+    
+    if(response.user.block == 'false'){
+      response.user.block = false;
+    }else{
+      response.user.block = true;
+    }
+    
+    req.session.block = response.user.block
 
-    if (response.status) {
-
+    if(req.session.block){
+      console.log("At if ",req.session.block);
+      res.redirect('/login')
+    }
+   else if (response.status) {
+     console.log("At else",req.session.block);
+      req.session.unblock = true
+      req.session.block = response.user.block
       req.session.userDetails = response.user._id;
       req.session.user = req.body;
       var userSession = req.session.user;
       req.session.LoggedIn = true
-      res.redirect('/')
+        res.redirect('/')
     } else if (response.passError) {
       req.session.loggedInErr = true
       req.session.passError = response.passError
@@ -119,7 +136,22 @@ router.post('/signup', (req, res) => {
   userHelpers.userSignup(req.body).then((response) => {
     console.log("the response is : ", response);
     if (response) {
-      res.redirect('/login')
+      var mobile = response.countryCode+response.mobile;
+      mobile = parseInt(mobile);
+
+      client.verify.services(keys.serviceid)
+        .verifications
+        .create({ to: '+' + mobile, channel: 'sms' }).then((data) => {
+          // Data will  be recieved with The send status adn all
+          res.render('user/user-mobileconfirmation', { title: 'Mobile Confirmation', loginAndSignup: true, typeOfPersonUser: true, mobile })
+
+        }).catch((err) => {
+          // If there is any error THe actch block will catch it
+          res.redirect('/404')
+          console.log("The error in sending message : ", err);
+        })
+      
+
     } else {
       req.session.userNameAlreadyExist = true;
       res.redirect('/signup')
@@ -128,6 +160,101 @@ router.post('/signup', (req, res) => {
   })
 
 })
+
+// Verifying the OTP send when entering the OTP
+router.post('/mobileConfirmation',(req,res)=>{
+
+  client.verify
+    .services(keys.serviceid)
+    .verificationChecks.create({ to: '+' + req.body.phone, code: req.body.otp })
+    .then((verification_check) => {
+      // If the OTP is wright It will give status as Approved else it will give status as Pending
+      if (verification_check.status == 'approved') {
+        res.redirect('/login')
+      } else {
+        mobile = req.body.phone
+        otpError = true
+        res.render('user/user-mobileconfirmation', { title: 'Mobile Confirmation', loginAndSignup: true, typeOfPersonUser: true, mobile, otpError })
+        otpError = false
+      }
+    }).catch((err) => {
+      res.redirect('/404')
+      console.log(err);
+    })
+})
+
+// Sign in using OTP
+router.get('/signinotp',(req,res)=>{
+  res.render('user/user-signinotp', { title: 'Signin Using OTP', loginAndSignup: true, typeOfPersonUser: true})
+})
+// Sign in using OTP
+router.post('/signinotp',(req,res)=>{
+  var mobile = req.body.countryCode + req.body.mobileno;
+  mobile = parseInt(mobile);
+  userHelpers.checkMobNo(req.body).then((user) => {
+    userToresetPass = user;
+    if (user) {
+      // If response is true sending the OTP Message
+      client.verify.services(keys.serviceid)
+        .verifications
+        .create({ to: '+' + mobile, channel: 'sms' }).then((data) => {
+          // Data will  be recieved with The send status adn all
+          res.render('user/user-signinconfirmation', { title: 'Enter OTP', loginAndSignup: true, typeOfPersonUser: true, mobile })
+
+        }).catch((err) => {
+          // If there is any error THe actch block will catch it
+          res.redirect('/404')
+          console.log("The error in sending message : ", err);
+        })
+    } else {
+      // Mobile number entered is wrong
+      mobileError = true
+      res.render('user/user-signinotp', { title: 'Forgot Password', loginAndSignup: true, typeOfPersonUser: true, mobileError })
+      mobileError = false
+    }
+  })
+})
+
+// Post sign in using OTP
+router.post('/signinconfirmation',(req,res)=>{
+  client.verify
+    .services(keys.serviceid)
+    .verificationChecks.create({ to: '+' + req.body.phone, code: req.body.otp })
+    .then((verification_check) => {
+      
+      if (verification_check.status == 'approved') {
+        phoneNo = req.body.phone.slice(2)
+        
+        userHelpers.findUser(phoneNo).then((user)=>{
+          if(user){
+            console.log("##################################################### ##:  ",user);
+            req.session.unblock = true
+            req.session.block = user.block
+            req.session.userDetails = user._id;
+            req.session.user = user
+            var userSession = req.session.user;
+            req.session.LoggedIn = true
+            res.redirect('/')
+          }else{
+            userNotExist = true
+            res.render('user-signinconfirmation', { title: 'OTP', loginAndSignup: true, typeOfPersonUser: true,userNotExist})
+            userNotExist = false
+          }
+          
+        })
+        
+      } else {
+        mobile = req.body.phone
+        otpError = true
+        res.render('user/user-mobileconfirmation', { title: 'Mobile Confirmation', loginAndSignup: true, typeOfPersonUser: true, mobile, otpError })
+        otpError = false
+      }
+    }).catch((err) => {
+      res.redirect('/404')
+      console.log(err);
+    })
+})
+
 
 // Getting Forgot password PAge
 router.get('/forgotpassword', (req, res) => {
@@ -253,9 +380,18 @@ router.get('/add-to-cart/:id/:proPrice', (req, res) => {
   })
 })
 
+// Change pproduct quantity when clicking + & -
 router.post('/change-product-quantity', (req, res) => {
-  console.log("SAISoooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo : ", req.body)
+  
   userHelpers.changeProductQuantity(req.body).then((response) => {
+    
+    res.json(response)
+  })
+})
+
+// Delete from cart
+router.post('/delete-cart-product' , (req,res)=>{
+  userHelpers.deleteProduct(req.body).then((response)=>{
     res.json(response)
   })
 })
@@ -269,7 +405,7 @@ router.get('/logout', (req, res) => {
   res.redirect('/');
 })
 
-
+// The error page
 router.get('/404', (req, res) => {
   res.render('404', { title: 'Error 404', loginAndSignup: true, typeOfPersonUser: true })
 })

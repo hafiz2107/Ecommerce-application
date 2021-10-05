@@ -22,15 +22,6 @@ var hbs = exphbs.create({
   helpers : helper
 })
 
-// handlebars.registerHelper("lt", (value)=>{
-//   if(value>0){
-//     console.log("THe value is : ",value);
-//     return new Handlebars.SafeString('<span>Available</span>');
-//   }else{
-//     return new Handlebars.SafeString('<span>Sold out</span>');
-//   }
-// })
-
 
 var app = express();
 

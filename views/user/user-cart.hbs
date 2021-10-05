@@ -32,7 +32,7 @@
                       
                       <td class="cart-product-item">
                         <div class="cart-product-remove">
-                         <i class="bi bi-trash" onclick="deleteCartItem('{{this._id}}','{{this.product._id}}')"></i>
+                         <a onclick="deleteCartItem('{{this._id}}','{{this.product._id}}')" style="color: white;"><i class="bi bi-trash" ></i></a>
                         </div>
                         <div class="cart-product-img">
                           <img src="/uploads/{{this.product._id}}__1.jpg" alt="product" style="height: 50px;"/>
@@ -47,12 +47,12 @@
                       <td class="cart-product-price" style="color: brown;">₹  {{this.price}}</td>
                       <td class="cart-product-quantity">
                         <div class="product-quantity">
-                          <button id="minus" onclick="changeQuantity('{{this._id}}','{{this.product._id}}',-1)"><i class="fa fa-minus"></i></button>
+                          <button id="minus" onclick="changeQuantity('{{this._id}}','{{this.product._id}}',-1,'{{this.price}}')"><i class="fa fa-minus"></i></button>
                           <input type="text" value="{{this.quantity}}" id="{{this.product._id}}" readonly/>
-                          <button onclick="changeQuantity('{{this._id}}','{{this.product._id}}',1)"><i class="fa fa-plus"></i></button>
+                          <button onclick="changeQuantity('{{this._id}}','{{this.product._id}}',1,'{{this.price}}')"><i class="fa fa-plus"></i></button>
                         </div>
                       </td>
-                      <td class="cart-product-total">$ 20.00</td>
+                      <td class="cart-product-total" id="totalPrice">{{this.totalprice}}</td>
                     </tr>
                     {{/each}}
 

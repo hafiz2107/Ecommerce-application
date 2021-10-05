@@ -10,6 +10,9 @@
                     <img src="/images/logo.png" alt="" class="myImg1">
                     <h6>Login Area</h6>
                     <div class="sign-form" style="width: 50%;">
+                      {{#if block}}
+                        <span style="color: red;margin-bottom: 5px;">You have beign blocked by the admin</span><br>
+                      {{/if}}
                       {{#if emailError}}
                             <span style="color: red;margin-bottom: 5px;">Incorrect username or password !</span><br>
                           {{/if}}
@@ -30,6 +33,9 @@
                         <div class="pull-right lost-pass">
                           <a href="/forgotpassword">Forget Password?</a>
                         </div>
+                        <div class="pull-left lost-pass">
+                          <a href="/signinotp">Sign in using OTP</a>
+                        </div>
                         <button type="submit" class="btn btn-primary btn-block">Sign In</button>
                       </form>
                       <div class="form-links text-center">
@@ -44,6 +50,7 @@
     </center>
 
   <script>
+
     $(document).ready(function(){
       $('#loginform').validate({
         rules:{

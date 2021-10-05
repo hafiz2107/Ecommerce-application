@@ -1,7 +1,9 @@
+const { response } = require('express');
 var express = require('express');
 var router = express.Router();
 var date = new Date().toISOString().slice(0, 10);
-var adminHelper = require('../helpers/admin-helpers')
+var adminHelper = require('../helpers/admin-helpers');
+const userHelpers = require('../helpers/user-helpers');
 
 const admin = {
   name : "admin",
@@ -114,4 +116,29 @@ router.get('/logout',(req,res)=>{
   res.redirect('/admin/login')
 })
 
+router.get('/usermanagement',async(req,res)=>{
+  let allUsers = await adminHelper.getAllUsers()
+    res.render('admin/admin-usermanagement', { typeOfPersonAdmin: true, adminHeader: true, adminNav: true, allUsers})
+  })
+
+router.get('/blockuser/:id',(req,res)=>{
+  id = req.params.id
+  adminHelper.blockUser(id).then((response)=>{
+    if(response){
+      res.redirect('/admin/usermanagement')
+    }
+  })
+})
+
+router.get('/unblockuser/:id',(req,res)=>{
+  
+  id = req.params.id
+  
+  adminHelper.unBlockUser(id).then((response) => {
+    if (response) {
+      console.log('YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY',response);
+      res.redirect('/admin/usermanagement')
+    }
+  })
+})
 module.exports = router;  
