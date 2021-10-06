@@ -13,36 +13,37 @@ var currentUser
 
 /* GET home page. */
 router.get('/', async function (req, res, next) {
-  if (req.session.LoggedIn && req.session.unblock) {
-    console.log("1.Home page loaded at if");
 
+  if (req.session.LoggedIn && req.session.unblock) {
+    
     currentUser = req.session.user
     logStatus = req.session.LoggedIn
     userId = req.session.userDetails
     // Calling function to get the cart count
     let cartCount = await userHelpers.getCartCount(req.session.userDetails)
+    let cartProductsTodisplay = await userHelpers.getCartProducts(req.session.userDetails)
 
-
+    
     userHelpers.getAllProducts().then((products) => {
-      console.log("inside : get all products");
-      res.render('user/user-home', { title: 'Home', user: true, currentUser, typeOfPersonUser: true, products, logStatus, cartCount });
+      res.render('user/user-home', { title: 'Home', user: true, currentUser, typeOfPersonUser: true, products, logStatus, cartCount,items: cartProductsTodisplay});
     })
 
   } else if (req.session.LoggedInThruOtp) {
-    console.log("1.Home page loaded at else if");
+  
     req.session.LoggedIn = true
     userHelpers.getAllProducts().then((products) => {
-      console.log("inside : get all products");
+      
       currentUser = req.session.resetUser
 
       res.render('user/user-home', { title: 'Home', user: true, currentUser, typeOfPersonUser: true, products, cartCount });
     })
-  }
+  } 
   else {
-    console.log("1.1Home page loaded at else");
+    
+    
     var currentUser = req.session.user
     userHelpers.getAllProducts().then((products) => {
-      console.log("inside : get all products");
+      
       res.render('user/user-home', { title: 'Home', user: true, currentUser: false, typeOfPersonUser: true, products });
     })
 
@@ -347,6 +348,7 @@ router.get('/productview/:id', (req, res) => {
   })
 })
 
+
 // Gettign the cart page
 router.get('/cart', async (req, res) => {
   user = req.session.userDetails
@@ -355,8 +357,10 @@ router.get('/cart', async (req, res) => {
 
   if (req.session.LoggedIn) {
     let products = await userHelpers.getCartProducts(req.session.userDetails)
+    
     if (products) {
-      res.render('user/user-cart', { title: 'Product', products, user: true, typeOfPersonUser: true, currentUser })
+      let totalValue = await userHelpers.getTotalAmount(req.session.userDetails)
+      res.render('user/user-cart', { title: 'Product', products,totalValue, user: true, typeOfPersonUser: true, currentUser })
     }
     else {
       res.render('user/user-cart', { title: 'Product', currentUser, user: true, typeOfPersonUser: true, logStatus })
@@ -382,9 +386,7 @@ router.get('/add-to-cart/:id/:proPrice', (req, res) => {
 
 // Change pproduct quantity when clicking + & -
 router.post('/change-product-quantity', (req, res) => {
-  
   userHelpers.changeProductQuantity(req.body).then((response) => {
-    
     res.json(response)
   })
 })

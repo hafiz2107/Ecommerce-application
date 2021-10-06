@@ -118,6 +118,7 @@ module.exports = {
         })
     },
     addToCart: (proId, userId ,proPrice) => {
+
         let proObj = {
             item: objectId(proId),
             quantity: 1,
@@ -192,7 +193,7 @@ module.exports = {
 
 
             ]).toArray()
-            console.log(" HIIIIIIIIIIi",cartItems);
+           
             if (cartItems[0]) {
                 resolve(cartItems)
             } else {
@@ -263,6 +264,58 @@ module.exports = {
             ).then((response)=>{
                 resolve(true)
             })
+        })
+    },
+    
+    getTotalAmount : (userId)=>{
+        return new Promise(async (resolve, reject) => {
+            // Doing aggregation
+            let total = 0;
+            total = await db.get().collection(collection.cartItems).aggregate([
+                {
+                    // Matching the element in the user field in the colleciton cartitems and anf taking that field
+                    $match: { user: objectId(userId) }
+                },
+                {
+                    $unwind: '$products'
+                }, {
+                    $project: {
+                        item: '$products.item',
+                        quantity: '$products.quantity',
+                        price: '$products.price',
+                    }
+                }, {
+                    $lookup: {
+                        from: collection.newproducts,
+                        localField: 'item',
+                        foreignField: '_id',
+                        as: 'product'
+                    }
+                }, {
+                    $project: {
+
+                        quantity: 1,
+                        price: 1,
+                        product: { $arrayElemAt: ['$product', 0] }
+                    },
+                },{
+                    $group:{
+                        _id:null,
+                        total: {$sum: { $multiply: ['$quantity','$price']}}
+                    }
+                }
+
+
+
+            ]).toArray()
+
+            if (total) {
+                console.log("Asdsadasdasd : ",total[0].total);
+                resolve(total[0].total)
+            } else {
+                resolve(false)
+            }
+
         })
     }
 

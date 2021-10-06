@@ -42,15 +42,19 @@
 
         <div class="product-img">
           <img src="/uploads/{{this._id}}__1.jpg" alt="Product" style="height: 430px;" />
-           
+
           <input type="text" hidden class="product-id" value="{{this._id}}">
-          <div class="product-hover "style="cursor: pointer;">
+          <div class="product-hover " style="cursor: pointer;">
             <div class="product-action">
-              <a class="btn btn-primary payment" >Item Details</a>
-              <a class="btn btn-primary add-to-cart" onclick="addToCart('{{this._id}}','{{this.productprice}}')">Add To Cart</a>
+              <a class="btn btn-primary payment">Item Details</a>
+
+
+              {{#hello ../items this._id this.productprice }}
+              {{/hello}}
+              
             </div>
           </div>
-  
+
         </div>
 
         <div class="product-bio">
@@ -70,32 +74,33 @@
         </div>
       </div>
       {{/each}}
+
     </div>
   </div>
 </section>
 
 
-{{!-- DOM Manipulation to  Go to item details page --}}
+{{!-- DOM Manipulation to Go to item details page --}}
 <script>
-  window.onclick=(event)=>{
-   var payment = document.getElementsByClassName('payment')
-   var addToCart = document.getElementsByClassName('add-to-cart')
-   var hover = document.getElementsByClassName('product-hover')
-   var product_id = document.getElementsByClassName('product-id')
+  window.onclick = (event) => {
+    var payment = document.getElementsByClassName('payment')
+    var addToCart = document.getElementsByClassName('add-to-cart')
+    var hover = document.getElementsByClassName('product-hover')
+    var product_id = document.getElementsByClassName('product-id')
 
-   for(var i=0;i<payment.length;i++){
-     if(event.target===payment[i]){
-       location.href = "/buynow"+product_id[i].value
-     break;
-    }else if(event.target===addToCart[i]){
-      break;
-    } else if(event.target===hover[i]){
-      location.href ="/productview/"+product_id[i].value
-      break;
+    for (var i = 0; i < payment.length; i++) {
+      if (event.target === payment[i]) {
+        location.href = "/buynow" + product_id[i].value
+        break;
+      } else if (event.target === addToCart[i]) {
+        break;
+      } else if (event.target === hover[i]) {
+        location.href = "/productview/" + product_id[i].value
+        break;
+      }
     }
-   }
-    
-    
+
+
   }
 </script>
 

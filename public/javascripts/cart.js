@@ -6,10 +6,12 @@ function addToCart(proId,proPrice) {
         method: 'get',
         success: (response) => {
             if(response.status){
+              
                 let count = $('#cartCount').html()
                 count=parseInt(count)+1
                 $('#cartCount').html(count)
             }
+            location.reload();   
            
         }
     })
@@ -43,7 +45,6 @@ function addToCart(proId,proPrice) {
                 response.quantity = parseInt(response.quantity)
                 response.count = parseInt(response.count)
                 let total = document.getElementById(pro_id).value = quantity+count
-                
                 let a = total * price
                 console.log(a);
                 document.getElementById(totalPrice).innerHTML = location.reload()

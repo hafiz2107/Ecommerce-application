@@ -77,7 +77,8 @@
                   {{/gt}}
                   <a class="btn btn-primary bordered" href="#">wishlist</a>
                   {{#gt singleProduct.productquantity '0'}}
-                  <a class="btn btn-primary bordered" href="/add-to-cart/{{singleProduct._id}}">Add to cart</a>
+                      {{#hello ../items this._id this.productprice }}
+                                {{/hello}}
                   {{/gt}}
                 </div>
               </div>
