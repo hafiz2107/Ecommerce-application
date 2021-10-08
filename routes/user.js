@@ -8,8 +8,9 @@ const client = require('twilio')(keys.accountsid, keys.authtoken);
 
 var userToresetPass
 var currentUser
-
-
+let cartCount
+let cartProductsTodisplay
+let totalValue
 
 /* GET home page. */
 router.get('/', async function (req, res, next) {
@@ -20,10 +21,8 @@ router.get('/', async function (req, res, next) {
     logStatus = req.session.LoggedIn
     userId = req.session.userDetails
     // Calling function to get the cart count
-    let cartCount = await userHelpers.getCartCount(req.session.userDetails)
-    let cartProductsTodisplay = await userHelpers.getCartProducts(req.session.userDetails)
-
-    
+    cartCount = await userHelpers.getCartCount(req.session.userDetails)
+    cartProductsTodisplay = await userHelpers.getCartProducts(req.session.userDetails)
     userHelpers.getAllProducts().then((products) => {
       res.render('user/user-home', { title: 'Home', user: true, currentUser, typeOfPersonUser: true, products, logStatus, cartCount,items: cartProductsTodisplay});
     })
@@ -340,11 +339,15 @@ router.post('/resetpassword', (req, res) => {
 })
 
 // Getting product single view page
-router.get('/productview/:id', (req, res) => {
+router.get('/productview/:id',async (req, res) => {
   console.log("Product single view page loaded");
   var proId = req.params.id
+  logStatus = req.session.LoggedIn
+  let cartProductsTodisplay = await userHelpers.getCartProducts(req.session.userDetails)
+  let cartCount = await userHelpers.getCartCount(req.session.userDetails)
+
   userHelpers.singleProduct(proId).then(([singleProduct, relatedProduct]) => {
-    res.render('user/user-singleproduct', { title: 'Product', user: true, typeOfPersonUser: true, singleProduct, relatedProduct })
+    res.render('user/user-singleproduct', { title: 'Product', user: true, typeOfPersonUser: true, singleProduct, relatedProduct,cartCount, currentUser, logStatus,items: cartProductsTodisplay })
   })
 })
 
@@ -359,8 +362,9 @@ router.get('/cart', async (req, res) => {
     let products = await userHelpers.getCartProducts(req.session.userDetails)
     
     if (products) {
-      let totalValue = await userHelpers.getTotalAmount(req.session.userDetails)
-      res.render('user/user-cart', { title: 'Product', products,totalValue, user: true, typeOfPersonUser: true, currentUser })
+      totalValue = await userHelpers.getTotalAmount(req.session.userDetails)
+      let UserId = req.session.userDetails
+      res.render('user/user-cart', { title: 'Product', products, user: true, typeOfPersonUser: true, currentUser, userId, totalValue})
     }
     else {
       res.render('user/user-cart', { title: 'Product', currentUser, user: true, typeOfPersonUser: true, logStatus })
@@ -385,9 +389,10 @@ router.get('/add-to-cart/:id/:proPrice', (req, res) => {
 })
 
 // Change pproduct quantity when clicking + & -
-router.post('/change-product-quantity', (req, res) => {
-  userHelpers.changeProductQuantity(req.body).then((response) => {
-    res.json(response)
+router.post('/change-product-quantity', async(req, res) => {
+  userHelpers.changeProductQuantity(req.body).then(async(response) => {
+    response.total = await userHelpers.getTotalAmount(req.session.userDetails)
+        res.json(response)
   })
 })
 
@@ -396,6 +401,16 @@ router.post('/delete-cart-product' , (req,res)=>{
   userHelpers.deleteProduct(req.body).then((response)=>{
     res.json(response)
   })
+})
+
+router.get('/checkout',async(req,res)=>{
+  if(req.session.LoggedIn){
+    let products = await userHelpers.getCartProducts(req.session.userDetails)
+    let user = req.session.userDetails
+    res.render('user/user-checkout', { title: 'Home', user: true, currentUser, typeOfPersonUser: true, cartCount, logStatus, products, totalValue })
+  }else{
+    res.redirect('/login')
+  }
 })
 
 // Logout

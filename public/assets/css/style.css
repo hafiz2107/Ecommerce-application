@@ -1,3 +1,261 @@
+.checkout-area {
+  background: #f7f7f7 none repeat scroll 0 0;
+}
+
+.checkout-top {
+  margin-bottom: 23px;
+}
+
+.checkout-top p,
+.checkout-top p a {
+  color: #232530;
+  font-family: "Montserrat", sans-serif;
+  font-size: 16px;
+}
+
+.checkout-top p a {
+  color: #ed1d7f;
+}
+
+.checkout-box-title {
+  border-bottom: 1px solid #ecedee;
+  color: #232530;
+  font-size: 18px;
+  font-weight: 300;
+  letter-spacing: 0;
+  padding: 16px 0;
+  text-align: center;
+}
+
+.billing-address {
+  background: #fff none repeat scroll 0 0;
+  border: 1px solid #ecedee;
+}
+
+.checkout-billing-adress-box {
+  padding: 21px 35px 50px 25px;
+}
+
+.billing-address-input {
+  margin-bottom: 20px;
+}
+
+.billing-address-input label {
+  color: #646a7c;
+  float: left;
+  font-size: 14px;
+  font-weight: 300;
+  letter-spacing: 0;
+}
+
+.billing-address-input select,
+.billing-address-input input[type="text"] {
+  border: 0 none;
+  border-bottom: 1px solid #e5e5e5;
+  color: #646a7c;
+  float: right;
+  font-size: 14px;
+  font-weight: 300;
+  height: 40px;
+  padding: 0 10px;
+  width: 55%;
+}
+
+.billing-address-input select option {}
+
+.cbab-create-account {
+  margin-bottom: 19px;
+}
+
+.cbab-create-account input[type="checkbox"] {}
+
+.cbab-create-account label {
+  color: #646a7c;
+  font-size: 14px;
+  font-weight: 300;
+  letter-spacing: 0;
+  line-height: 16px;
+  margin: 0;
+}
+
+.cbab-create-account p {
+  color: #646a7c;
+  line-height: 24px;
+  margin: 12px 0 0;
+}
+
+.cbab-account-password {
+  margin: 0 0 31px;
+}
+
+.cbab-account-password label {
+  color: #646a7c;
+  font-size: 14px;
+  font-weight: 300;
+  letter-spacing: 0;
+  line-height: 16px;
+  margin: 0;
+}
+
+.cbab-account-password input[type="password"] {
+  border: 0 none;
+  border-bottom: 1px solid #e5e5e5;
+  color: #646a7c;
+  float: right;
+  font-size: 14px;
+  font-weight: 300;
+  height: 40px;
+  padding: 0 10px;
+  width: 55%;
+}
+
+.cbab-order-notes {}
+
+.cbab-order-notes p {
+  color: #646a7c;
+  font-size: 14px;
+  font-weight: 300;
+  letter-spacing: 0;
+  line-height: 16px;
+  margin: 0 0 10px;
+}
+
+.cbab-order-notes input[type="text"] {
+  border: 0 none;
+  border-bottom: 1px solid #e5e5e5;
+  color: #646a7c;
+  font-size: 14px;
+  font-weight: 300;
+  height: 40px;
+  padding: 0 10px;
+  width: 100%;
+}
+
+.promotional-code-box {
+  background: #fff none repeat scroll 0 0;
+  border: 1px solid #ecedee;
+  margin-bottom: 30px;
+}
+
+.pcb-content {
+  padding: 0 35px 25px;
+}
+
+.pcb-content p {
+  color: #646a7c;
+  margin-bottom: 25px;
+}
+
+.pcb-cuppon-input {}
+
+.pcb-cuppon-input input[type="text"] {
+  border: 0 none;
+  border-bottom: 1px solid #e5e5e5;
+  color: #646a7c;
+  float: left;
+  font-weight: 300;
+  height: 40px;
+  letter-spacing: 0;
+  text-align: center;
+  width: 46%;
+}
+
+.pcb-cuppon-input button {
+  float: right;
+  width: 50%;
+}
+
+.checkout-page-button {
+  background: #ed1d7f none repeat scroll 0 0;
+  border: 0 none;
+  border-radius: 3px;
+  color: #fff;
+  display: inline-block;
+  padding: 5px 30px;
+  text-transform: uppercase;
+}
+
+.your-order-box {
+  background: #fff none repeat scroll 0 0;
+  border: 1px solid #ecedee;
+}
+
+.yob-content {
+  padding: 25px 25px 70px;
+}
+
+.yobc-title,
+.yobc-title span {
+  color: #232530;
+  font-family: "Montserrat", sans-serif;
+  margin-bottom: 33px;
+}
+
+.yobc-title span {
+  float: right;
+}
+
+.yob-content ul {
+  list-style: outside none none;
+  padding: 0;
+}
+
+.yob-content ul li {
+  border-bottom: 1px solid #e5e5e5;
+  color: #646a7c;
+  font-size: 14px;
+  font-weight: 400;
+  letter-spacing: 0;
+  line-height: 30px;
+  margin: 0 0 27px;
+  padding: 0 0 1px;
+}
+
+.yob-content ul li.order-total {
+  text-transform: uppercase;
+}
+
+.yob-content ul li span {
+  color: #ed1d7f;
+  float: right;
+}
+
+.create-account-checkout-method {}
+
+.select-payment-method {
+  margin-bottom: 3px;
+}
+
+.select-payment-method input[type="checkbox"] {}
+
+.select-payment-method label {
+  color: #646a7c;
+  font-size: 14px;
+  font-weight: 300;
+  letter-spacing: 0;
+  margin-left: 10px;
+}
+
+.create-account-text {
+  border: 1px solid #e5e5e5;
+  margin: 0 0 20px;
+  padding: 21px 20px;
+}
+
+.create-account-text p {
+  color: #646a7c;
+  font-weight: 300;
+  line-height: 24px;
+}
+
+.place-order {
+  margin: 58px 0 0;
+  text-align: center;
+}
+
+.place-order button {}
+
+
 /*!// Contents
 // ------------------------------------------------>
 1. Rest

@@ -1,4 +1,5 @@
 const { response } = require("express")
+const { DeactivationsList } = require("twilio/lib/rest/messaging/v1/deactivation")
 
 function addToCart(proId,proPrice) {
     $.ajax({
@@ -17,12 +18,13 @@ function addToCart(proId,proPrice) {
     })
 }
 
-    function changeQuantity(cart_id,pro_id,count,price,totalprice)   {
+    function changeQuantity(cart_id,pro_id,count,price,totalprice,userId)   {
         
         let quantity = parseInt(document.getElementById(pro_id).value)
         price = parseInt(price)
         totalprice = parseInt(totalprice)
         
+        id = pro_id+'1'
           $.ajax({
         url : '/change-product-quantity',
     data:{
@@ -41,13 +43,12 @@ function addToCart(proId,proPrice) {
                 location.reload()
             }
             else{
-                
                 response.quantity = parseInt(response.quantity)
                 response.count = parseInt(response.count)
-                let total = document.getElementById(pro_id).value = quantity+count
-                let a = total * price
-                console.log(a);
-                document.getElementById(totalPrice).innerHTML = location.reload()
+
+                quantity = document.getElementById(pro_id).value = quantity+count;
+                document.getElementById(id).innerHTML = quantity*price;
+                document.getElementById('total').innerHTML = response.total
             }
         }
           })

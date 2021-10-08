@@ -194,7 +194,7 @@ module.exports = {
 
             ]).toArray()
            
-            if (cartItems[0]) {
+            if (cartItems[0]){
                 resolve(cartItems)
             } else {
                 resolve(false)
@@ -218,10 +218,9 @@ module.exports = {
         details.count = parseInt(details.count)
         details.quantity = parseInt(details.quantity)
         details.price = parseInt(details.price)
-        console.log("Teh detaisl are : ", details.price)
 
         return new Promise((resolve, reject) => {
-
+// Removing the item when the user user is pressing - and the count is 1
             if (details.count == -1 && details.quantity == 1) {
                 db.get().collection(collection.cartItems).updateOne({ _id: objectId(details.cart) },
                     {
@@ -230,27 +229,22 @@ module.exports = {
                 ).then((response) => {
                     resolve({ removeProduct: true })
                 })
-            }else if(details.count == -1){
+            // }else if(details.count == -1){
+            //     db.get().collection(collection.cartItems).updateOne({ _id: objectId(details.cart), 'products.item': objectId(details.product_id) },
+            //         {
+            //             $inc: { 'products.$.quantity': details.count, 'products.$.totalprice': details.price*details.count }
+            //         }
+            //     ).then((response) => {
+            //         resolve({ status : true })
+            //     })
+            // } 
+            }else {
                 db.get().collection(collection.cartItems).updateOne({ _id: objectId(details.cart), 'products.item': objectId(details.product_id) },
                     {
-                        $inc: { 'products.$.quantity': details.count, 'products.$.totalprice': details.price*details.count }
+                        $inc: { 'products.$.quantity': details.count, 'products.$.totalprice': details.price*details.count}
                     }
                 ).then((response) => {
-                    console.log("The details : ", details.price * details.count );
-
-                    resolve(true)
-                })
-            } 
-            else {
-                console.log("The details are :  ", details);
-                db.get().collection(collection.cartItems).updateOne({ _id: objectId(details.cart), 'products.item': objectId(details.product_id) },
-                    {
-                        $inc: { 'products.$.quantity': details.count, 'products.$.totalprice': details.price}
-                    }
-                ).then((response) => {
-                    console.log("The details : ",details.quantity*details.price);
-
-                    resolve(true)
+                    resolve({ status: true })
                 })
             }
         })
@@ -283,6 +277,7 @@ module.exports = {
                         item: '$products.item',
                         quantity: '$products.quantity',
                         price: '$products.price',
+                        totalprice : '$products.totalprice'
                     }
                 }, {
                     $lookup: {
@@ -293,24 +288,20 @@ module.exports = {
                     }
                 }, {
                     $project: {
-
                         quantity: 1,
                         price: 1,
+                        totalprice : 1,
                         product: { $arrayElemAt: ['$product', 0] }
                     },
                 },{
                     $group:{
                         _id:null,
-                        total: {$sum: { $multiply: ['$quantity','$price']}}
+                        total:  { $sum: '$totalprice' }
                     }
                 }
-
-
-
             ]).toArray()
 
             if (total) {
-                console.log("Asdsadasdasd : ",total[0].total);
                 resolve(total[0].total)
             } else {
                 resolve(false)
