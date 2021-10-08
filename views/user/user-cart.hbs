@@ -8,10 +8,7 @@
           {{#if products}}
           
           <div class="row">
-              {{#if emptycart}}
-                <img src="/images/3298067.jpg" alt="">
-                <h2>Sorry ! your cart is empty</h2>
-              {{else}}
+              
             <div class="col-xs-12 col-sm-12 col-md-12">
 
             
@@ -47,12 +44,13 @@
                       <td class="cart-product-price" style="color: brown;">₹  {{this.price}}</td>
                       <td class="cart-product-quantity">
                         <div class="product-quantity">
-                          <button id="minus" onclick="changeQuantity('{{this._id}}','{{this.product._id}}',-1,'{{this.price}}')"><i class="fa fa-minus"></i></button>
+                          <button id="minus" onclick="changeQuantity('{{this._id}}','{{this.product._id}}',-1,'{{this.price}}','{{../userId}}')"><i class="fa fa-minus"></i></button>
                           <input type="text" value="{{this.quantity}}" id="{{this.product._id}}" readonly/>
-                          <button onclick="changeQuantity('{{this._id}}','{{this.product._id}}',1,'{{this.price}}')"><i class="fa fa-plus"></i></button>
+                          <button onclick="changeQuantity('{{this._id}}','{{this.product._id}}',1,'{{this.price}}','{{../userId}}')"><i class="fa fa-plus"></i></button>
+                         
                         </div>
                       </td>
-                      <td class="cart-product-total" id="totalPrice">{{this.totalprice}}</td>
+                      <td class="cart-product-total" id="{{this.product._id}}1">{{this.totalprice}}</td>
                     </tr>
                     {{/each}}
 
@@ -73,7 +71,7 @@
 
                           <div class="col-xs-12 col-sm-6 col-md-6 pull-right">
                             <h6 class="pull-right mb-4" >Cart Totals : Rs. <span style="color: brown;font-weight:600;font-size: 19px;" id="total">{{totalValue}}</span></h6><br><hr>
-                            <a class="btn btn-primary pull-right " href="#" style="float: right;">Proceed To Checkout</a>
+                            <a class="btn btn-primary pull-right " href="/checkout" style="float: right;">Proceed To Checkout</a>
                           </div>
                         </div>
                       </td>
@@ -99,13 +97,12 @@
               </div>
             </div>
           </div>
-           {{/if}}
+         
           {{else}}
           <center>
             <h1 style="color: red;">Sorry your cart is empty</h1>
                        <img src="/images/3298067.jpg" alt="" style="height: 250px;"><br>
-                            <a class="btn btn-primary" href="/" style="margin-top: 67px;">Add some products</a>
-                   
+                            <a class="btn btn-primary" href="/" style="margin-top: 67px;">Add some products</a>     
           </center>
            {{/if}}
         </div>
