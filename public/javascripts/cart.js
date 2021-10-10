@@ -49,11 +49,12 @@ function addToCart(proId,proPrice) {
                 quantity = document.getElementById(pro_id).value = quantity+count;
                 document.getElementById(id).innerHTML = quantity*price;
                 document.getElementById('total').innerHTML = response.total
+                location.reload()
+               
             }
         }
           })
 }
-
 function deleteCartItem(cart_id , pro_id){
     $.ajax({
         url: '/delete-cart-product',

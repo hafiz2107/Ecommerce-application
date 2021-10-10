@@ -1,367 +1,486 @@
-        <section style="margin-top: 30px;">
-        <div class="container">
-            <div class="row">
-                <div class="col-xs-6" style="margin-bottom: 10px ;" >
-                
-                    <div class="billing-address" >
-                        <div class="container" style="margin-left: 30px;">
-                        <h4 style="margin-top: 10px;font-weight: 300;">Saved Addresses</h4>
-                            <dl>
-                                <dt>1.Coffee</dt>
-                                    <dd>Black hot drink</dd>
-                                    <dt><input type="checkbox" id="useaddress" placeholder="Use"><span style="color: #007eff;">    Use Address</span></dt><br>
-                                <dt>2.Milk</dt>
-                                    <dd>White cold drink</dd>
-                                <dt><input type="checkbox" id="useaddress" placeholder="Use"><span style="color: #007eff;">    Use Address</span></dt><br>
-                            </dl>
-                    </div>
-                </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-8 col-sm-12 col-xs-12">
-                    <div class="billing-address">
-                        <h4 class="checkout-box-title">Billing Address</h4>
-                        <div class="checkout-billing-adress-box">
 
-                            <div class="billing-address-input clearfix">
-                                <label>FIRST NAME *</label>
-                                <input type="text">
-                            </div>
-                            <div class="billing-address-input clearfix">
-                                <label>LAST NAME *</label>
-                                <input type="text">
-                            </div>
-                            <div class="billing-address-input clearfix">
-                                <label>COMPANY NAME *</label>
-                                <input type="text">
-                            </div>
-                            <div class="billing-address-input clearfix">
-                                <label>ADDRESS *</label>
-                                <input type="text" placeholder="Street Address">
-                                <input type="text" placeholder="Fashin, suite, unite ect (optinal)">
-                            </div>
-                            <div class="billing-address-input clearfix">
-                                <label>TOWN / CITY *</label>
-                                <input type="text">
-                            </div>
-                            <div class="billing-address-input clearfix">
-                                <label>COUNTRY / STATES</label>
-                                <input type="text">
-                            </div>
-                            <div class="billing-address-input clearfix">
-                                <label>POSTCODE / ZIP *</label>
-                                <input type="text">
-                            </div>
-                            <div class="billing-address-input clearfix">
-                                <label>EMAIL ADDRESS *</label>
-                                <input type="text">
-                            </div>
-                            <div class="billing-address-input clearfix">
-                                <label>PHONE *</label>
-                                <input type="text">
-                            </div>
-                            <div class="cbab-create-account">
-                                <input type="checkbox">
-                                <label>Save address</label>
-                            </div>
-                        </div>
+<section id="page-title" class="page-title">
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12 col-sm-12 col-md-12">
+                <h3 class="text-center" style="letter-spacing: 5px;">CHECKOUT</h3>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<section style="margin-top: 30px;padding-top: 50px">
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-6" style="margin-bottom: 10px ;"> 
+                <div class="billing-address">
+
+                    <h5 class="checkout-box-title">SAVED ADDRESS</h5>
+
+                    <div class="checkout-billing-adress-box">
+                        <dl>
+                            <dt>1.Coffee</dt>
+                            <dd>Black hot drink</dd>
+                            <dt><input type="checkbox" id="useaddress" placeholder="Use"><span style="color: #007eff;">
+                                    Use Address</span></dt><br>
+                            <dt>2.Milk</dt>
+                            <dd>White cold drink</dd>
+                            <dt><input type="checkbox" id="useaddress" placeholder="Use"><span style="color: #007eff;">
+                                    Use Address</span></dt><br>
+                        </dl>
                     </div>
-                </div>
-                <div class="col-md-4 col-sm-12 col-xs-12">
-                    <div class="promotional-code-box">
-                        <h4 class="checkout-box-title">Coupon Code</h4>
-                        <div class="pcb-content">
-                            <p>Enter your coupon code if you have one</p>
-                            <div class="pcb-cuppon-input clearfix">
-                                <input type="text" placeholder="Coupon code">
-                                <button class="checkout-page-button hvr-bs">Apply</button>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="your-order-box">
-                        <h4 class="checkout-box-title">Your Order</h4>
-                        <div class="yob-content">
-                            <p class="yobc-title">PRODUCT <span>TOTAL</span></p>
-                            <ul>
-                                {{#each products}}
-                                     <li class="clearfix"><strong>{{this.product.productname}}</strong>  x {{this.quantity}} <span style="color: black;">₹ {{this.price}}</span></li>
-                                {{/each}}
-                               
-                               
-                                <li class="clearfix">Cart Subtotal <span style="font-weight: bolder;font-size: 20px;">₹  {{totalValue}}</span></li>
-                                <li class="clearfix">Shipping and Handling <span>Free Shipping</span></li>
-                                <li class="order-total clearfix">Order Total <span>$660.00</span></li>
-                            </ul>
-                            <div class="create-account-checkout-method">
-                                <div class="place-order">
-                                    <button class="checkout-page-button hvr-bs">Place order</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+
                 </div>
             </div>
         </div>
+        <div class="row">
+            <div class="col-md-8 col-sm-12 col-xs-12">
+                <div class="billing-address">
+                    <h5 class="checkout-box-title">NEW ADDRESS</h5>
+                    <div class="checkout-billing-adress-box">
+            <form action="" id="checkout-form">
+                        <div class="billing-address-input clearfix">
+                            <label>FIRST NAME *</label>
+                            <input type="text" name="firstname">
+                        </div>
+                        <div class="billing-address-input clearfix">
+                            <label>LAST NAME *</label>
+                            <input type="text" name="lastname">
+                        </div>
+                        <div class="billing-address-input clearfix">
+                            <label>COMPANY / HOUSE NAME *</label>
+                            <input type="text" name="housename">
+                        </div>
+                        <div class="billing-address-input clearfix">
+                            <label>ADDRESS *</label>
+                            <input type="text" placeholder="Street Address" name="addressline1">
+                            <input type="text" placeholder="Fashin, suite, unite ect (optinal)" name="addressline2">
+                        </div>
+                        <div class="billing-address-input clearfix">
+                            <label>TOWN / CITY *</label>
+                            <input type="text" name="city">
+                        </div>
+                        <div class="billing-address-input clearfix">
+                            <label>COUNTRY / STATES</label>
+                            <input type="text" name="state">
+                        </div>
+                        <div class="billing-address-input clearfix">
+                            <label>POSTCODE / ZIP *</label>
+                            <input type="text" name="pincode">
+                        </div>
+                        {{!-- <div class="billing-address-input clearfix">
+                            <label>EMAIL ADDRESS *</label>
+                            <input type="text">
+                        </div> --}}
+                        <div class="billing-address-input clearfix" style="margin-bottom:0px">
+                            <label>PHONE *</label>
+                            <input type="text" name="phone">
+                        </div>
+                        <div class="cbab-create-account">
+                            <input type="checkbox">
+                            <label>Use registered phone number</label>
+                        </div>
+                        <div class="billing-address-input clearfix">
+                            <label>ALTERNATE PHONE *</label>
+                            <input type="text" name="alternatenumber">
+                        </div><br>
+                        <div class="cbab-create-account">
+                            <input type="checkbox">
+                            <label>Save address</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 col-sm-12 col-xs-12">
+                <div class="promotional-code-box">
+                    <h5 class="checkout-box-title">COUPON CODE</h5>
+                    <div class="pcb-content">
+                        <p>Enter your coupon code if you have one</p>
+                        <div class="pcb-cuppon-input clearfix">
+                            <input type="text" placeholder="Coupon code">
+                            <button class="checkout-page-button hvr-bs">Apply</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="your-order-box">
+                    <h5 class="checkout-box-title">YOUR ORDER</h5>
+                    <div class="yob-content">
+                        <ul>
+                            <li class="clearfix">Cart Subtotal <span style="font-weight: bolder;font-size: 20px;">₹  {{totalValue}}</span></li>
+                            <li class="clearfix">Shipping and Handling <span>Free Shipping</span></li>
+                            <li class="order-total clearfix">Order Total <span>₹   {{totalValue}}</span></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="promotional-code-box">
+                    <h5 class="checkout-box-title">PAYMENT METHOD</h5>
+                    <div class="pcb-content">
+                        <p>Select your payment method</p>
+                        <div class="pcb-cuppon-input clearfix">
+                            <input type="radio" name="payment_method" id="payementChoice" value="COD">
+                            <label
+                                style="margin-left: 10px;color: #000000;font-size: 14px;font-weight: 400;">COD</label>
+                        </div>
+                        <div class="pcb-cuppon-input clearfix">
+                            <input type="radio" name="payment_method" id="payementChoice" value="online">
+                            <label style="margin-left: 10px;color: #000000;font-size: 14px;font-weight: 400;">Online Payment</label>
+
+                        </div>
+                        <div class="create-account-checkout-method">
+                            <div class="place-order">
+                                <button type="submit" class="checkout-page-button hvr-bs">Place order</button>
+                            </div>
+                        </div>
+                        <input type="hidden" value="{{user}}" name="userId">
+            </form>
+                    </div>
+                </div>
+            </div>
+
+            <div class="text-center">
+	<!-- Button HTML (to Trigger Modal) -->
+	<a href="#myModal" class="trigger-btn" data-toggle="modal">Click to Open Confirm Modal</a>
+</div>
+
+<!-- Modal HTML -->
+
+
+
 </section>
 
-<style>
+<script>
     
-dt{
-    color: black;
+$("#checkout-form").submit((e)=>{
+    
+    e.preventDefault();
+    $.ajax({
+        url : '/checkout',
+        method : 'post',  
+        data : $('#checkout-form').serialize(),
+        success : (response)=>{
+            
+           if(response.codSuccess){
+               alert('COD Success')
+               location.href = '/orderconfirmed';
+           }else{
+               alert('onile Success')
+               alert(response)
+               razorpayPayment(response)
+           }    
+        }
+    })
+})
+
+function razorpayPayment (order){
+    var options = {
+    "key": "rzp_test_6unoyhPHG9D97d", // Enter the Key ID generated from the Dashboard
+    "amount": order.amount, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+    "currency": "INR",
+    "name": "Rideofy",
+    "description": "Test Transaction",
+    "image": "https://example.com/your_logo",
+    "order_id": order.id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
+    "handler": function (response){
+        alert(response.razorpay_payment_id);
+        alert(response.razorpay_order_id);
+        alert(response.razorpay_signature)
+
+        verifyPayement(response,order)
+    },
+    "prefill": {
+        "name": "Gaurav Kumar",
+        "email": "gaurav.kumar@example.com",
+        "contact": "9999999999"
+    },
+    "notes": {
+        "address": "Razorpay Corporate Office"
+    },
+    "theme": {
+        "color": "#3399cc"
+    }
+};
+var rzp1 = new Razorpay(options);
+ rzp1.open();
 }
 
-.checkout-top {
-    margin-bottom: 23px;
+function verifyPayement(payment,order){
+    $.ajax({
+        url:'/verify-payment',
+        data : {
+            payment,
+            order
+        },
+        method : 'post', 
+        success : (response)=>{
+            if(repsonse.status){
+                location.href = '/orderconfirmed'
+            }else{
+                alert('Payement failed')
+            }
+        }
+    })
 }
+</script>
 
-.checkout-top p,
-.checkout-top p a {
-    color: #000000;
-    font-family: "Montserrat", sans-serif;
-    font-size: 16px;
-}
 
-.checkout-top p a {
-    color: #d22a28;
-}
+<style>
+    dt {
+        color: black;
+    }
 
-.checkout-box-title {
-    border-bottom: 1px solid #ecedee;
-    color: #000000;
-    font-size: 18px;
-    font-weight: 300;
-    letter-spacing: 0;
-    padding: 16px 0;
-    text-align: center;
-}
+    .checkout-top {
+        margin-bottom: 23px;
+    }
 
-.billing-address {
-    background: #fff none repeat scroll 0 0;
-    border: 1px solid #ecedee;
-}
+    .checkout-top p,
+    .checkout-top p a {
+        color: #000000;
+        font-family: "Montserrat", sans-serif;
+        font-size: 16px;
+    }
 
-.checkout-billing-adress-box {
-    padding: 21px 35px 50px 25px;
-}
+    .checkout-top p a {
+        color: #d22a28;
+    }
 
-.billing-address-input {
-    margin-bottom: 20px;
-}
+    .checkout-box-title {
+        border-bottom: 1px solid #ecedee;
+        color: #000000;
+        font-size: 18px;
+        font-weight: normal;
+        letter-spacing: 0;
+        padding: 16px 0;
+        text-align: center;
+    }
 
-.billing-address-input label {
-    color: #000000;
-    float: left;
-    font-size: 14px;
-    font-weight: 700;
-    letter-spacing: 0;
-}
+    .billing-address {
+        background: #fff none repeat scroll 0 0;
+        border: 1px solid #ecedee;
+    }
 
-.billing-address-input select,
-.billing-address-input input[type="text"] {
-    border: 0 none;
-    border-bottom: 1px solid #e5e5e5;
-    color: #000000;
-    float: right;
-    font-size: 14px;
-    font-weight: 300;
-    height: 40px;
-    padding: 0 10px;
-    width: 55%;
-}
+    .checkout-billing-adress-box {
+        padding: 21px 35px 50px 25px;
+    }
 
-.billing-address-input select option {}
+    .billing-address-input {
+        margin-bottom: 20px;
+    }
 
-.cbab-create-account {
-    margin-bottom: 19px;
-}
+    .billing-address-input label {
+        color: #000000;
+        float: left;
+        font-size: 14px;
+        font-weight: 700;
+        letter-spacing: 0;
+    }
 
-.cbab-create-account input[type="checkbox"] {}
+    .billing-address-input select,
+    .billing-address-input input[type="text"] {
+        border: 0 none;
+        border-bottom: 1px solid #e5e5e5;
+        color: #000000;
+        float: right;
+        font-size: 14px;
+        font-weight: 300;
+        height: 40px;
+        padding: 0 10px;
+        width: 55%;
+    }
 
-.cbab-create-account label {
-    color: #000000;
-    font-size: 14px;
-    font-weight: 300;
-    letter-spacing: 0;
-    line-height: 16px;
-    margin: 0;
-}
+    .billing-address-input select option {}
 
-.cbab-create-account p {
-    color: #000000;
-    line-height: 24px;
-    margin: 12px 0 0;
-}
+    .cbab-create-account {
+        margin-bottom: 19px;
+    }
 
-.cbab-account-password {
-    margin: 0 0 31px;
-}
+    .cbab-create-account input[type="checkbox"] {}
 
-.cbab-account-password label {
-    color: #000000;
-    font-size: 14px;
-    font-weight: 300;
-    letter-spacing: 0;
-    line-height: 16px;
-    margin: 0;
-}
+    .cbab-create-account label {
+        color: #000000;
+        font-size: 14px;
+        font-weight: 300;
+        letter-spacing: 0;
+        line-height: 16px;
+        margin: 0;
+    }
 
-.cbab-account-password input[type="password"] {
-    border: 0 none;
-    border-bottom: 1px solid #e5e5e5;
-    color: #000000;
-    float: right;
-    font-size: 14px;
-    font-weight: 300;
-    height: 40px;
-    padding: 0 10px;
-    width: 55%;
-}
+    .cbab-create-account p {
+        color: #000000;
+        line-height: 24px;
+        margin: 12px 0 0;
+    }
 
-.cbab-order-notes {}
+    .cbab-account-password {
+        margin: 0 0 31px;
+    }
 
-.cbab-order-notes p {
-    color: #000000;
-    font-size: 14px;
-    font-weight: 300;
-    letter-spacing: 0;
-    line-height: 16px;
-    margin: 0 0 10px;
-}
+    .cbab-account-password label {
+        color: #000000;
+        font-size: 14px;
+        font-weight: 300;
+        letter-spacing: 0;
+        line-height: 16px;
+        margin: 0;
+    }
 
-.cbab-order-notes input[type="text"] {
-    border: 0 none;
-    border-bottom: 1px solid #e5e5e5;
-    color: #000000;
-    font-size: 14px;
-    font-weight: 300;
-    height: 40px;
-    padding: 0 10px;
-    width: 100%;
-}
+    .cbab-account-password input[type="password"] {
+        border: 0 none;
+        border-bottom: 1px solid #e5e5e5;
+        color: #000000;
+        float: right;
+        font-size: 14px;
+        font-weight: 300;
+        height: 40px;
+        padding: 0 10px;
+        width: 55%;
+    }
 
-.promotional-code-box {
-    background: #fff none repeat scroll 0 0;
-    border: 1px solid #ecedee;
-    margin-bottom: 30px;
-}
+    .cbab-order-notes {}
 
-.pcb-content {
-    padding: 0 35px 25px;
-}
+    .cbab-order-notes p {
+        color: #000000;
+        font-size: 14px;
+        font-weight: 300;
+        letter-spacing: 0;
+        line-height: 16px;
+        margin: 0 0 10px;
+    }
 
-.pcb-content p {
-    color: #000000;
-    margin-bottom: 25px;
-}
+    .cbab-order-notes input[type="text"] {
+        border: 0 none;
+        border-bottom: 1px solid #e5e5e5;
+        color: #000000;
+        font-size: 14px;
+        font-weight: 300;
+        height: 40px;
+        padding: 0 10px;
+        width: 100%;
+    }
 
-.pcb-cuppon-input {}
+    .promotional-code-box {
+        background: #fff none repeat scroll 0 0;
+        border: 1px solid #ecedee;
+        margin-bottom: 30px;
+        margin-top: 30px;
+    }
 
-.pcb-cuppon-input input[type="text"] {
-    border: 0 none;
-    border-bottom: 1px solid #e5e5e5;
-    color: #000000;
-    float: left;
-    font-weight: 300;
-    height: 40px;
-    letter-spacing: 0;
-    text-align: center;
-    width: 46%;
-}
+    .pcb-content {
+        padding: 0 35px 25px;
+    }
 
-.pcb-cuppon-input button {
-    float: right;
-    width: 50%;
-}
+    .pcb-content p {
+        color: #000000;
+        margin-bottom: 25px;
+    }
 
-.checkout-page-button {
-    background: #d22a28 none repeat scroll 0 0;
-    border: 0 none;
-    border-radius: 3px;
-    color: #fff;
-    display: inline-block;
-    padding: 5px 30px;
-    text-transform: uppercase;
-}
+    .pcb-cuppon-input {}
 
-.your-order-box {
-    background: #fff none repeat scroll 0 0;
-    border: 1px solid #ecedee;
-}
+    .pcb-cuppon-input input[type="text"] {
+        border: 0 none;
+        border-bottom: 1px solid #e5e5e5;
+        color: #000000;
+        float: left;
+        font-weight: 300;
+        height: 40px;
+        letter-spacing: 0;
+        text-align: center;
+        width: 46%;
+    }
 
-.yob-content {
-    padding: 25px 25px 70px;
-}
+    .pcb-cuppon-input button {
+        float: right;
+        width: 50%;
+    }
 
-.yobc-title,
-.yobc-title span {
-    color: #232530;
-    font-family: "Montserrat", sans-serif;
-    margin-bottom: 33px;
-}
+    .checkout-page-button {
+        background: #d22a28 none repeat scroll 0 0;
+        border: 0 none;
+        border-radius: 3px;
+        color: #fff;
+        display: inline-block;
+        padding: 5px 30px;
+        text-transform: uppercase;
+    }
 
-.yobc-title span {
-    float: right;
-}
+    .your-order-box {
+        background: #fff none repeat scroll 0 0;
+        border: 1px solid #ecedee;
+        margin-bottom: 30px;
+    }
 
-.yob-content ul {
-    list-style: outside none none;
-    padding: 0;
-}
+    .yob-content {
+        padding: 25px 25px 70px;
+    }
 
-.yob-content ul li {
-    border-bottom: 1px solid #e5e5e5;
-    color: #000000;
-    font-size: 14px;
-    font-weight: 400;
-    letter-spacing: 0;
-    line-height: 30px;
-    margin: 0 0 27px;
-    padding: 0 0 1px;
-}
+    .yobc-title,
+    .yobc-title span {
+        color: #232530;
+        font-family: "Montserrat", sans-serif;
+        margin-bottom: 33px;
+    }
 
-.yob-content ul li.order-total {
-    text-transform: uppercase;
-}
+    .yobc-title span {
+        float: right;
+    }
+ 
+    .yob-content ul {
+        list-style: outside none none;
+        padding: 0;
+    }
 
-.yob-content ul li span {
-    color: #d22a28;
-    float: right;
-}
+    .yob-content ul li {
+        border-bottom: 1px solid #e5e5e5;
+        color: #000000;
+        font-size: 14px;
+        font-weight: 400;
+        letter-spacing: 0;
+        line-height: 30px;
+        margin: 0 0 27px;
+        padding: 0 0 1px;
+    }
 
-.create-account-checkout-method {}
+    .yob-content ul li.order-total {
+        text-transform: uppercase;
+    }
 
-.select-payment-method {
-    margin-bottom: 3px;
-}
+    .yob-content ul li span {
+        color: #d22a28;
+        float: right;
+    }
 
-.select-payment-method input[type="checkbox"] {}
+    .create-account-checkout-method {}
 
-.select-payment-method label {
-    color: #000000;
-    font-size: 14px;
-    font-weight: 300;
-    letter-spacing: 0;
-    margin-left: 10px;
-}
+    .select-payment-method {
+        margin-bottom: 3px;
+    }
 
-.create-account-text {
-    border: 1px solid #e5e5e5;
-    margin: 0 0 20px;
-    padding: 21px 20px;
-}
+    .select-payment-method input[type="checkbox"] {}
 
-.create-account-text p {
-    color: #000000;
-    font-weight: 300;
-    line-height: 24px;
-}
+    .select-payment-method label {
+        color: #000000;
+        font-size: 14px;
+        font-weight: 300;
+        letter-spacing: 0;
+        margin-left: 10px;
+    }
 
-.place-order {
-    margin: 58px 0 0;
-    text-align: center;
-}
+    .create-account-text {
+        border: 1px solid #e5e5e5;
+        margin: 0 0 20px;
+        padding: 21px 20px;
+    }
 
-.place-order button {}
+    .create-account-text p {
+        color: #000000;
+        font-weight: 300;
+        line-height: 24px;
+    }
+
+    .place-order {
+        margin: 15px 0 0;
+        text-align: center;
+    }
 
 </style>

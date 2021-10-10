@@ -73,9 +73,8 @@ Handlebars.registerHelper('hello', function (context, options,price) {
   return data
 });
 Handlebars.registerHelper('checkItemExistInCart', function (items, proId,price) {
-  console.log(items,'asf');
   for (key in items) {
-    console.log(items[key],'asdfgh');
+
     if (proId.toString() === items[key].item.toString()){
       var inp = true
       break;
@@ -90,6 +89,18 @@ Handlebars.registerHelper('checkItemExistInCart', function (items, proId,price) 
   }
   return data
 });
+
+// Handlebars.registerHelper('imageDisplay' ,(index)=>{
+//   console.log(index);
+//   tag = `<img src="/uploads/{{this.orderObj.products.${index}.item}}__1.jpg" alt="" height="280px">`
+//   return tag;
+  
+  
+// })
+// Handlebars.registerHelper('imageDisplay', (index) => {
+//   console.log(index);
+//   // tag = `<img src="/uploads/{{this.orderObj.products.${index}.item}}__1.jpg" alt="" height="280px">`
+// })
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

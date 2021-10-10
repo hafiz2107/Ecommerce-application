@@ -113,36 +113,37 @@
                 <div class="cart-box">
                   <div class="cart-overview">
                     <ul class="list-unstyled">
-                      {{#if cartItems}}
-                       {{#each cartItems}}
+                      {{#if Cartproducts}}
+                       
+                       {{#each Cartproducts}}
                       <li>
-                        <img class="img-responsive" src="{{this._id}}__1.jpg" alt="product" />
+                        <img class="img-responsive" src="/uploads/{{this.item}}__1.jpg" alt="product" />
                         <div class="product-meta">
-                          <h5 class="product-title">{{this.productname}}</h5>
-                          <p class="product-price">{{this.productprice}}</p>
+                          <h5 class="product-title">{{this.product.productname}}</h5>
+                          <p class="product-price" style="color: brown;">₹ {{this.price}}</p>
                           {{!-- <p class="product-quantity">Quantity: 2</p> --}}
                         </div>
-                        <a class="cancel" href="#">cancel</a>
+                        <a class="cancel" onclick="deleteCartItem('{{this._id}}','{{this.product._id}}')">cancel</a>
                       </li>
                       {{/each}}
 
                       {{else}}
                       <h6 style="color: red;">The cart is empty</h6>
-                      {{/if}}
+                    {{/if}}
                     </ul>
                   </div>
                   <div class="cart-total">
                     <div class="total-desc">
-                      <h5>CART SUBTOTAL :</h5>
+                      <h5></h5>
                     </div>
                     <div class="total-price">
-                      <h5>$316.00</h5>
+                      <h5>{{products.price}}</h5>
                     </div>
                   </div>
                   <div class="clearfix"></div>
                   <div class="cart-control">
                      <a class="btn btn-primary btn-block" href="/cart">view cart</a>
-                    <a class="btn btn-secondary btn-block" href="#">check out</a>
+                    <a class="btn btn-secondary btn-block" href="/checkout">check out</a>
                   </div>
                 </div>
               </div>

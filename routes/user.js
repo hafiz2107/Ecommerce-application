@@ -23,8 +23,10 @@ router.get('/', async function (req, res, next) {
     // Calling function to get the cart count
     cartCount = await userHelpers.getCartCount(req.session.userDetails)
     cartProductsTodisplay = await userHelpers.getCartProducts(req.session.userDetails)
+    // Getting Cart products to display in modal of cart 
+    let Cartproducts = await userHelpers.getCartProducts(req.session.userDetails)
     userHelpers.getAllProducts().then((products) => {
-      res.render('user/user-home', { title: 'Home', user: true, currentUser, typeOfPersonUser: true, products, logStatus, cartCount,items: cartProductsTodisplay});
+      res.render('user/user-home', { title: 'Home', user: true, Cartproducts, currentUser, typeOfPersonUser: true, products, logStatus, cartCount,items: cartProductsTodisplay});
     })
 
   } else if (req.session.LoggedInThruOtp) {
@@ -55,7 +57,6 @@ router.get('/login', (req, res) => {
     res.redirect('/')
   }
   else {
-    console.log("1.1 Login Page loaded");
     loggedInErr = req.session.loggedInErr
     emailError = req.session.emailError;
     passError = req.session.passError;
@@ -75,7 +76,6 @@ router.get('/login', (req, res) => {
 
 // Posting Logged in user's data
 router.post('/login', (req, res) => {
-  console.log("1.2 Posting logged in users data");
   userHelpers.doLogin(req.body).then((response) => {
     
     if(response.user.block == 'false'){
@@ -87,11 +87,9 @@ router.post('/login', (req, res) => {
     req.session.block = response.user.block
 
     if(req.session.block){
-      console.log("At if ",req.session.block);
       res.redirect('/login')
     }
    else if (response.status) {
-     console.log("At else",req.session.block);
       req.session.unblock = true
       req.session.block = response.user.block
       req.session.userDetails = response.user._id;
@@ -102,13 +100,11 @@ router.post('/login', (req, res) => {
     } else if (response.passError) {
       req.session.loggedInErr = true
       req.session.passError = response.passError
-      console.log("At else in the login post");
       res.redirect('/login');
     } else if (response.emailError) {
       req.session.loggedInErr = true
       req.session.emailError = response.emailError
 
-      console.log("At else in the login post");
       res.redirect('/login');
     }
   })
@@ -121,7 +117,6 @@ router.get('/signup', (req, res) => {
   }
   else {
     userNameAlreadyExist = req.session.userNameAlreadyExist
-    console.log("1.2 Getting signup page");
     res.render('user/user-signup', { title: 'Signup', loginAndSignup: true, userNameAlreadyExist, typeOfPersonUser: true })
     userNameAlreadyExist = false;
     req.session.userNameAlreadyExist = false;
@@ -131,10 +126,7 @@ router.get('/signup', (req, res) => {
 
 // posting Signed up data
 router.post('/signup', (req, res) => {
-  console.log("1.3 Posting Signedup user data");
-  console.log(req.body);
   userHelpers.userSignup(req.body).then((response) => {
-    console.log("the response is : ", response);
     if (response) {
       var mobile = response.countryCode+response.mobile;
       mobile = parseInt(mobile);
@@ -148,7 +140,6 @@ router.post('/signup', (req, res) => {
         }).catch((err) => {
           // If there is any error THe actch block will catch it
           res.redirect('/404')
-          console.log("The error in sending message : ", err);
         })
       
 
@@ -179,7 +170,6 @@ router.post('/mobileConfirmation',(req,res)=>{
       }
     }).catch((err) => {
       res.redirect('/404')
-      console.log(err);
     })
 })
 
@@ -204,7 +194,6 @@ router.post('/signinotp',(req,res)=>{
         }).catch((err) => {
           // If there is any error THe actch block will catch it
           res.redirect('/404')
-          console.log("The error in sending message : ", err);
         })
     } else {
       // Mobile number entered is wrong
@@ -227,7 +216,6 @@ router.post('/signinconfirmation',(req,res)=>{
         
         userHelpers.findUser(phoneNo).then((user)=>{
           if(user){
-            console.log("##################################################### ##:  ",user);
             req.session.unblock = true
             req.session.block = user.block
             req.session.userDetails = user._id;
@@ -258,7 +246,6 @@ router.post('/signinconfirmation',(req,res)=>{
 
 // Getting Forgot password PAge
 router.get('/forgotpassword', (req, res) => {
-  console.log(req.body)
   res.render('user/user-forgotpassword', { title: 'Forgot Password', loginAndSignup: true, typeOfPersonUser: true })
 })
 
@@ -303,7 +290,6 @@ router.post('/otpverify', (req, res) => {
     .then((verification_check) => {
       // If the OTP is wright It will give status as Approved else it will give status as Pending
       if (verification_check.status == 'approved') {
-        console.log("RESET : ", userToresetPass)
         res.render('user/user-resetpassword', { title: 'Verify OTP', loginAndSignup: true, typeOfPersonUser: true })
       } else {
         mobile = req.body.phone
@@ -318,8 +304,6 @@ router.post('/otpverify', (req, res) => {
 
 // Posting reseting password that user entered
 router.post('/resetpassword', (req, res) => {
-  console.log("user ro : ", userToresetPass);
-  console.log("Patch : ", req.body);
 
   userHelpers.updatePassword(req.body, userToresetPass).then((result) => {
     if (result) {
@@ -382,7 +366,6 @@ router.get('/cart', async (req, res) => {
 router.get('/add-to-cart/:id/:proPrice', (req, res) => {
   console.log("apoi call", req.params.proPrice)
   user = req.session.userDetails
-  // console.log("IDDD : ",user);
   userHelpers.addToCart(req.params.id, req.session.userDetails, req.params.proPrice).then(() => {
     res.json({ status: true })
   })
@@ -403,14 +386,75 @@ router.post('/delete-cart-product' , (req,res)=>{
   })
 })
 
+// Getting the checkout page
 router.get('/checkout',async(req,res)=>{
   if(req.session.LoggedIn){
     let products = await userHelpers.getCartProducts(req.session.userDetails)
     let user = req.session.userDetails
-    res.render('user/user-checkout', { title: 'Home', user: true, currentUser, typeOfPersonUser: true, cartCount, logStatus, products, totalValue })
+    res.render('user/user-checkout', { title: 'Checkout', user: true, currentUser, typeOfPersonUser: true,  logStatus, products, totalValue,user})
   }else{
     res.redirect('/login')
   }
+})
+
+// Posting Checkout form
+router.post('/checkout',async(req,res)=>{
+  
+  if (req.session.LoggedIn) {    
+  let products = await userHelpers.getCartProductList(req.body.userId)
+  let totalPrice = await userHelpers.getTotalAmount(req.session.userDetails)
+  userHelpers.placeOrder(req.body,products,totalPrice).then((orderId)=>{
+
+    console.log("req.body : ", req.body.payment_method);
+    // Checking Whether the payement method is COD or online
+    if (req.body.payment_method == 'COD'){
+      res.json({codSuccess: true})
+    }else{
+      console.log("@ Payement method online");
+      userHelpers.generateRazorpay(orderId, totalPrice).then((response)=>{
+        console.log("@Post checkout resopnse : ", response);
+        res.json(response)
+      })  
+    }
+    
+  })
+}
+else{
+  res.redirect('/login')
+} 
+}) 
+
+// Getting order confirmed page
+router.get('/orderconfirmed' , (req,res)=>{
+  if(req.session.LoggedIn){
+    res.render('user/user-orderconfirmed', { title: 'Order Confirmed', currentUser, typeOfPersonUser: true , loginAndSignup:true})
+  }else{
+    res.redirect('/login')
+  }
+})
+
+router.get('/vieworders',async(req,res)=>{
+  if(req.session.LoggedIn){
+      userHelpers.getUserOrders(req.session.userDetails).then(async(orders)=>{ 
+        singleProducts = await userHelpers.getSingleOrderedProducts(orders[0]._id)
+        var orders = orders[0]
+        res.render('user/user-vieworders', { title: 'View Orders', user: true, currentUser,orders , typeOfPersonUser: true, logStatus, cartCount, singleProducts  })
+    })
+       
+  }
+})
+
+router.post('/verify-payment',(req,res)=>{
+  console.log("@Verify payement : ",req.body);
+  userHelpers.verifyPayment(req.body).then(()=>{
+    userHelpers.changePaymentStatus(req.body['order[receipt]']).then(()=>{
+      console.log("Payment success ");
+      res.json({status : true})
+    })
+  }).catch((err)=>{
+    console.log("The error in payment  : ",err);
+    res.json({status : false})
+  })
 })
 
 // Logout

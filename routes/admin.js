@@ -57,7 +57,6 @@ router.get('/add-product',(req,res)=>{
 router.post('/add-product',(req,res)=>{
 // Calling function for uploading add product form
   adminHelper.addProduct(req.body).then((id)=>{
-    console.log("The id is : ",id)
 
     let image1 = req.files.productimage1
     let image2 = req.files.productimage2
@@ -84,18 +83,15 @@ router.get('/remove-product/:id', (req, res) => {
   adminHelper.deleteproduct(productId).then((result) => {
     res.redirect('/admin/view-product')
   })
-  console.log(productId);
 })
 
 // Getting edit product
   router.get('/edit-product/:id',async(req,res)=>{
     let productDetails = await adminHelper. getProductToEdit(req.params.id)
-      console.log("Product Details : ", productDetails);
       res.render('admin/admin-editproduct', { productDetails,typeOfPersonAdmin: true, adminHeader: true, adminNav: true })
   })
 // TO get the product to edit when clicked on the on the edit button 
 router.post('/edit-product/:id',async(req,res)=>{
-  console.log("AT EDit product POST");
   // var proId = req.params.id
    adminHelper.updateProduct(req.params.id,req.body).then(()=>{
      res.redirect('/admin/view-product')
@@ -136,7 +132,6 @@ router.get('/unblockuser/:id',(req,res)=>{
   
   adminHelper.unBlockUser(id).then((response) => {
     if (response) {
-      console.log('YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY',response);
       res.redirect('/admin/usermanagement')
     }
   })
