@@ -136,4 +136,26 @@ router.get('/unblockuser/:id',(req,res)=>{
     }
   })
 })
+
+router.get('/ordermanagement',(req,res)=>{
+
+  adminHelper.getAllOrders().then((orders)=>{
+    res.render('admin/admin-ordermanagement', { typeOfPersonAdmin: true, adminHeader: true, adminNav: true,orders})
+  })
+})
+
+router.post('/updateorderstatus',(req,res)=>{
+  adminHelper.updateOrderStatus(req.body.orderId,req.body.userId,req.body.status).then((response)=>{
+    console.log('@update status Response : ',response);
+    res.json(response)
+  })
+})
+
+router.get('/viewoderlist/:orderId/:userId',(req,res)=>{
+  console.log("THe order adn user ID : ",req.params.orderId,req.params.userId)
+  adminHelper.getUserCartOrders(req.params.orderId,req.params.userId).then((cartOrders)=>{
+    
+    res.render('admin/admin-veiwcartorders', { typeOfPersonAdmin: true, adminHeader: true, adminNav: true, cartOrders})
+  })
+})
 module.exports = router;  

@@ -39,7 +39,7 @@
                 <div class="billing-address">
                     <h5 class="checkout-box-title">NEW ADDRESS</h5>
                     <div class="checkout-billing-adress-box">
-            <form action="" id="checkout-form">
+            <form action="" id="checkoutbuynow-form">
                         <div class="billing-address-input clearfix">
                             <label>FIRST NAME *</label>
                             <input type="text" name="firstname">
@@ -107,9 +107,9 @@
                     <h5 class="checkout-box-title">YOUR ORDER</h5>
                     <div class="yob-content">
                         <ul>
-                            <li class="clearfix">Cart Subtotal <span style="font-weight: bolder;font-size: 20px;">₹  {{totalValue}}</span></li>
+                            <li class="clearfix">Amount <span style="font-weight: bolder;font-size: 20px;">₹  {{productToBuy.productprice}}</span></li>
                             <li class="clearfix">Shipping and Handling <span>Free Shipping</span></li>
-                            <li class="order-total clearfix">Order Total <span>₹   {{totalValue}}</span></li>
+                            <li class="order-total clearfix">Order Total <span>₹   {{productToBuy.productprice}}</span></li>
                         </ul>
                     </div>
                 </div>
@@ -133,16 +133,14 @@
                                 <button type="submit" class="checkout-page-button hvr-bs">Place order</button>
                             </div>
                         </div>
-                        <input type="hidden" value="{{user}}" name="userId">
+                        <input type="hidden" value="{{productToBuy._id}}" name="proId">
+                        <input type="hidden" value="{{userId}}" name="userId">
             </form>
                     </div>
                 </div>
             </div>
 
-            <div class="text-center">
-	<!-- Button HTML (to Trigger Modal) -->
-	<a href="#myModal" class="trigger-btn" data-toggle="modal">Click to Open Confirm Modal</a>
-</div>
+            
 
 <!-- Modal HTML -->
 
@@ -152,13 +150,13 @@
 
 <script>
     
-$("#checkout-form").submit((e)=>{
+$("#checkoutbuynow-form").submit((e)=>{
     
     e.preventDefault();
     $.ajax({
-        url : '/checkout',
+        url : '/checkoutbuynow',
         method : 'post',  
-        data : $('#checkout-form').serialize(),
+        data : $('#checkoutbuynow-form').serialize(),
         success : (response)=>{
             
            if(response.codSuccess){
@@ -183,6 +181,10 @@ function razorpayPayment (order){
     "image": "https://example.com/your_logo",
     "order_id": order.id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
     "handler": function (response){
+        alert(response.razorpay_payment_id);
+        alert(response.razorpay_order_id);
+        alert(response.razorpay_signature)
+
         verifyPayement(response,order)
     },
     "prefill": {
@@ -194,7 +196,7 @@ function razorpayPayment (order){
         "address": "Razorpay Corporate Office"
     },
     "theme": {
-        "color": "#ff3849"
+        "color": "#3399cc"
     }
 };
 var rzp1 = new Razorpay(options);
@@ -211,6 +213,7 @@ function verifyPayement(payment,order){
         method : 'post', 
         success : (response)=>{
             if(response.status){
+                alert('redirecting to order success')
                 location.href = '/orderconfirmed'
             }else{
                 alert('Payement failed')

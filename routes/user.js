@@ -26,7 +26,7 @@ router.get('/', async function (req, res, next) {
     // Getting Cart products to display in modal of cart 
     let Cartproducts = await userHelpers.getCartProducts(req.session.userDetails)
     userHelpers.getAllProducts().then((products) => {
-      res.render('user/user-home', { title: 'Home', user: true, Cartproducts, currentUser, typeOfPersonUser: true, products, logStatus, cartCount,items: cartProductsTodisplay});
+        res.render('user/user-home', { title: 'Home', user: true, Cartproducts, currentUser, typeOfPersonUser: true, products, logStatus, cartCount,items: cartProductsTodisplay});
     })
 
   } else if (req.session.LoggedInThruOtp) {
@@ -77,26 +77,31 @@ router.get('/login', (req, res) => {
 // Posting Logged in user's data
 router.post('/login', (req, res) => {
   userHelpers.doLogin(req.body).then((response) => {
+    console.log("@login The response is : ",response);
     
-    if(response.user.block == 'false'){
-      response.user.block = false;
-    }else{
-      response.user.block = true;
-    }
+   if (response.status) {
     
-    req.session.block = response.user.block
+    // Checking if a user is blocked
+    if (response.user.block == 'false') {
+       response.user.block = false;
+     } else {
+       response.user.block = true;
+     }
+    //  Assigning block to the session
+      req.session.block = response.user.block
 
-    if(req.session.block){
-      res.redirect('/login')
-    }
-   else if (response.status) {
+      // Redirecting To login 
+     if (req.session.block) {
+       res.redirect('/login')
+     }else{
       req.session.unblock = true
       req.session.block = response.user.block
       req.session.userDetails = response.user._id;
       req.session.user = req.body;
       var userSession = req.session.user;
       req.session.LoggedIn = true
-        res.redirect('/')
+       res.redirect('/')
+     }
     } else if (response.passError) {
       req.session.loggedInErr = true
       req.session.passError = response.passError
@@ -127,6 +132,7 @@ router.get('/signup', (req, res) => {
 // posting Signed up data
 router.post('/signup', (req, res) => {
   userHelpers.userSignup(req.body).then((response) => {
+    console.log("@response signup : ",response);
     if (response) {
       var mobile = response.countryCode+response.mobile;
       mobile = parseInt(mobile);
@@ -138,6 +144,7 @@ router.post('/signup', (req, res) => {
           res.render('user/user-mobileconfirmation', { title: 'Mobile Confirmation', loginAndSignup: true, typeOfPersonUser: true, mobile })
 
         }).catch((err) => {
+          console.log(err);
           // If there is any error THe actch block will catch it
           res.redirect('/404')
         })
@@ -397,6 +404,46 @@ router.get('/checkout',async(req,res)=>{
   }
 })
 
+// Getting Checkout for buy now
+router.get('/checkoutbuynow/:id',async(req,res)=>{
+  if(req.session.LoggedIn){
+    let userId = req.session.userDetails
+    let product = userHelpers.getProductForBuyNow(req.params.id).then((productToBuy)=>{
+      console.log("`The product to buy  : ", productToBuy);
+      res.render('user/user-buynowcheckout', { title: 'Checkout', user: true, userId, currentUser, typeOfPersonUser: true, logStatus, productToBuy})
+    })
+  }else{
+    res.redirect('/login')
+  }
+})
+
+// Posting Checkout form fro buy now
+router.post('/checkoutbuynow', async (req, res) => {
+
+  if (req.session.LoggedIn) {
+    let product = await userHelpers.getProductForBuyNow(req.body.proId)
+   
+    
+    userHelpers.placeOrder(req.body, product, product.productprice).then((orderId) => {
+
+     
+      // Checking Whether the payement method is COD or online
+      if (req.body.payment_method == 'COD') {
+        userHelpers.deleteCartProductsAfterOrder(req.body)
+        res.json({ codSuccess: true })
+      } else {
+        userHelpers.generateRazorpay(orderId, product.productprice).then((response) => {
+          res.json(response)
+        })
+      }
+
+    })
+  }
+  else {
+    res.redirect('/login')
+  }
+})
+
 // Posting Checkout form
 router.post('/checkout',async(req,res)=>{
   
@@ -408,6 +455,7 @@ router.post('/checkout',async(req,res)=>{
     console.log("req.body : ", req.body.payment_method);
     // Checking Whether the payement method is COD or online
     if (req.body.payment_method == 'COD'){
+      userHelpers.deleteCartProductsAfterOrder(req.body)
       res.json({codSuccess: true})
     }else{
       console.log("@ Payement method online");
@@ -433,17 +481,21 @@ router.get('/orderconfirmed' , (req,res)=>{
   }
 })
 
+
+// Function to view the orders made by the user at view orders page
 router.get('/vieworders',async(req,res)=>{
   if(req.session.LoggedIn){
       userHelpers.getUserOrders(req.session.userDetails).then(async(orders)=>{ 
         singleProducts = await userHelpers.getSingleOrderedProducts(orders[0]._id)
         var orders = orders[0]
+        req.session.deleteCartProducts = true
         res.render('user/user-vieworders', { title: 'View Orders', user: true, currentUser,orders , typeOfPersonUser: true, logStatus, cartCount, singleProducts  })
     })
        
   }
 })
 
+// Funtion to verify the payement done
 router.post('/verify-payment',(req,res)=>{
   console.log("@Verify payement : ",req.body);
   userHelpers.verifyPayment(req.body).then(()=>{
@@ -455,6 +507,27 @@ router.post('/verify-payment',(req,res)=>{
     console.log("The error in payment  : ",err);
     res.json({status : false})
   })
+})
+
+router.get('/userprofile',async(req,res)=>{
+  if(req.session.LoggedIn){
+    userHelpers.getUser(req.session.userDetails).then((user)=>{
+      res.render('user/user-userprofile', { title: 'View Orders', user: true, currentUser, typeOfPersonUser: true, cartCount,user})
+  })
+  }else{
+    res.redirect('/login')
+  }
+})
+
+router.post('/edituserprofile/:id',(req,res)=>{
+  var id = req.params.id
+  userHelpers.editUserProfile(id,req.body).then((response)=>{
+    res.redirect('/userprofile')
+  })
+})
+
+router.post('/updateorderstatus',(req,res)=>{
+  console.log('Order updated : ',req.body)
 })
 
 // Logout

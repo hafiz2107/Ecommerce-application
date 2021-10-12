@@ -1,20 +1,19 @@
 <section class="ftco-section bg-light">
+    <center>
     <div class="container">
         <div class="row justify-content-center pb-5 mb-3">
-            <div class="col-md-7 heading-section ftco-animate fadeInUp ftco-animated">
-                <h2 style="color: red;">Your Orders : </h2><hr>
-            </div>
+
         </div>
         <div class="row">
             {{#each singleProducts}}
             <div class="col-md-4 ftco-animate fadeInUp ftco-animated">
                 <div class="block-7">
                     <div class="img">
-                       <img src="/uploads/{{this.item}}__1.jpg" alt="" height="280px">
+                       <img src="/uploads/{{this.item}}__1.jpg" alt="" height="280px" style="width: 100%;">
                     </div>
                     
                     <div class="text-center p-4">
-                        <span class="price"><sup>₹</sup> <span class="number">{{this.totalprice}}</span>   
+                        <span class="price" style="margin-top: 20px;"><sup>₹</sup> <span class="number" style="color:#bd0000;">{{this.totalprice}}</span>   
                         <ul class="pricing-text mb-5">
                             
                             <li>Product Name : {{this.product.productname}}</li>
@@ -22,14 +21,20 @@
                             <li>Address : {{../orders.delivery.address}}</li>
                             <li>Mobile : {{../orders.delivery.mobile}}</li>
                         </ul>
-                        <a href="#" class="btn btn-primary d-block px-2 py-3">View Product</a>
                     </div>
                    
                 </div>
             </div>
              {{/each}}
+             
         </div>
+        
     </div>
+    <div style="justify-content: center;">
+        <a href="/" class="btn btn-primary">Continue Shopping</a>
+
+    </div>
+    </center>
 </section>
 
 <style>
@@ -125,3 +130,5 @@
     box-shadow: 0px 24px 48px -13px rgba(0, 0, 0, 0.11);
 }
 </style>
+
+

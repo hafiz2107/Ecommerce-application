@@ -84,14 +84,16 @@ module.exports = {
             var mobile = data.mobileno
             var country = data.countryCode
             var user = data.user
-            var user = await db.get().collection(collection.userDatabase).findOne({ mobile: mobile }, { countryCode: country })
+            var user = await db.get().collection(collection.userDatabase).findOne({$and:[{ mobile: mobile },{ countryCode: country}]})
             if (user) {
                 resolve(user)
             } else {
                 resolve(false)
             }
         })
-    }, findUser : (mobile)=>{
+    }, 
+    // To find th user of a specified mobile number
+    findUser : (mobile)=>{
         return new Promise(async(resolve,reject)=>{
             var user = await db.get().collection(collection.userDatabase).findOne({ mobile: mobile })
             if(user){
@@ -101,6 +103,7 @@ module.exports = {
             }
         })
     },
+
     // TO update the password When clicking  the forgotpassword
     updatePassword: (body, user) => {
         return new Promise(async (resolve, reject) => {
@@ -113,6 +116,8 @@ module.exports = {
             }
         })
     },
+
+    // function to add the products to cart whenn add to cart is clicked
     addToCart: (proId, userId ,proPrice) => {
 
         let proObj = {
@@ -150,6 +155,8 @@ module.exports = {
             }
         })
     },
+
+    // Function to get the the products in the cart when cart is opened
     getCartProducts: (userId) => {
         return new Promise(async (resolve, reject) => {
 
@@ -197,6 +204,8 @@ module.exports = {
 
         })
     },
+
+// function to get  the cart count
     getCartCount: (userId) => {
         return new Promise(async (resolve, reject) => {
             let count = 0
@@ -208,6 +217,7 @@ module.exports = {
         })
     },
 
+    // Function to change the quantity of the products in the cart by 1 or -1
     changeProductQuantity: (details) => {
         
         details.count = parseInt(details.count)
@@ -224,15 +234,6 @@ module.exports = {
                 ).then((response) => {
                     resolve({ removeProduct: true })
                 })
-            // }else if(details.count == -1){
-            //     db.get().collection(collection.cartItems).updateOne({ _id: objectId(details.cart), 'products.item': objectId(details.product_id) },
-            //         {
-            //             $inc: { 'products.$.quantity': details.count, 'products.$.totalprice': details.price*details.count }
-            //         }
-            //     ).then((response) => {
-            //         resolve({ status : true })
-            //     })
-            // } 
             }else {
                 db.get().collection(collection.cartItems).updateOne({ _id: objectId(details.cart), 'products.item': objectId(details.product_id) },
                     {
@@ -244,6 +245,8 @@ module.exports = {
             }
         })
     },
+
+    // Function to delete the product from the cart
     deleteProduct : (details)=>{
         return new Promise((resolve,reject)=>{
             db.get().collection(collection.cartItems).updateOne({ _id: objectId(details.cart)},
@@ -256,6 +259,7 @@ module.exports = {
         })
     },
     
+    // Function to get the total amount of the cart
         getTotalAmount : (userId)=>{
         return new Promise(async (resolve, reject) => {
             // Doing aggregation
@@ -305,6 +309,8 @@ module.exports = {
 
         })
     },
+
+    // Function to place the order 
     placeOrder : (orderDetails,products,totalAmount)=>{
         return new Promise((resolve,reject)=>{
             let status = orderDetails.payment_method == 'COD'?'placed':'pending';
@@ -321,31 +327,41 @@ module.exports = {
                     alternatenumber : orderDetails.alternatenumber,
                 },
                 
-                payment_method : orderDetails.payment_method,
                 products : products,
                 totalAmount : totalAmount,
                 orderDate: new Date().toISOString().slice(0, 10),
+                payment_method : orderDetails.payment_method,
                 status : status
             }
             db.get().collection(collection.orders).insertOne(orderObj).then((repsonse)=>{
                 resolve(repsonse.insertedId)
-                db.get().collection(collection.cartItems).deleteOne({user : objectId(userId)})
             })
         })
     },
+    // Function to delte the cart products after making order
+    deleteCartProductsAfterOrder : (details)=>{
+        db.get().collection(collection.cartItems).deleteOne({ user: objectId(details.userId) })
+    },
+
+    // function to get cart products to display in view orders page
     getCartProductList : (userId) =>{
         
         return new Promise(async(resolve,reject)=>{
             let cart = await db.get().collection(collection.cartItems).findOne({user : objectId(userId)})
             resolve(cart.products)  
         })
-    }, getUserOrders : (user)=>{
+
+    },
+    // Function to user who made the order
+    getUserOrders : (user)=>{
            return new Promise(async(resolve,reject)=>{
                orders = await db.get().collection(collection.orders).find({userId : objectId(user)}).toArray()
                resolve(orders)
            })
        
-    }, getSingleOrderedProducts : (orderId)=>{
+    }, 
+    // Function to get the single products that are ordered by the user
+    getSingleOrderedProducts : (orderId)=>{
         
         return new Promise(async (resolve, reject) => {
             // Doing aggregation
@@ -389,6 +405,8 @@ module.exports = {
 
         })
     },
+
+    // Function to generate the razor pay
     generateRazorpay : (orderId,totalPrice)=>{
         return new Promise((resolve,reject)=>{
             var options = {
@@ -403,6 +421,8 @@ module.exports = {
             });
         })
     },
+
+    // Function to check the payement made is correct
     verifyPayment : (details)=>{
         return new Promise((resolve,reject)=>{
             let crypto = require("crypto")
@@ -416,9 +436,11 @@ module.exports = {
             }
         })
     },
+
+    // To change the payement status of the products that are ordered to placed
     changePaymentStatus : (orderId)=>{
         return new Promise((resolve,reject)=>{
-            db.get().collection(collection.order).updateOne(
+            db.get().collection(collection.orders).updateOne(
                 {
                     _id : objectId(orderId)
                 },{
@@ -429,6 +451,41 @@ module.exports = {
                     }
             ).then(()=>{
                 resolve();
+            })
+        })
+    },
+    // Getting a product for buy now
+    getProductForBuyNow : (proId)=>{
+        return new Promise(async(resolve,reject)=>{
+            var product = await db.get().collection(collection.newproducts).findOne({_id : objectId(proId)})
+            resolve(product)
+        })
+    },
+    getUser : (userId)=>{
+        return new Promise(async(resolve,reject)=>{
+            var user = await db.get().collection(collection.userDatabase).findOne({_id : objectId(userId)})
+            resolve(user);
+        })
+    },
+    editUserProfile : (userId,details)=>{
+        return new Promise(async(resolve,reject)=>{
+
+            await db.get().collection(collection.userDatabase).updateOne({_id : objectId(userId)},
+            {$set:
+                {
+                    firstname : details.firstname , 
+                    lastname : details.lastname,
+                    email : details.email,
+                    mobile : details.mobile,
+                    second_mobile : details.secondphone,
+                    address1 : details.address1,
+                    address2 : details.address2,
+                    country : details.country,
+                    state : details.state,
+                    pincode : details.pincode,
+                }}).then((response)=>{
+                    console.log("@edit user : ",response);
+                resolve(response);
             })
         })
     }

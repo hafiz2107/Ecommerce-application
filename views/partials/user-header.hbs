@@ -183,8 +183,8 @@
                 <button class="dropbtn"><i class="fa fa-user"></i></button><span class="title">Profile</span>
                         <div class="dropdown-content">
                           {{#if currentUser}}
-                            <a href="#" class="text-center">{{currentUser.username}}</a>
-                            <a href="#" class="text-center">Your Profile</a>
+                            <a href="/userprofile" class="text-center">{{currentUser.username}}</a>
+                            <a href="/userprofile" class="text-center">Your Profile</a>
                             <a href="/logout" class="text-center">Logout</a>
                             {{else}}
                             <a href="/login" class="text-center">Login</a>

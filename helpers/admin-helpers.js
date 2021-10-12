@@ -62,5 +62,50 @@ module.exports = {
             let unBlockuser = await db.get().collection(collection.userDatabase).update({_id: objectId(userId)},{$set:{block:'false'}})
             resolve(unBlockuser)
         })
+    },
+    getAllOrders : ()=>{
+        return new Promise(async(resolve,reject)=>{
+            var orders = await db.get().collection(collection.orders).find().toArray()
+            resolve(orders)
+        })
+    },
+    updateOrderStatus : (orderId,userId,orderStatus)=>{
+        return new Promise(async(resolve,reject)=>{
+            db.get().collection(collection.orders).updateOne({_id: objectId(orderId)},{$set:{status:orderStatus}}).then((response)=>{
+                resolve(response);
+            })
+        })
+    },
+    getUserCartOrders : (orderId,userId)=>{
+        return new Promise(async(resolve,reject)=>{
+            var cartOrders = await db.get().collection(collection.orders).aggregate([
+                {
+                    $match:{_id:objectId(orderId)}
+                },
+                {
+                    $unwind:'$products'
+                },
+                {
+                    $unwind:'$delivery'
+                },
+                {
+                    $project: {
+                        proId: '$products.item',
+                        userId : '$userId',
+                        proName: '$products.productname',
+                        proPrice: '$products.price',
+                        status: '$status',
+                        date: '$orderDate',
+                        total: '$totalAmount',
+                        userName : '$delivery.firstname',
+                        destination : '$delivery.pincode',
+                        payement: '$payment_method',
+                    }
+                }
+            ]).toArray()
+            console.log('@Get cart products : ',cartOrders)
+            resolve(cartOrders)
+        })    
+       
     }
 }

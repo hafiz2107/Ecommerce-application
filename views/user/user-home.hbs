@@ -84,7 +84,7 @@
           <input type="text" hidden class="product-id" value="{{this._id}}">
           <div class="product-hover " style="cursor: pointer;">
             <div class="product-action">
-              <a class="btn btn-primary payment">Item Details</a>
+              <a class="btn btn-primary payment">Buy Now</a>
 
           {{#gte this.productquantity '1'}}
 
@@ -130,7 +130,7 @@
 
     for (var i = 0; i < payment.length; i++) {
       if (event.target === payment[i]) {
-        location.href = "/buynow" + product_id[i].value
+        location.href = '/checkoutbuynow/' + product_id[i].value
         break;
       } else if (event.target === addToCart[i]) {
         break;
@@ -143,6 +143,7 @@
 
   }
 </script>
+{{!-- End --}}
 
 <section id="clients" class="clients bg-gray">
   <div class="container heading">
@@ -447,11 +448,8 @@
       </div>
     </div>
   </div>
-  {{#if resetSuccess}}
-  <div onload="alert()"></div>
-  {{/if}}
 </section>
 
 <script>
-  function alert() { alert("Your password has been successfully changed") }
+
 </script>
