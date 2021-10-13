@@ -162,12 +162,9 @@ $("#checkout-form").submit((e)=>{
         success : (response)=>{
             
            if(response.codSuccess){
-               alert('COD Success')
                location.href = '/orderconfirmed';
            }else{
-               alert('onile Success')
-               alert(response)
-               razorpayPayment(response)
+              razorpayPayment(response)
            }    
         }
     })
@@ -213,7 +210,7 @@ function verifyPayement(payment,order){
             if(response.status){
                 location.href = '/orderconfirmed'
             }else{
-                alert('Payement failed')
+               location.href = '/404'
             }
         }
     })

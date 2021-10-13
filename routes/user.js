@@ -476,7 +476,7 @@ else{
 router.get('/orderconfirmed' , (req,res)=>{
   if(req.session.LoggedIn){
     res.render('user/user-orderconfirmed', { title: 'Order Confirmed', currentUser, typeOfPersonUser: true , loginAndSignup:true})
-  }else{
+  }else{  
     res.redirect('/login')
   }
 })
@@ -524,6 +524,10 @@ router.post('/edituserprofile/:id',(req,res)=>{
   userHelpers.editUserProfile(id,req.body).then((response)=>{
     res.redirect('/userprofile')
   })
+})
+
+router.get('/yourorders',(req,res)=>{
+  res.render('user/user-yourorders', { title: 'Your Orders', user: true, currentUser, typeOfPersonUser: true, cartCount})
 })
 
 router.post('/updateorderstatus',(req,res)=>{

@@ -99,17 +99,25 @@
   <div class="form-row mt-5">
     <div class="form-group col-md-6">
 
+
+{{!-- Image 1 --}}
       <div id="productimage1"></div>
       <label for="image1" class="btn btn-primary">Image 1</label>
       <input type="file" class="form-control bg-primary imageinput abc" id="image1" name="productimage1" placeholder="image 1"  onchange="return fileValidation1()">
+{{!-- Image 1 end --}}
 
+
+{{!-- Image 2 --}}
        <div id="productimage2"></div>
        <label for="image2" class="btn btn-primary">Image 2</label>
       <input type="file" class="form-control bg-primary imageinput" id="image2" name="productimage2" placeholder="image 2" onchange="return fileValidation2()">
+{{!-- Image 2 end --}}
 
+{{!-- Image 3 --}}
       <div id="productimage3"> </div>
       <label for="image3" class="btn btn-primary">Image 3</label>
       <input type="file" class="form-control bg-primary imageinput" id="image3" name="productimage3" placeholder="image 3"  onchange="return fileValidation3()">
+{{!-- Image 3 end --}}
     </div>
   </div>
 
@@ -131,6 +139,9 @@
 
 
       function fileValidation1() {
+
+
+
               var fileInput = document.getElementById('image1')
 
               var filePath = fileInput.value;

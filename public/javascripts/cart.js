@@ -56,6 +56,9 @@ function addToCart(proId,proPrice) {
           })
 }
 function deleteCartItem(cart_id , pro_id){
+
+    console.log(cart_id,pro_id);
+
     $.ajax({
         url: '/delete-cart-product',
         data:{

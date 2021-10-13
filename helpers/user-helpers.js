@@ -316,12 +316,12 @@ module.exports = {
             let status = orderDetails.payment_method == 'COD'?'placed':'pending';
             let orderObj = {
                 userId: objectId(orderDetails.userId),
-                
                 delivery:{
                     firstname : orderDetails.firstname,
                     lastname  : orderDetails.lastname,
                     mobile : orderDetails.phone,
-                    address : orderDetails.addressline1 + orderDetails.addressline2,
+                    address : orderDetails.addressline1  ,
+                    address2 : orderDetails.addressline2,
                     city : orderDetails.city,
                     pincode : orderDetails.pincode,
                     alternatenumber : orderDetails.alternatenumber,
@@ -352,10 +352,11 @@ module.exports = {
         })
 
     },
-    // Function to user who made the order
+    // Function to find user who made the order and get the orders made by him
     getUserOrders : (user)=>{
            return new Promise(async(resolve,reject)=>{
                orders = await db.get().collection(collection.orders).find({userId : objectId(user)}).toArray()
+               console.log("@ THE orders are : ",orders);
                resolve(orders)
            })
        
@@ -461,6 +462,8 @@ module.exports = {
             resolve(product)
         })
     },
+
+    // Function to find an user
     getUser : (userId)=>{
         return new Promise(async(resolve,reject)=>{
             var user = await db.get().collection(collection.userDatabase).findOne({_id : objectId(userId)})
@@ -484,7 +487,6 @@ module.exports = {
                     state : details.state,
                     pincode : details.pincode,
                 }}).then((response)=>{
-                    console.log("@edit user : ",response);
                 resolve(response);
             })
         })

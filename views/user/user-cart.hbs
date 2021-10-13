@@ -29,7 +29,32 @@
                       
                       <td class="cart-product-item">
                         <div class="cart-product-remove">
-                         <a onclick="deleteCartItem('{{this._id}}','{{this.product._id}}')" style="color: white;"><i class="bi bi-trash" ></i></a>
+
+                         <a data-toggle="modal" data-target="#{{this.product._id}}" style="color: white;"><i class="bi bi-trash" ></i></a>
+                         {{!-- <button type="button" class="" data-toggle="modal" data-target="#exampleModal"><i class="bi bi-trash" ></button> --}}
+
+                          <!-- Modal -->
+                            <div class="modal fade" id="{{this.product._id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                              <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                  <div class="modal-header">
+                                    <h3 class="modal-title" style="color: red;" id="exampleModalLabel">Delete</h3>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                      <span aria-hidden="true">&times;</span>
+                                    </button>
+                                  </div>
+                                  <div class="modal-body">
+                                    <h5>Are you sure you want to delete</h5>
+                                  </div>
+                                  <div class="modal-footer">
+                                    <button type="button" class="btn btn-success" data-dismiss="modal">Cancel</button>
+                                    <button type="button" onclick="deleteCartItem('{{this._id}}','{{this.product._id}}')"  class="btn btn-primary" style="width: 90px;">Delete</button>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            {{!-- Modal End --}}
+
                         </div>
                         <div class="cart-product-img">
                           <img src="/uploads/{{this.product._id}}__1.jpg" alt="product" style="height: 50px;"/>
@@ -44,7 +69,12 @@
                       <td class="cart-product-price" style="color: brown;">₹  {{this.price}}</td>
                       <td class="cart-product-quantity">
                         <div class="product-quantity">
+                          {{#gt this.quantity '1'}}
                           <button id="minus" onclick="changeQuantity('{{this._id}}','{{this.product._id}}',-1,'{{this.price}}','{{../userId}}')"><i class="fa fa-minus"></i></button>
+                          {{else}}
+                          <button id="minus" data-toggle="modal" data-target="#exampleModal" style="width: 30px;"><i class="bi bi-trash" ></i></button>
+                          
+                          {{/gt}}
                           <input type="text" value="{{this.quantity}}" id="{{this.product._id}}" readonly/>
                           <button onclick="changeQuantity('{{this._id}}','{{this.product._id}}',1,'{{this.price}}','{{../userId}}')"><i class="fa fa-plus"></i></button>
                          
