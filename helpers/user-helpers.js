@@ -26,14 +26,30 @@ module.exports = {
                 resolve(false)
             }
             else {
-                userData.pwd = await bcrypt.hash(userData.pwd, 10)
-                userData.pwdc = await bcrypt.hash(userData.pwdc, 10)
-                var details = await db.get().collection(collection.userDatabase).insertOne(userData)
-                var data = await db.get().collection(collection.userDatabase).findOne({ _id: details.insertedId })
-                resolve(data);
+
+                await db.get().collection(collection.userDatabase).findOne({mobile : userData.mobile}).then(async(mobile)=>{
+                    if(mobile){
+                        resolve(false)
+                    }else{
+                        
+                        resolve(true);
+                    }
+                })
+               
             }
         })
 
+    },
+    
+    insertNewUserToDB: (userData)=>{
+        return new Promise(async(resolve,reject)=>{
+            userData.pwd = await bcrypt.hash(userData.pwd, 10)
+            userData.pwdc = await bcrypt.hash(userData.pwdc, 10)
+            userData.block = false;
+            var details = await db.get().collection(collection.userDatabase).insertOne(userData)
+            var data = await db.get().collection(collection.userDatabase).findOne({ _id: details.insertedId })
+            resolve(data)
+        })
     },
     // Checking Whwen logging in
     doLogin: (userData) => {
@@ -119,7 +135,7 @@ module.exports = {
 
     // function to add the products to cart whenn add to cart is clicked
     addToCart: (proId, userId ,proPrice) => {
-
+    
         let proObj = {
             item: objectId(proId),
             quantity: 1,
@@ -127,6 +143,8 @@ module.exports = {
             totalprice: parseInt(proPrice),
         }
         return new Promise(async (resolve, reject) => {
+
+            
             let userCart = await db.get().collection(collection.cartItems).findOne({ user: objectId(userId) })
 
             if (userCart) {
@@ -489,6 +507,12 @@ module.exports = {
                 }}).then((response)=>{
                 resolve(response);
             })
+        })
+    },
+    getAllOrders : (userId)=>{
+        return new Promise(async(resolve,reject)=>{
+            var orders =await db.get().collection(collection.orders).find({userId : objectId(userId)}).toArray()
+            resolve(orders)
         })
     }
 

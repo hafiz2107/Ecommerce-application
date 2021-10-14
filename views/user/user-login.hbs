@@ -20,6 +20,9 @@
                           {{#if passError}}
                             <span style="color: red;">Incorrect Password</span>
                           {{/if}}
+                          {{#if reset}}
+                            <span style="color: rgb(0, 114, 6);">{{reset}}</span>
+                          {{/if}}
 
                         {{!-- Signin Form --}}
                       <form class="mb-0 myLoginForm" action="/login" method="POST" id="loginform">

@@ -2,8 +2,7 @@
 
 <!DOCTYPE html>
 <html dir="ltr" lang="en-US">
-<!-- Mirrored from demo.zytheme.com/autoshop/shop-cart.html by HTTrack Website Copier/3.x [XR&CO'2014], Wed, 15 Sep 2021 05:56:42 GMT -->
-<!-- Added by HTTrack -->
+
 <meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- /Added by HTTrack -->
 
 <head>
@@ -14,18 +13,19 @@
   <meta name="author" content="zytheme" />
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
   <meta name="description" content="construction html5 template" />
-  <link href="assets/images/favicon/favicon.ico" rel="icon" />
-{{!-- <link rel="stylesheet" href="/assets/css/jquery-ui.css">
-<link rel="stylesheet" href="/public/assets/css/style.css"> --}}
-  {{!-- Zoom --}}
+  {{!-- <link href="assets/images/favicon/favicon.ico" rel="icon" /> --}}
+
+  {{!-- <script src="/javascripts/jquery.js"></script> --}}
+
   <script src="https://code.jquery.com/jquery-3.6.0.js"integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/jquery.validate.js"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   <script src="/javascripts/cart.js"></script>
   <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
   <script src="/javascripts/country-states.js"></script>
   <script src="/javascripts/zoomsl.js" type="text/javascript" defer></script>
 
-
+{{!-- Image Zooming --}}
 <script>
 
 
@@ -39,6 +39,7 @@
 
 </script>
 
+{{!-- image zooming 2 --}}
 <script>
 	$(document).ready(function(){
 		$(".zoom-image").imagezoomsl({
@@ -48,19 +49,13 @@
 
 </script>
 {{!-- Zoom end --}}
-  <link
-    href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i,800,800i%7CRaleway:100,100i,200,200i,300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i%7CUbuntu:300,300i,400,400i,500,500i,700,700i"
-    rel="stylesheet" type="text/css" />
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i,800,800i%7CRaleway:100,100i,200,200i,300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i%7CUbuntu:300,300i,400,400i,500,500i,700,700i" rel="stylesheet" type="text/css" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css">
   <link href="/stylesheets/external.css" rel="stylesheet" />
   <link href="/stylesheets/bootstrap.min.css" rel="stylesheet" />
   <link href="/stylesheets/style.css" rel="stylesheet" />
   <link href="/stylesheets/custom.css" rel="stylesheet" />
 
-  <!--[if lt IE 9]>
-      <script src="assets/js/html5shiv.js"></script>
-      <script src="assets/js/respond.min.js"></script>
-    <![endif]-->
 
   <title>{{{title}}}</title>
 </head>
@@ -78,44 +73,6 @@
     {{{body}}}
     {{/if}}
     
-  <script>
-    function fileValidation() {
-            var fileInput = 
-                document.getElementsByClassName('imageinput');
-              
-            var filePath = fileInput.value;
-          
-            // Allowing file type
-            var allowedExtensions = 
-                    /(\.jpg|\.jpeg|\.png|\.gif)$/i;
-              
-            if (!allowedExtensions.exec(filePath)) {
-                alert('Invalid file type');
-                fileInput.value = '';
-                return false;
-            } 
-            else 
-            {
-              
-                // Image preview
-                if (fileInput.files && fileInput.files[0]) {
-                    var reader = new FileReader();
-                    reader.onload = function(e) {
-                        document.getElementById(
-                            'imagePreview').innerHTML = 
-                            '<img src="' + e.target.result
-                            + '"/>';
-                    };
-                      
-                    reader.readAsDataURL(fileInput.files[0]);
-                }
-            }
-        }
-  </script>
-
-    <script src="/javascripts/jquery.js"></script>
-    <script src="https://code.jquery.com/jquery-3.6.0.js"integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/jquery.validate.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     
     <script src="/javascripts/plugin.js"></script>
@@ -124,26 +81,14 @@
     <script src="/javascripts/zoomsl.js"></script>
     <script src="/public/javascripts/zoomsl.min.js"></script>
   </div>
-
-
-
-  {{!--
-  <script src="/javascripts/jquery.js"></script>
-  <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk="
-    crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/jquery.validate.js"></script>
-  <script src="/javascripts/plugin.js"></script>
-  <script src="/javascripts/script.js"></script> --}}
-
-
-  <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
-  <link rel="stylesheet" href="https://cdn.datatables.net/1.11.3/css/jquery.dataTables.min.css">
-  <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
 </body>
 
 </html>
 {{/if}}
 
+
+
+{{!-- Admin Layout --}}
 {{#if typeOfPersonAdmin}}
 
 
