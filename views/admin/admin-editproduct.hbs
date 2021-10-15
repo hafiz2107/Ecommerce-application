@@ -100,15 +100,12 @@
 
       <div class="form-row mt-5">
         <div class="form-group col-md-6">
+         
           {{!-- Image 1 --}}
-          <div>
-            <div id="errMess1"></div>
-            <img src="/uploads/{{productDetails._id}}__1.jpg" alt="" style="height: 100px;display: block;"
-              id="productimage1">
-            <label data-toggle="modal" data-target="#{{productDetails._id}}" for="file1" class="btn btn-primary"
-              type="button" class="btn btn-primary">Image 1</label>
-            <input type="file" name="image1" id="file1" class="form-control" onchange="return fileValidation1()">
-          </div>
+          <label for="file1" class="btn btn-primary">IMAGE 1</label>
+          <img src="/uploads/{{productDetails._id}}__1.jpg" alt="" style="width: 100px; height:auto" id="imgview1">
+          <div id="errMess1"></div>
+          <input type="file" name="image1" id="file1" class="form-control" onchange="return fileValidation1()">
           {{!-- Image 1 ends --}}
 
           {{!-- Image 2 --}}
@@ -116,7 +113,7 @@
             <div id="errMess2"></div>
             <img src="/uploads/{{productDetails._id}}__2.jpg" alt="" style="height: 100px;display: block;"
               id="productimage2">
-            <label for="file2" data-toggle="modal" data-target="#{{productDetails._id}}" class="btn btn-primary">IMAGE
+            <label for="file2" data-toggle="modal" data-target="#editCrop" class="btn btn-primary">IMAGE
               2</label>
             <input type="file" name="image2" id="file2" class="form-control" onchange="return fileValidation2()">
           </div>
@@ -126,7 +123,7 @@
             <div id="errMess3"></div>
             <img src="/uploads/{{productDetails._id}}__3.jpg" alt="" style="height: 100px;display: block;"
               id="productimage3">
-            <label for="file3" data-toggle="modal" data-target="#{{productDetails._id}}" class="btn btn-primary">IMAGE
+            <label for="file3" data-toggle="modal" data-target="#editCrop" class="btn btn-primary">IMAGE
               3</label>
             <div id="errMess3"></div>
             <input type="file" name="image3" id="file3" class="form-control" onchange="return fileValidation3()">
@@ -135,33 +132,33 @@
           {{!-- iamge 3 end --}}
         </div>
       </div>
-
-
-      {{!-- Modal for cropping --}}
-      <div class="modal fade" id="{{productDetails._id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog" role="document">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="exampleModalLabel">Crop Image</h5>
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-              </button>
-            </div>
-            <div class="modal-body">
-              <div class="col-12">
-                <div style="width: 300px; height: auto; display: none;" id="image-box"></div>
-                <button style="display: none;" class="btn btn-primary mt-4" type="button" id="crop-btn">Crop</button>
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-              </div>
-            </div>
-          </div>
+{{!--  --}}
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Crop Image</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="col-12">
+          <div style="width: 300px; height: auto; display: none;" id="image-box"></div>
+          <button style="display: none;" class="btn btn-primary mt-4" type="button" id="crop-btn">Crop</button>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
         </div>
       </div>
+    </div>
+  </div>
+</div>
+
+      {{!-- Modal for cropping --}}
+     
       {{!-- Modal for cropping Ends--}}
 
       {{!-- Modal for edit confirmation --}}
-
       <div class="modal fade bd-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel"
         aria-hidden="true">
         <div class="modal-dialog modal-sm">
@@ -184,9 +181,8 @@
           </div>
         </div>
       </div>
-
       {{!-- Modal for edit confirmation Ends--}}
-      <button type="button" class="btn btn-primary" data-toggle="modal" data-target=".bd-example-modal-sm">Edit</button>
+      <button type="button" id="confirm-btn" class="btn btn-primary">Edit</button>
       <a href="/admin/view-product" class="btn btn-danger">Cancel</a>
     </form>
 
@@ -194,61 +190,60 @@
 
   </section>
 </center>
-<script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk="
-  crossorigin="anonymous"></script>
+
 <script>
 
-  function fileValidation1() {
-    const imagebox = document.getElementById('image-box')
-    const crop_btn = document.getElementById('crop-btn')
-    var fileInput = document.getElementById('file1');
+    function fileValidation1() {
+        const imagebox = document.getElementById('image-box')
+        const crop_btn = document.getElementById('crop-btn')
+        var fileInput = document.getElementById('file1');
 
-    var filePath = fileInput.value;
-    var allowedExtensions = /(\.jpg)$/i;
-    if (!allowedExtensions.exec(filePath)) {
-      document.getElementById('errMess1').innerHTML = '<p style="color:red; display: block;">Invalid file type</p>'
-      fileInput.value = '';
-      return false;
-    } else {
-      document.getElementById('errMess1').innerHTML = ''
-      //Image preview
-      const img_data = fileInput.files[0]
-      const url = URL.createObjectURL(img_data)
-      imagebox.innerHTML = `<img src="${url}" id="image" style="width:100%">`
-      const image = document.getElementById('image')
-      document.getElementById('image-box').style.display = 'block'
-      document.getElementById('crop-btn').style.display = 'block'
-      document.getElementById('confirm-btn').style.display = 'none'
+        var filePath = fileInput.value;
+        var allowedExtensions = /(\.jpg)$/i;
+        if (!allowedExtensions.exec(filePath)) {
+          document.getElementById('errMess1').innerHTML = '<p style="color:red; display: block;">Invalid file type</p>'
+          fileInput.value = '';
+          return false;
+        } else {
+          document.getElementById('errMess1').innerHTML = ''
+          //Image preview
+          const img_data = fileInput.files[0]
+          const url = URL.createObjectURL(img_data)
+          imagebox.innerHTML = `<img src="${url}" id="image" style="width:100%">`
+          const image = document.getElementById('image')
+          document.getElementById('image-box').style.display = 'block'
+          document.getElementById('crop-btn').style.display = 'block'
+          document.getElementById('confirm-btn').style.display = 'none'
 
-      const cropper = new Cropper(image, {
-        autoCropArea: 1,
-        viewMode: 1,
-        scalable: false,
-        zoomable: true,
-        movable: true,
-        aspectRatio: 0.75 / 1,
-        //  preview: '.preview',
-        minCropBoxWidth: 180,
-        minCropBoxHeight: 240,
-      })
-      crop_btn.addEventListener('click', () => {
-        cropper.getCroppedCanvas().toBlob((blob) => {
-          let fileInputElement = document.getElementById('file1');
-          let file = new File([blob], img_data.name, { type: "image/*", lastModified: new Date().getTime() });
-          let container = new DataTransfer();
+          const cropper = new Cropper(image, {
+            autoCropArea: 1,
+            viewMode: 1,
+            scalable: false,
+            zoomable: false,
+            movable: false,
+            aspectRatio: 16 / 19,
+            //  preview: '.preview',
+            minCropBoxWidth: 180,
+            minCropBoxHeight: 240,
+          })
+          crop_btn.addEventListener('click', () => {
+            cropper.getCroppedCanvas().toBlob((blob) => {
+              let fileInputElement = document.getElementById('file1');
+              let file = new File([blob], img_data.name, { type: "image/*", lastModified: new Date().getTime() });
+              let container = new DataTransfer();
 
-          container.items.add(file);
-          const img = container.files[0]
-          var url = URL.createObjectURL(img)
-          fileInputElement.files = container.files;
-          document.getElementById('imgview1').src = url
-          document.getElementById('image-box').style.display = 'none'
-          document.getElementById('crop-btn').style.display = 'none'
-          document.getElementById('confirm-btn').style.display = 'block'
-        });
-      });
-    }
-  }
+              container.items.add(file);
+              const img = container.files[0]
+              var url = URL.createObjectURL(img)
+              fileInputElement.files = container.files;
+              document.getElementById('imgview1').src = url
+              document.getElementById('image-box').style.display = 'none'
+              document.getElementById('crop-btn').style.display = 'none'
+              document.getElementById('confirm-btn').style.display = 'block'
+            });
+          });
+        }
+      }
 
 
   function fileValidation2() {

@@ -1,4 +1,6 @@
+<div id="invoice">
 <header class="clearfix">
+
       
       <div id="company">
         <h2 class="name">Rideofy</h2>
@@ -6,7 +8,7 @@
         <div>+91 1234567890</div>
         <div><a href="mailto:company@example.com">rideofy@gmail.com</a></div>
       </div>
-      </div>
+     
     </header>
     
     <main>
@@ -15,9 +17,10 @@
       <div id="details" class="clearfix">
         <div id="client">
           <div class="to">INVOICE TO:</div>
-          <h2 class="name">John Doe</h2>
-          <div class="address">796 Silver Harbour, TX 79273, US</div>
-          <div class="email"><a href="mailto:john@example.com">john@example.com</a></div>
+          <h2 class="name">{{order.delivery.firstname}} {{order.delivery.lastname}}</h2>
+          <div class="address">{{order.delivery.address1}},{{order.delivery.address2}}</div>
+          <div class="address">{{order.delivery.city}},{{order.delivery.pincode}}</div>
+          <div class="email">+91 {{order.delivery.mobile}}</div>
         </div>
         <div id="invoice">
           <h1><img src="/images/logo.png" alt=""></h1>
@@ -27,20 +30,20 @@
       <table border="0" cellspacing="0" cellpadding="0">
         <thead>
           <tr>
-            <th class="no">#</th>
-            <th class="desc">DESCRIPTION</th>
+            
+            <th class="desc">Product Name</th>
             <th class="unit">UNIT PRICE</th>
-            <th class="qty">QUANTITY</th>
+            <th class="qty">Payment Method</th>
             <th class="total">TOTAL</th>
           </tr>
         </thead>
         <tbody>
           <tr>
-            <td class="no">01</td>
-            <td class="desc"><h3>Website Design</h3>Creating a recognizable design solution based on the company's existing visual identity</td>
-            <td class="unit">$40.00</td>
-            <td class="qty">30</td>
-            <td class="total">$1,200.00</td>
+            
+            <td class="desc"><h3>{{order.products.productname}}</h3></td>
+            <td class="unit">₹ {{order.totalAmount}}</td>
+            <td class="qty">{{order.payment_method}}</td>
+            <td class="total">₹ {{order.totalAmount}}</td>
           </tr>
          
         </tbody>
@@ -50,23 +53,45 @@
           <tr>
             <td colspan="2"></td>
             <td colspan="2">GRAND TOTAL</td>
-            <td>$6,500.00</td>
+            <td>₹ {{order.totalAmount}}</td>
           </tr>
         </tfoot>
       </table>
       <div id="thanks">Thank you!</div>
-      <div id="notices">
-        <div>NOTICE:</div>
-        <div class="notice">A finance charge of 1.5% will be made on unpaid balances after 30 days.</div>
-      </div>
+
+      {{!-- Download button --}}
+      
     </main>
-    <footer>
-      Invoice was created on a computer and is valid without the signature and seal.
-    </footer>
+                
+</div>
+<div class="col-md-12 text-right mb-3">
+  <button class="btn btn-danger" id="download"> Dowload as PDF</button>
+</div>
+
+{{!-- Script For dowmloading as PDF --}}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.js"></script>
+    <script>
+      window.onload = function () {
+          document.getElementById("download")
+            .addEventListener("click", () => {
+              const invoice = this.document.getElementById("invoice");
+              console.log(invoice);
+              console.log(window);
+              var opt = {
+                margin: 1,
+                filename: 'myfile.pdf',
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2 },
+                jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+              };
+              html2pdf().from(invoice).set(opt).save();
+            })
+        }
+    </script>
 
 
-    <style>
-        @font-face {
+<style>
+  @font-face {
   font-family: SourceSansPro;
   src: url(SourceSansPro-Regular.ttf);
 }
@@ -264,6 +289,4 @@ footer {
   padding: 8px 0;
   text-align: center;
 }
-
-
-    </style>
+</style>

@@ -44,11 +44,11 @@
                                     </button>
                                   </div>
                                   <div class="modal-body">
-                                    <h5>Are you sure you want to delete</h5>
+                                    <h5>Are you sure you want to delete ?</h5>
                                   </div>
                                   <div class="modal-footer">
                                     <button type="button" class="btn btn-success" data-dismiss="modal">Cancel</button>
-                                    <button type="button" onclick="deleteCartItem('{{this._id}}','{{this.product._id}}')"  class="btn btn-primary" style="width: 90px;">Delete</button>
+                                    <button type="button" onclick="deleteCartItem('{{this._id}}','{{this.product._id}}')"  class="btn btn-danger" style="width: 90px;">Delete</button>
                                   </div>
                                 </div>
                               </div>
@@ -72,7 +72,7 @@
                           {{#gt this.quantity '1'}}
                           <button id="minus" onclick="changeQuantity('{{this._id}}','{{this.product._id}}',-1,'{{this.price}}','{{../userId}}')"><i class="fa fa-minus"></i></button>
                           {{else}}
-                          <button id="minus" data-toggle="modal" data-target="#exampleModal" style="width: 30px;"><i class="bi bi-trash" ></i></button>
+                          <button id="minus" data-toggle="modal" data-target="#{{this.product._id}}11" style="width: 30px;"><i class="bi bi-trash" ></i></button>
                           
                           {{/gt}}
                           <input type="text" value="{{this.quantity}}" id="{{this.product._id}}" readonly/>

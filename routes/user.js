@@ -503,6 +503,8 @@ router.post('/verify-payment', (req, res) => {
   })
 })
 
+// Funtion to get the user proffile page 
+// The page will be loaded with the users details
 router.get('/userprofile', async (req, res) => {
   if (req.session.LoggedIn) {
     userHelpers.getUser(req.session.userDetails).then((user) => {
@@ -513,6 +515,7 @@ router.get('/userprofile', async (req, res) => {
   }
 })
 
+// posting the user data if any changes done
 router.post('/edituserprofile/:id', (req, res) => {
   var id = req.params.id
   userHelpers.editUserProfile(id, req.body).then((response) => {
@@ -520,21 +523,35 @@ router.post('/edituserprofile/:id', (req, res) => {
   })
 })
 
+// Funtion to get the your orders page
 router.get('/yourorders', (req, res) => {
-  userHelpers.getAllOrders(req.session.userDetails).then((orders) => {
-    console.log(orders);
-    res.render('user/user-yourorders', { title: 'Your Orders', user: true, currentUser, typeOfPersonUser: true, cartCount, orders })
-  })
-
+  if(req.session.LoggedIn){
+    userHelpers.getAllOrders(req.session.userDetails).then((orders) => {
+      console.log(orders);
+      res.render('user/user-yourorders', { title: 'Your Orders', user: true, currentUser, typeOfPersonUser: true, cartCount, orders })
+    })
+  }else{
+    res.redirect('/login')
+  }
 })
 
-router.get('/orderinvoice', (req, res) => {
-  res.render('user/user-invoice', { title: 'Invoice', loginAndSignup: true, typeOfPersonUser: true, cartCount })
+// Funtion to get the invoice of the specific order
+router.get('/orderinvoice/', (req, res) => {
+  if(req.session.LoggedIn){
+    console.log('Order id : 👉👉👉👉👉 ',req.query.orderId)
+    userHelpers.getTheCurrentOrder(req.query.orderId).then((order)=>{
+      console.log('order 👉👉👉',order)
+      res.render('user/user-invoice', { title: 'Invoice', loginAndSignup: true, typeOfPersonUser: true, cartCount,order })
+    })
+    
+  }else{
+    res.redirect('/login')
+  }
 })
 
-router.post('/updateorderstatus', (req, res) => {
-  console.log('Order updated : ', req.body)
-})
+// router.post('/updateorderstatus', (req, res) => {
+//   console.log('Order updated : ', req.body)
+// })
 
 // Logout
 router.get('/logout', (req, res) => {

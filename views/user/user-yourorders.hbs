@@ -10,7 +10,8 @@
                             <div class="row">
 
                                 {{!-- Contents --}}
-                                {{#each orders}}
+                        {{#if orders}}
+                            {{#each orders}}
                                 <div class="card col-sm-6 col-md-6 col-lg-4 col-xl-4 mt-4 cardbox"
                                     style="width: 18rem;margin-top: 15px;border-radius: 10px;">
                                     <img src="/uploads/{{this.products._id}}__1.jpg" style="width: 100%;"
@@ -24,9 +25,12 @@
                                         <h5>₹ <span style="color: red;">{{this.products.productprice}}</span></h5>
                                         <hr>
                                         <p>Ordered Date : {{this.orderDate}}</p>
-                                {{#eq this.status 'placed'}}
-                                    <button class="btn btn-danger" data-toggle="modal" data-target="#{{this.products._id}}11" style="color: white;margin-bottom: 5px;">Cancel Order</button>
-                                        <!-- Modal -->
+                                        {{#eq this.status 'placed'}}
+                                        <button class="btn btn-danger" data-toggle="modal"
+                                            data-target="#{{this.products._id}}11"
+                                            style="color: white;margin-bottom: 5px;">Cancel Order</button>
+
+                                        <!-- Modal for order cancel for order placed -->
                                         <div class="modal fade" id="{{this.products._id}}11" tabindex="-1" role="dialog"
                                             aria-labelledby="exampleModalLabel" aria-hidden="true">
                                             <div class="modal-dialog" role="document">
@@ -34,7 +38,8 @@
                                                     <div class="modal-header">
                                                         <h3 class="modal-title" style="color: red;"
                                                             id="exampleModalLabel">Cancel Order</h3>
-                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                        <button type="button" class="close" data-dismiss="modal"
+                                                            aria-label="Close">
                                                             <span aria-hidden="true">&times;</span>
                                                         </button>
                                                     </div>
@@ -52,11 +57,16 @@
                                                 </div>
                                             </div>
                                         </div>
-                                {{!-- Modal End --}}
-                                {{/eq}}
-                                    {{#eq this.status 'shipped'}}
-                                        <button class="btn btn-danger" data-toggle="modal" data-target="#{{this.products._id}}11" style="color: white;margin-bottom: 5px;">Cancel Order</button>
-                                        <!-- Modal -->
+                                        {{!-- Modal End --}}
+
+                                        {{/eq}}
+
+                                        {{!-- Checking status shipped --}}
+                                        {{#eq this.status 'shipped'}}
+                                        <button class="btn btn-danger" data-toggle="modal"
+                                            data-target="#{{this.products._id}}11"
+                                            style="color: white;margin-bottom: 5px;">Cancel Order</button>
+                                        <!-- Modal  for order cancel confirmation-->
                                         <div class="modal fade" id="{{this.products._id}}11" tabindex="-1" role="dialog"
                                             aria-labelledby="exampleModalLabel" aria-hidden="true">
                                             <div class="modal-dialog" role="document">
@@ -64,7 +74,8 @@
                                                     <div class="modal-header">
                                                         <h3 class="modal-title" style="color: red;"
                                                             id="exampleModalLabel">Cancel Order</h3>
-                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                        <button type="button" class="close" data-dismiss="modal"
+                                                            aria-label="Close">
                                                             <span aria-hidden="true">&times;</span>
                                                         </button>
                                                     </div>
@@ -81,17 +92,26 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>                                 
-                                    {{/eq}}
+                                        </div>
 
-                                    {{#eq this.status 'delivered'}}
-                                        <a href="/orderinvoice" class="btn btn-danger" style="color: white;margin-bottom: 5px;">View invoice</a>
-                                    {{/eq}}
-                                
+                                        {{!-- Modal end --}}
+                                        {{/eq}}
+
+                                        {{#eq this.status 'delivered'}}
+                                        <h1>{{this.status}}</h1>
+                                        <h1>{{this._id}}</h1>
+                                        <a href="/orderinvoice?orderId={{this._id}}" class="btn btn-danger" style="color: white;margin-bottom: 5px;">View invoice</a>
+                                        {{/eq}}
+
                                     </div>
                                 </div>
                                 {{/each}}
-
+                                {{else}}
+                                <center>
+                                    <h3 style="color: red;">Sorry Please make some orders !!</h3>
+                                    <img src="/images/No orders.svg" alt="" style="height: 240px; margin-top: 20px;">
+                                </center>
+                                {{/if}}
                                 {{!-- Content End --}}
                             </div>
                         </div>
