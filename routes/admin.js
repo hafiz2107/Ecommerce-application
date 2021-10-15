@@ -58,9 +58,9 @@ router.post('/add-product',(req,res)=>{
 // Calling function for uploading add product form
   adminHelper.addProduct(req.body).then((id)=>{
 
-    let image1 = req.files.productimage1
-    let image2 = req.files.productimage2
-    let image3 = req.files.productimage3
+    let image1 = req.files.image1
+    let image2 = req.files.image2
+    let image3 = req.files.image3
     image1.mv('./public/uploads/'+id+'__1.jpg')
     image2.mv('./public/uploads/'+id+'__2.jpg')
     image3.mv('./public/uploads/'+id+'__3.jpg')

@@ -135,7 +135,7 @@ module.exports = {
 
     // function to add the products to cart whenn add to cart is clicked
     addToCart: (proId, userId ,proPrice) => {
-    
+
         let proObj = {
             item: objectId(proId),
             quantity: 1,
@@ -143,8 +143,6 @@ module.exports = {
             totalprice: parseInt(proPrice),
         }
         return new Promise(async (resolve, reject) => {
-
-            
             let userCart = await db.get().collection(collection.cartItems).findOne({ user: objectId(userId) })
 
             if (userCart) {

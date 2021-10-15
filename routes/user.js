@@ -121,9 +121,9 @@ router.get('/signup', (req, res) => {
 router.post('/signup', (req, res) => {
   userHelpers.userSignup(req.body).then((response) => {
 
-    req.session.newUser = req.body
-
+    
     if (response) {
+      req.session.newUser = req.body
       var mobile = req.body.countryCode + req.body.mobile;
       mobile = parseInt(mobile);
 
