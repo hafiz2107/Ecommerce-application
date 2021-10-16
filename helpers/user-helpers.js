@@ -516,6 +516,7 @@ module.exports = {
                         pincode: details.pincode,
                     }
                 }).then((response) => {
+                    console.log('😆😆😆😆 : ',response)
                     resolve(response);
                 })
         })
@@ -531,6 +532,32 @@ module.exports = {
             console.log('Order 👉👉👉👉 ',orderId);
             var order = await db.get().collection(collection.orders).findOne({_id:objectId(orderId)})
             resolve(order)
+        })
+    }, 
+    AddNewAddress : (newAddress,userId)=>{
+        let address = {
+            firstname :newAddress.firstname,
+            lastname : newAddress.lastname,
+            phone : newAddress.phone,
+            second_mobile : newAddress.second_mobile,
+            address1  : newAddress.address1,
+            address2 : newAddress.address2,
+            state : newAddress.state,
+            country : newAddress.country,
+            pincode : newAddress.pincode,
+            addresstype : newAddress.addresstype
+        }
+        return new Promise(async(resolve,reject)=>{
+            db.get().collection(collection.userDatabase).aggregate([
+                {
+                    $match : {_id : objectId(userId)}
+                },{
+                    $addFields:{
+                        $add: [address]
+                    }
+                }
+            ])
+            resolve()
         })
     }
 

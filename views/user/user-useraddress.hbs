@@ -1,0 +1,65 @@
+<section id="page-title" class="page-title">
+    <div class="my-account-area">
+        <div class="container">
+            {{>user-ordersnav}}
+            <div class="row">
+                <div class="col-sm-7">
+                  
+                        <a href="/addaddress" class="btn btn-secondary" style="margin-bottom: 30px;"><span><i class="bi bi-plus-lg"></i> Add address</span></a>
+                 
+                    
+                    <div class="card-body" style="width: 30em;border: 2px solid;border-radius: 10px;padding: 30px;">
+                        <div style="display: inline-block;background-color: #b6b6b6;margin-bottom: 10px;border-radius: 8px;width: 50px;">
+                            <span style="color: #5e5e5e;padding-left: 5px;">Office</span>
+                        </div>
+                        <div class="dropdown" style="display: inline;width: 100%;">
+
+                            <a class="dropdown-toggle" type="button" id="dropdownMenuButton"
+                                style="display: inline;float: right;" data-toggle="dropdown" aria-haspopup="true"
+                                aria-expanded="false"> <i class="bi bi-three-dots-vertical"></i>
+                            </a>
+
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                <center>
+                                    <a class="dropdown-item" href="#">Edit</a>
+                                    <hr>
+                                    <a class="dropdown-item" href="#">Delete</a>
+                                </center>
+                            </div>
+                        </div>
+                        <h5 class="card-title">Suresh Dasari</h5>
+
+
+
+                        <p class="card-text">Suresh Dasari is a founder and technical lead developer in tutlane.</p>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+    .dropdown-menu {
+        position: relative;
+        top: 100%;
+        left: 0;
+        z-index: 1000;
+        display: none;
+        min-width: 115px;
+        padding: 15px 0;
+        margin: 2px 0 0;
+        font-size: 14px;
+        text-align: left;
+        list-style: none;
+        background-color: rgba(255, 255, 255, 0.041);
+        -webkit-background-clip: padding-box;
+        background-clip: padding-box;
+        border: 1px solid #ccc;
+        border: 1px solid rgba(0, 0, 0, .15);
+        border-radius: 4px;
+        -webkit-box-shadow: 0 6px 12px rgb(0 0 0 / 18%);
+        box-shadow: 0 6px 12px rgb(0 0 0 / 18%);
+        float: right;
+</style>

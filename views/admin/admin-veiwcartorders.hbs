@@ -65,9 +65,9 @@
 
         <script>
             function updateStatus(orderId,userId,proId){
-                console.log(orderId,userId)
+               
                 var status = document.getElementById(proId).value
-                console.log("status : ",status)
+                
                 $.ajax({
                     url : '/admin/updateorderstatus/',
                     data : {

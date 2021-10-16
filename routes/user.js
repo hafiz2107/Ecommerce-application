@@ -36,7 +36,7 @@ router.get('/', async function (req, res, next) {
 
       currentUser = req.session.resetUser
 
-      res.render('user/user-home', { title: 'Home', user: true, currentUser, typeOfPersonUser: true, products, cartCount });
+      res.render('user/user-home', { title: 'Home', user: true, currentUser: req.session.user, typeOfPersonUser: true, products, cartCount });
     })
   }
   else {
@@ -335,7 +335,7 @@ router.get('/productview/:id', async (req, res) => {
   let cartCount = await userHelpers.getCartCount(req.session.userDetails)
 
   userHelpers.singleProduct(proId).then(([singleProduct, relatedProduct]) => {
-    res.render('user/user-singleproduct', { title: 'Product', user: true, typeOfPersonUser: true, singleProduct, relatedProduct, cartCount, currentUser, logStatus, items: cartProductsTodisplay })
+    res.render('user/user-singleproduct', { title: 'Product', user: true, typeOfPersonUser: true, singleProduct, relatedProduct, cartCount, currentUser: req.session.user, logStatus, items: cartProductsTodisplay })
   })
 })
 
@@ -352,7 +352,7 @@ router.get('/cart', async (req, res) => {
     if (products) {
       totalValue = await userHelpers.getTotalAmount(req.session.userDetails)
       let UserId = req.session.userDetails
-      res.render('user/user-cart', { title: 'Product', products, user: true, typeOfPersonUser: true, currentUser, userId, totalValue })
+      res.render('user/user-cart', { title: 'Product', products, user: true, typeOfPersonUser: true, currentUser: req.session.user, userId, totalValue })
     }
     else {
       res.render('user/user-cart', { title: 'Product', currentUser, user: true, typeOfPersonUser: true, logStatus })
@@ -395,7 +395,7 @@ router.get('/checkout', async (req, res) => {
   if (req.session.LoggedIn) {
     let products = await userHelpers.getCartProducts(req.session.userDetails)
     let user = req.session.userDetails
-    res.render('user/user-checkout', { title: 'Checkout', user: true, currentUser, typeOfPersonUser: true, logStatus, products, totalValue, user })
+    res.render('user/user-checkout', { title: 'Checkout', user: true, currentUser: req.session.user, typeOfPersonUser: true, logStatus, products, totalValue, user })
   } else {
     res.redirect('/login')
   }
@@ -406,7 +406,7 @@ router.get('/checkoutbuynow/:id', async (req, res) => {
   if (req.session.LoggedIn) {
     let userId = req.session.userDetails
     let product = userHelpers.getProductForBuyNow(req.params.id).then((productToBuy) => {
-      res.render('user/user-buynowcheckout', { title: 'Checkout', user: true, userId, currentUser, typeOfPersonUser: true, logStatus, productToBuy })
+      res.render('user/user-buynowcheckout', { title: 'Checkout', user: true, userId, currentUser: req.session.user, typeOfPersonUser: true, logStatus, productToBuy })
     })
   } else {
     res.redirect('/login')
@@ -469,7 +469,7 @@ router.post('/checkout', async (req, res) => {
 // Getting order confirmed page
 router.get('/orderconfirmed', (req, res) => {
   if (req.session.LoggedIn) {
-    res.render('user/user-orderconfirmed', { title: 'Order Confirmed', currentUser, typeOfPersonUser: true, loginAndSignup: true })
+    res.render('user/user-orderconfirmed', { title: 'Order Confirmed', currentUser: req.session.user, typeOfPersonUser: true, loginAndSignup: true })
   } else {
     res.redirect('/login')
   }
@@ -483,7 +483,7 @@ router.get('/vieworders', async (req, res) => {
       singleProducts = await userHelpers.getSingleOrderedProducts(orders[0]._id)
       var orders = orders[0]
       req.session.deleteCartProducts = true
-      res.render('user/user-vieworders', { title: 'View Orders', user: true, currentUser, orders, typeOfPersonUser: true, logStatus, cartCount, singleProducts })
+      res.render('user/user-vieworders', { title: 'View Orders', user: true, currentUser: req.session.user, orders, typeOfPersonUser: true, logStatus, cartCount, singleProducts })
     })
 
   }
@@ -508,7 +508,7 @@ router.post('/verify-payment', (req, res) => {
 router.get('/userprofile', async (req, res) => {
   if (req.session.LoggedIn) {
     userHelpers.getUser(req.session.userDetails).then((user) => {
-      res.render('user/user-userprofile', { title: 'View Orders', user: true, currentUser, typeOfPersonUser: true, cartCount, user })
+      res.render('user/user-userprofile', { title: 'View Orders', user: true, currentUser: req.session.user, typeOfPersonUser: true, cartCount, user, logStatus})
     })
   } else {
     res.redirect('/login')
@@ -519,6 +519,8 @@ router.get('/userprofile', async (req, res) => {
 router.post('/edituserprofile/:id', (req, res) => {
   var id = req.params.id
   userHelpers.editUserProfile(id, req.body).then((response) => {
+    let profileImage = req.files.profileImage
+    profileImage.mv('./public/profileImages/' + req.params.id + '1.jpg')
     res.redirect('/userprofile')
   })
 })
@@ -528,7 +530,7 @@ router.get('/yourorders', (req, res) => {
   if(req.session.LoggedIn){
     userHelpers.getAllOrders(req.session.userDetails).then((orders) => {
       console.log(orders);
-      res.render('user/user-yourorders', { title: 'Your Orders', user: true, currentUser, typeOfPersonUser: true, cartCount, orders })
+      res.render('user/user-yourorders', { title: 'Your Orders', user: true, currentUser: req.session.user, typeOfPersonUser: true, cartCount, orders })
     })
   }else{
     res.redirect('/login')
@@ -538,9 +540,7 @@ router.get('/yourorders', (req, res) => {
 // Funtion to get the invoice of the specific order
 router.get('/orderinvoice/', (req, res) => {
   if(req.session.LoggedIn){
-    console.log('Order id : 👉👉👉👉👉 ',req.query.orderId)
     userHelpers.getTheCurrentOrder(req.query.orderId).then((order)=>{
-      console.log('order 👉👉👉',order)
       res.render('user/user-invoice', { title: 'Invoice', loginAndSignup: true, typeOfPersonUser: true, cartCount,order })
     })
     
@@ -549,9 +549,28 @@ router.get('/orderinvoice/', (req, res) => {
   }
 })
 
-// router.post('/updateorderstatus', (req, res) => {
-//   console.log('Order updated : ', req.body)
-// })
+router.get('/useraddress', (req, res) => {
+  if(req.session.LoggedIn){
+    res.render('user/user-useraddress', { title: 'Your Orders', user: true, currentUser: req.session.user, typeOfPersonUser: true })
+  }else{
+    res.redirect('/login')
+  }
+})
+
+router.get('/addaddress',(req,res)=>{
+  if(req.session.LoggedIn){
+    res.render('user/user-addaddress', { title: 'Your Orders', user: true, currentUser: req.session.user, typeOfPersonUser: true })
+  }else{
+    res.redirect('/login')
+  }
+})
+
+router.post('/addaddress',(req,res)=>{
+  console.log('💖💖 Add adress : ',req.body)
+  userHelpers.AddNewAddress(req.body,req.session.userDetails).then(()=>{
+      res.redirect('/useraddress')
+  })
+})
 
 // Logout
 router.get('/logout', (req, res) => {
