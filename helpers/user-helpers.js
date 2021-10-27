@@ -52,10 +52,11 @@ module.exports = {
 
     // Inserting new user to DB after verifying the mobile
     insertNewUserToDB: (userData) => {
+        console.log('💖💖💖💖💖💖 : ',userData);
         return new Promise(async (resolve, reject) => {
             userData.pwd = await bcrypt.hash(userData.pwd, 10)
             userData.pwdc = await bcrypt.hash(userData.pwdc, 10)
-            userData.block = false;
+            userData.block = 'false';
             var details = await db.get().collection(collection.userDatabase).insertOne(userData)
             var data = await db.get().collection(collection.userDatabase).findOne({ _id: details.insertedId })
             resolve(data)
@@ -144,6 +145,7 @@ module.exports = {
         })
     },
 
+
     // function to add the products to cart whenn add to cart is clicked
     addToCart: (proId, userId, proPrice) => {
 
@@ -152,6 +154,7 @@ module.exports = {
             quantity: 1,
             price: parseInt(proPrice),
             totalprice: parseInt(proPrice),
+            status:'pending'
         }
         return new Promise(async (resolve, reject) => {
             let userCart = await db.get().collection(collection.cartItems).findOne({ user: objectId(userId) })
@@ -534,8 +537,10 @@ module.exports = {
             resolve(order)
         })
     }, 
+
     AddNewAddress : (newAddress,userId)=>{
-        let address = {
+        let addressDetails = {
+            _id  : 0 ,
             firstname :newAddress.firstname,
             lastname : newAddress.lastname,
             phone : newAddress.phone,
@@ -548,16 +553,42 @@ module.exports = {
             addresstype : newAddress.addresstype
         }
         return new Promise(async(resolve,reject)=>{
-            db.get().collection(collection.userDatabase).aggregate([
-                {
-                    $match : {_id : objectId(userId)}
-                },{
-                    $addFields:{
-                        $add: [address]
-                    }
+            
+            let userAddress =await db.get().collection(collection.userAddress).find({user : objectId(userId)}).toArray()
+
+            if(userAddress.length > 0){
+                    db.get().collection(collection.userAddress).updateOne({ user: objectId(userId) }, { $push: { address: addressDetails }}).then((response) => {
+                    resolve();
+                })
+            }else{
+                    let address = {
+                    user  : objectId(userId),
+                    address: [addressDetails]
                 }
-            ])
-            resolve()
+
+                db.get().collection(collection.userAddress).insertOne(address).then((id)=>{
+                    resolve();
+                })
+            }
+        })
+    },
+    getUserAddresses : (userId)=>{
+        return new Promise(async(resolve , reject)=>{
+            var address = await db.get().collection(collection.userAddress).find({ user: objectId(userId) }).toArray()
+           
+            if (address.length > 0){
+                resolve(address[0].address);
+            }else{
+                resolve(false)
+            }
+        })
+        
+    },
+    editUserAddress : (editedAddress , userId)=>{
+        var index = editedAddress.index
+        address =''+`address.${index}`
+        db.get().collection(collection.userAddress).updateOne({ user: objectId(userId) }, { $set: { address : [editedAddress]}}).then((response)=>{
+            resolve(response)
         })
     }
 

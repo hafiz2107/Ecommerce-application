@@ -3,14 +3,15 @@
         <div class="container">
             {{>user-ordersnav}}
             <div class="row">
-                <div class="col-sm-7">
-                  
-                        <a href="/addaddress" class="btn btn-secondary" style="margin-bottom: 30px;"><span><i class="bi bi-plus-lg"></i> Add address</span></a>
-                 
-                    
-                    <div class="card-body" style="width: 30em;border: 2px solid;border-radius: 10px;padding: 30px;">
-                        <div style="display: inline-block;background-color: #b6b6b6;margin-bottom: 10px;border-radius: 8px;width: 50px;">
-                            <span style="color: #5e5e5e;padding-left: 5px;">Office</span>
+            <a href="/addaddress" class="btn btn-secondary" style="margin-bottom: 30px;"><span><i class="bi bi-plus-lg"></i> Add
+                    address</span></a>
+                
+                {{#if address}}
+                {{#each address}}
+                <div class="col-sm-6 col-md-6 col-xl-6">
+                    <div class="card-body" style="width: 50em;border: 2px solid;border-radius: 10px;padding: 30px;">
+                        <div style="display: inline-block;background-color: hsl(0, 0%, 71%);margin-bottom: 10px;border-radius: 8px;width: 50px;">
+                            <span style="color: #5e5e5e;padding-left: 5px;">{{this.addresstype}}</span>
                         </div>
                         <div class="dropdown" style="display: inline;width: 100%;">
 
@@ -21,20 +22,26 @@
 
                             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                 <center>
-                                    <a class="dropdown-item" href="#">Edit</a>
+                                    <a class="dropdown-item" href="/editaddress/{{@index}}">Edit</a>
                                     <hr>
                                     <a class="dropdown-item" href="#">Delete</a>
                                 </center>
                             </div>
                         </div>
-                        <h5 class="card-title">Suresh Dasari</h5>
+                        <h5 class="card-title">{{this.firstname}} {{this.lastname}}</h5>
 
 
 
-                        <p class="card-text">Suresh Dasari is a founder and technical lead developer in tutlane.</p>
+                        <p class="card-text">{{this.address1}}</p>
+                        <p class="card-text">{{this.address2}}</p>
+                        <p class="card-text">{{this.state}}</p> 
+                        <p class="card-text">{{this.pincode}}</p> 
+                        <p class="card-text">{{this.phone}}</p> 
 
                     </div>
                 </div>
+                    {{/each}}
+                    {{/if}}
             </div>
         </div>
     </div>

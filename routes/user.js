@@ -26,25 +26,19 @@ router.get('/', async function (req, res, next) {
     // Getting Cart products to display in modal of cart 
     let Cartproducts = await userHelpers.getCartProducts(req.session.userDetails)
     userHelpers.getAllProducts().then((products) => {
-      res.render('user/user-home', { title: 'Home', user: true, Cartproducts, currentUser, typeOfPersonUser: true, products, logStatus, cartCount, items: cartProductsTodisplay });
+      res.render('user/user-home', { title: 'Home', user: true, Cartproducts, currentUser, typeOfPersonUser: true, products, logStatus: req.session.LoggedIn, cartCount, items: cartProductsTodisplay });
     })
 
   } else if (req.session.LoggedInThruOtp) {
-
     req.session.LoggedIn = true
     userHelpers.getAllProducts().then((products) => {
-
       currentUser = req.session.resetUser
-
       res.render('user/user-home', { title: 'Home', user: true, currentUser: req.session.user, typeOfPersonUser: true, products, cartCount });
     })
   }
   else {
-
-
     var currentUser = req.session.user
     userHelpers.getAllProducts().then((products) => {
-
       res.render('user/user-home', { title: 'Home', user: true, currentUser: false, typeOfPersonUser: true, products });
     })
 
@@ -74,12 +68,21 @@ router.post('/login', (req, res) => {
 
     if (response.status) {
       //  Assigning block to the session
+
+      console.log("🦠🦠🦠🦠🦠 : ",response );
       req.session.block = response.user.block
+
+      if(req.session.block == 'true'){
+        req.session.block = true
+      }else{
+        req.session.block = false
+      }
 
       // Redirecting To login 
       if (req.session.block) {
         res.redirect('/login')
-      } else {
+      } 
+      else {
         req.session.unblock = true
         req.session.block = response.user.block
         req.session.userDetails = response.user._id;
@@ -117,6 +120,7 @@ router.get('/signup', (req, res) => {
 
 })
 
+
 // posting Signed up data
 router.post('/signup', (req, res) => {
   userHelpers.userSignup(req.body).then((response) => {
@@ -151,23 +155,24 @@ router.post('/signup', (req, res) => {
 
 // Verifying the OTP send when entering the OTP
 router.post('/mobileConfirmation', (req, res) => {
-
+req.session.mobileDetails = req.body.phone
+req.session.code = req.body.otp
   client.verify
     .services(keys.serviceid)
-    .verificationChecks.create({ to: '+' + req.body.phone, code: req.body.otp })
+    .verificationChecks.create({ to: '+' + req.session.mobileDetails, code: req.session.code })
     .then((verification_check) => {
       // If the OTP is wright It will give status as Approved else it will give status as Pending
       if (verification_check.status == 'approved') {
+        console.log('👉👉👉👉 ', req.session.newUser);
         userHelpers.insertNewUserToDB(req.session.newUser).then((data) => {
           if (data) {
             res.redirect('/login');
           }
         })
       } else {
-        req.session.newUser = '';
         mobile = req.body.phone
         otpError = true
-        res.render('user/user-mobileconfirmation', { title: 'Mobile Confirmation', loginAndSignup: true, typeOfPersonUser: true, mobile, otpError })
+        res.render('user/user-mobileconfirmation', { title: 'Mobile Confirmation', loginAndSignup: true, typeOfPersonUser: true, mobile: req.session.mobileDetails, otpError})
         otpError = false
       }
     }).catch((err) => {
@@ -219,6 +224,7 @@ router.post('/signinconfirmation', (req, res) => {
 
         userHelpers.findUser(phoneNo).then((user) => {
           if (user) {
+            console.log('🦈🦈🦈🦈🦈🦈🐬 : ',user);
             req.session.unblock = true
             req.session.block = user.block
             req.session.userDetails = user._id;
@@ -368,11 +374,14 @@ router.get('/cart', async (req, res) => {
 
 // Adding items to the cart
 router.get('/add-to-cart/:id/:proPrice', (req, res) => {
-  console.log("apoi call", req.params.proPrice)
-  user = req.session.userDetails
-  userHelpers.addToCart(req.params.id, req.session.userDetails, req.params.proPrice).then(() => {
-    res.json({ status: true })
-  })
+  if(req.session.LoggedIn){
+    user = req.session.userDetails
+    userHelpers.addToCart(req.params.id, req.session.userDetails, req.params.proPrice).then(() => {
+      res.json({ status: true })
+    })
+  }else{
+    res.redirect('/login');
+  }
 })
 
 // Change pproduct quantity when clicking + & -
@@ -551,7 +560,10 @@ router.get('/orderinvoice/', (req, res) => {
 
 router.get('/useraddress', (req, res) => {
   if(req.session.LoggedIn){
-    res.render('user/user-useraddress', { title: 'Your Orders', user: true, currentUser: req.session.user, typeOfPersonUser: true })
+    userHelpers.getUserAddresses(req.session.userDetails).then((address) => {
+      console.log("YUIYU : ",address);
+    res.render('user/user-useraddress', { title: 'Address', user: true, currentUser: req.session.user, typeOfPersonUser: true ,address})
+    })
   }else{
     res.redirect('/login')
   }
@@ -559,16 +571,31 @@ router.get('/useraddress', (req, res) => {
 
 router.get('/addaddress',(req,res)=>{
   if(req.session.LoggedIn){
-    res.render('user/user-addaddress', { title: 'Your Orders', user: true, currentUser: req.session.user, typeOfPersonUser: true })
+      res.render('user/user-addaddress', { title: 'Your Orders', user: true, currentUser: req.session.user, typeOfPersonUser: true})
   }else{
     res.redirect('/login')
   }
 })
 
 router.post('/addaddress',(req,res)=>{
-  console.log('💖💖 Add adress : ',req.body)
   userHelpers.AddNewAddress(req.body,req.session.userDetails).then(()=>{
       res.redirect('/useraddress')
+  })
+})
+
+router.get('/editaddress/:index',(req,res)=>{
+  var index = req.params.index
+  userHelpers.getUserAddresses(req.session.userDetails).then((address) => {
+    address = address[index]
+    res.render('user/user-editaddress', { title: 'Your Orders', user: true, currentUser: req.session.user, typeOfPersonUser: true, address ,indexOfAddress : index})
+  })
+})
+
+router.post('/editaddress',(req,res)=>{
+
+  userHelpers.editUserAddress(req.body,req.session.userDetails).then((response)=>{
+    console.log('🐠🐠🐠🐠🐠🐠 : ',response);
+    res.redirect('/useraddress')
   })
 })
 
