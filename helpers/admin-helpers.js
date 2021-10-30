@@ -3,11 +3,175 @@ var db = require('../config/connection')
 var objectId = require('mongodb').ObjectId
 
 module.exports = {
+
+    findAllOrders: () => {
+        return new Promise(async (resolve, reject) => {
+            var response = {}
+
+            var allBuyNowPendingOrders = await db.get().collection(collection.orders).find({ mode: 'buynow', status: 'pending' }).count()
+            var allBuyNowplacedOrders = await db.get().collection(collection.orders).find({ mode: 'buynow', status: 'placed' }).count()
+            var allBuyNowshippedOrders = await db.get().collection(collection.orders).find({ mode: 'buynow', status: 'shipped' }).count()
+            var allBuyNowdeliveredOrders = await db.get().collection(collection.orders).find({ mode: 'buynow', status: 'delivered' }).count()
+            var allBuyNowcancelOrders = await db.get().collection(collection.orders).find({ mode: 'buynow', status: 'cancel' }).count()
+            var date = new Date().toISOString().slice(0, 10)
+            var totalOrdersToday = await db.get().collection(collection.orders).find({ orderDate: date}).count()
+            
+
+            var allCartpendingOrders = await db.get().collection(collection.orders).aggregate([
+                {
+                    $match: { mode: 'cartorder' }
+                }, {
+                    $unwind: '$products'
+                }, {
+                    $match: { 'products.status': 'pending' }
+                }, {
+                    $project: {
+                        quantity: '$products.quantity'
+                    }
+                }, {
+                    $group: {
+                        _id: null,
+                        totalPendingOrders: { $sum: '$quantity' }
+                    }
+                }
+            ]).toArray()
+
+            var allCartplacedOrders = await db.get().collection(collection.orders).aggregate([
+                {
+                    $match: { mode: 'cartorder' }
+                }, {
+                    $unwind: '$products'
+                }, {
+                    $match: { 'products.status': 'placed' }
+                }, {
+                    $project: {
+                        quantity: '$products.quantity'
+                    }
+                }, {
+                    $group: {
+                        _id: null,
+                        totalPendingOrders: { $sum: '$quantity' }
+                    }
+                }
+            ]).toArray()
+
+            var allCartshippedOrders = await db.get().collection(collection.orders).aggregate([
+                {
+                    $match: { mode: 'cartorder' }
+                }, {
+                    $unwind: '$products'
+                }, {
+                    $match: { 'products.status': 'shipped' }
+                }, {
+                    $project: {
+                        quantity: '$products.quantity'
+                    }
+                }, {
+                    $group: {
+                        _id: null,
+                        totalPendingOrders: { $sum: '$quantity' }
+                    }
+                }
+            ]).toArray()
+
+            var allCartdeliveredOrders = await db.get().collection(collection.orders).aggregate([
+                {
+                    $match: { mode: 'cartorder' }
+                }, {
+                    $unwind: '$products'
+                }, {
+                    $match: { 'products.status': 'delivered' }
+                }, {
+                    $project: {
+                        quantity: '$products.quantity'
+                    }
+                }, {
+                    $group: {
+                        _id: null,
+                        totalPendingOrders: { $sum: '$quantity' }
+                    }
+                }
+            ]).toArray()
+
+            var allCartcancelledOrders = await db.get().collection(collection.orders).aggregate([
+                {
+                    $match: { mode: 'cartorder' }
+                }, {
+                    $unwind: '$products'
+                }, {
+                    $match: { 'products.status': 'cancel' }
+                }, {
+                    $project: {
+                        quantity: '$products.quantity'
+                    }
+                }, {
+                    $group: {
+                        _id: null,
+                        totalPendingOrders: { $sum: '$quantity' }
+                    }
+                }
+            ]).toArray()
+
+            if (allCartpendingOrders[0]) {
+                allCartpendingOrders = allCartpendingOrders[0].totalPendingOrders
+            } else {
+                allCartpendingOrders = 0
+            } if (allCartplacedOrders[0]) {
+                allCartplacedOrders = allCartplacedOrders[0].totalPendingOrders
+            } else {
+                allCartplacedOrders = 0
+            } if (allCartshippedOrders[0]) {
+                allCartshippedOrders = allCartshippedOrders[0].totalPendingOrders
+            } else {
+                allCartshippedOrders = 0
+            } if (allCartdeliveredOrders[0]) {
+                allCartdeliveredOrders = allCartdeliveredOrders[0].totalPendingOrders
+            } else {
+                allCartdeliveredOrders = 0
+            } if (allCartcancelledOrders[0]) {
+                allCartcancelledOrders = allCartcancelledOrders[0].totalPendingOrders
+            } else {
+                allCartcancelledOrders = 0
+            }
+
+            allPendingOrders = parseInt(allBuyNowPendingOrders + allCartpendingOrders)
+            allPlacedOrders = parseInt(allBuyNowplacedOrders + allCartplacedOrders)
+            allShippedOrders = parseInt(allBuyNowshippedOrders + allCartshippedOrders)
+            allDeliveredOrders = parseInt(allBuyNowdeliveredOrders + allCartdeliveredOrders)
+            allCancelledOrders = parseInt(allCartcancelledOrders + allBuyNowcancelOrders)
+
+            allOrders = allPendingOrders + allPlacedOrders + allShippedOrders + allDeliveredOrders
+
+
+            // console.log('ASDF1 : ', allPendingOrders);
+            // console.log('ASDF2 : ', allPlacedOrders);
+            // console.log('ASDF3 : ', allShippedOrders);
+            // console.log('ASDF4 : ', allDeliveredOrders);
+            // console.log('ASDF5 : ', allCancelledOrders);
+            // console.log('ASDF6 : ', allOrders);
+
+            resolve({ allPendingOrders, allPlacedOrders, allShippedOrders, allDeliveredOrders, allCancelledOrders, allOrders, totalOrdersToday})
+        })
+    },
     // TO add a product
     addProduct: (productData) => {
-
+        let productData1 = {
+            productname: productData.productname,
+            productcode: productData.productcode,
+            productcategory: productData.productcategory,
+            productsubcategory: productData.productsubcategory,
+            productbrand: productData.productbrand,
+            suitablebikebrand: productData.suitablebikebrand,
+            suitablebikemodel: productData.suitablebikemodel,
+            productprice: parseInt(productData.productprice),
+            productofferprice: parseInt(productData.productofferprice),
+            productquantity: parseInt(productData.productquantity),
+            productdate: productData.productdate,
+            productdes: productData.productdes,
+            status: productData.status,
+        }
         return new Promise((resolve, reject) => {
-            db.get().collection(collection.newproducts).insertOne(productData).then(async (data) => {
+            db.get().collection(collection.newproducts).insertOne(productData1).then(async (data) => {
                 resolve(data.insertedId);
             })
         })
@@ -30,8 +194,9 @@ module.exports = {
     },
     //    To make upload the changes made to the product
     updateProduct: (productId, data) => {
+
         return new Promise((resolve, reject,) => {
-            db.get().collection(collection.newproducts).updateOne({ _id: objectId(productId) }, { $set: { productname: data.productname, category: data.category, productbrand: data.productbrand, suitablebikebrand: data.suitablebikebrand, suitablebikemodel: data.suitablebikemodel, productprice: data.productprice, productquantity: data.productquantity, productdate: data.productdate, productdes: data.productdes } }).then((result) => {
+            db.get().collection(collection.newproducts).updateOne({ _id: objectId(productId) }, { $set: { productname: data.productname, productcode: data.productcode, productcategory: data.productcategory, productsubcategory: data.productsubcategory, productbrand: data.productbrand, suitablebikebrand: data.suitablebikebrand, suitablebikemodel: data.suitablebikemodel, productprice: parseInt(data.productprice), productofferprice: parseInt(data.productofferprice), productquantity: parseInt(data.productquantity), productdate: data.productdate, productdes: data.productdes, status: data.status } }).then((result) => {
                 resolve();
             })
         })
@@ -76,7 +241,15 @@ module.exports = {
             })
         })
     },
+    updateOrderStatusofbuynow: (orderId, userId, orderStatus, proId) => {
+        return new Promise(async (resolve, reject) => {
+            db.get().collection(collection.orders).updateOne({ _id: objectId(orderId) }, { $set: { status: orderStatus } }).then((response) => {
+                resolve(response);
+            })
+        })
+    },
     getUserCartOrders: (orderId, userId) => {
+
         return new Promise(async (resolve, reject) => {
             var cartOrders = await db.get().collection(collection.orders).aggregate([
                 {
@@ -104,10 +277,18 @@ module.exports = {
                     }
                 }
             ]).toArray()
+
             resolve(cartOrders)
         })
 
-    }, addNewMainCat: (catDetails) => {
+    },
+    getBuyNowOrders: (userId, orderId) => {
+        return new Promise(async (resolve, reject) => {
+            var orders = await db.get().collection(collection.orders).find({ _id: objectId(orderId) }).toArray()
+            resolve(orders)
+        })
+    },
+    addNewMainCat: (catDetails) => {
         return new Promise((resolve, reject) => {
             db.get().collection(collection.productCat).insertOne(catDetails).then((response) => {
                 console.log("The inserterd details  : ", catDetails);
@@ -188,7 +369,7 @@ module.exports = {
         return new Promise((resolve, reject) => {
             db.get().collection(collection.bikeBrands).updateOne({ _id: objectId(models.bikeBrandId) }, { $push: { models: models.bikemodel } }).then((result) => {
 
-               
+
                 resolve(result)
             })
         })
@@ -199,15 +380,49 @@ module.exports = {
                 resolve()
             })
         })
-    }, 
+    },
     deleteBikeBrand: (id) => {
-        console.log('hhhhhhhh', id);
+
         return new Promise((resolve, reject) => {
             db.get().collection(collection.bikeBrands).deleteOne({ _id: objectId(id) }).then((result) => {
-                console.log('🦠🦠🦠🦠🦠🦠🦠🦠🦠🦠🦠🦠🦠 : ', result);
+
                 resolve();
             })
         })
 
-    }
+    },
+    getAllCoupons: () => {
+        return new Promise(async (resolve, reject) => {
+            var coupons = await db.get().collection(collection.coupon).find().toArray()
+            resolve(coupons)
+        })
+    },
+    addCoupon: (coupon) => {
+        return new Promise((resolve, reject) => {
+            db.get().collection(collection.coupon).insertOne({ couponcode: coupon.couponcode, coupondiscount: parseInt(coupon.coupondiscount), coupondate: new Date().toISOString().slice(0, 10) }).then((response) => {
+                resolve(response)
+            })
+        })
+
+    },
+    getCouponToEdit: (couponId) => {
+        return new Promise(async (resolve, reject) => {
+            coupon = await db.get().collection(collection.coupon).findOne({ _id: objectId(couponId) })
+            resolve(coupon)
+        })
+    },
+    editCoupon: (couponDetails) => {
+        return new Promise((resolve, reject) => {
+            db.get().collection(collection.coupon).updateOne({ _id: objectId(couponDetails.couponId) }, { $set: { couponcode: couponDetails.couponcode, coupondiscount: parseInt(couponDetails.coupondiscount), coupondate: new Date().toISOString().slice(0, 10) } }).then((response) => {
+                resolve()
+            })
+        })
+    },
+    deleteCoupon: (couponId) => {
+        return new Promise((resolve, reject) => {
+            db.get().collection(collection.coupon).deleteOne({ _id: objectId(couponId) }).then((response) => {
+                resolve()
+            })
+        })
+    },
 }

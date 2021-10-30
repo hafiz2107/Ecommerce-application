@@ -9,7 +9,10 @@
 
         </div>
         <div class="row">
-            {{#each singleProducts}}
+        {{#each singleProducts}}
+            {{#eq this.mode 'cartorder'}}
+                {{#each this.products}}
+                    
             <div class="col-md-4 ftco-animate fadeInUp ftco-animated">
                 <div class="block-7">
                     <div class="img">
@@ -20,15 +23,39 @@
                         <span class="price" style="margin-top: 20px;"><sup>₹</sup> <span class="number" style="color:#bd0000;">{{this.totalprice}}</span>   
                         <ul class="pricing-text mb-5">
                             
-                            <li>Product Name : {{this.product.productname}}</li>
+                            <li>Product Name : {{this.name}}</li>
                             <li>Quantity : {{this.quantity}}</li>   
-                            <li>Address : {{../orders.delivery.address}}</li>
-                            <li>Mobile : {{../orders.delivery.mobile}}</li>
+                            <li>Address : {{../this.delivery.address}}</li>
+                            <li>Mobile : {{../this.delivery.mobile}}</li>
                         </ul>
                     </div>
                    
                 </div>
             </div>
+                {{/each}}
+
+            {{else}}
+            <div class="col-md-4 ftco-animate fadeInUp ftco-animated">
+                <div class="block-7">
+                    <div class="img">
+                        <img src="/uploads/{{this.productId}}__1.jpg" alt="" height="280px" style="width: 100%;">
+                    </div>
+            
+                    <div class="text-center p-4">
+                        <span class="price" style="margin-top: 20px;"><sup>₹</sup> <span class="number"
+                                style="color:#bd0000;">{{this.totalAmount}}</span>
+                            <ul class="pricing-text mb-5">
+            
+                                <li>Product Name : {{this.productName}}</li>
+                               
+                                <li>Address : {{this.delivery.address}}</li>
+                                <li>Mobile : {{this.delivery.mobile}}</li>
+                            </ul>
+                    </div>
+            
+                </div>
+            </div>
+            {{/eq}}
              {{/each}}
              
         </div>

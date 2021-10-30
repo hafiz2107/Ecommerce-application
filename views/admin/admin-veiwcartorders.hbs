@@ -17,7 +17,8 @@
 						</tr>
 					</thead>
 					<tbody>
-                        {{#each cartOrders}}     
+                        {{#each cartOrders}}    
+
                             <tr class="gradeX">
                             <td>{{add @index '1'}}</td>
 							<td>{{this.date}}</td>
@@ -29,9 +30,11 @@
                             <td>
                                 <select name="status" id="{{this.proId}}" class="dropdown btn btn-success dropdown-toggle"
                                     onchange="updateStatus('{{this._id}}','{{this.userId}}','{{this.proId}}')">
-                                    <option value="placed" selected>Placed<i class="bi bi-chevron-down"></i></option>
+                                    <option value="placed" selected>Pending<i class="bi bi-chevron-down"></i></option>
+                                    <option value="placed">Placed</option>
                                     <option value="shipped">Shipped</option>
                                     <option value="delivered">Delivered</option>
+                                    <option value="cancel">Cancel</option>
                                 </select>
                             </td>
                             {{/eq}}
@@ -42,6 +45,7 @@
                                     <option value="placed" selected>Placed<i class="bi bi-chevron-down"></i></option>
                                     <option value="shipped">Shipped</option>
                                     <option value="delivered">Delivered</option>
+                                    <option value="cancel">Cancel</option>
                                 </select>
                             </td>
                         {{/eq}}
@@ -49,9 +53,9 @@
                         {{#eq this.status 'shipped'}}
 							<td >
                                 <select name="status" id="{{this.proId}}" class="dropdown btn btn-success dropdown-toggle" onchange="updateStatus('{{this._id}}','{{this.userId}}','{{this.proId}}')">
-                                    <option value="placed" >Placed</option>
                                     <option value="shipped" selected>Shipped<i class="bi bi-chevron-down"></i></option>
                                     <option value="delivered">Delivered</option>
+                                    <option value="cancel">Cancel</option>
                                 </select>
                             </td>
                         {{/eq}}
@@ -59,18 +63,28 @@
                         {{#eq this.status 'delivered'}}
 							<td >
                                 <select name="status" id="{{this.proId}}" class="dropdown btn btn-success dropdown-toggle" onchange="updateStatus('{{this._id}}','{{this.userId}}','{{this.proId}}')">
-                                    <option value="placed" >Placed</option>
-                                    <option value="shipped">Shipped</option>
                                     <option value="delivered" selected>Delivered<i class="bi bi-chevron-down"></i></option>
                                 </select>
                             </td>
                         {{/eq}}
+                        {{#eq this.status 'cancel'}}
+                        <td>
+                            <select name="status" id="{{this.proId}}" class="dropdown btn btn-success dropdown-toggle"
+                                onchange="updateStatus('{{this._id}}','{{this.userId}}','{{this.proId}}')">
+                                <option value="cancel">Cancelled</option>
+                            </select>
+                        </td>
+                        {{/eq}}
 							<td>{{this.destination}}</td>
 							<td>{{this.payement}}</td>
 							<td>{{this.total}}</td>
-                            <td><a href="" class="btn btn-danger">Cancel</a></td>
-						</tr>    
-                {{/each}}
+                            
+						</tr>  
+
+                        
+                        
+                        {{/each}}
+            
 				</table>
 			</div>
 		</div>

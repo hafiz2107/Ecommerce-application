@@ -56,7 +56,8 @@ db.connect((err)=>{
 
 app.use('/', userRouter);
 app.use('/admin', adminRouter);
-Handlebars.registerHelper('hello', function (context, options,price) {
+
+Handlebars.registerHelper('hello', function (context, options,price,name) {
   for (key in context) {
     if (options.toString() === context[key].item.toString()){
       var inp = true
@@ -68,7 +69,7 @@ Handlebars.registerHelper('hello', function (context, options,price) {
   if(inp===true){
     var data = '<a href="/cart" class="btn btn-primary add-to-cart"> View Cart</a>'
   }else{
-    var data = `<a class="btn btn-primary add-to-cart" onclick="addToCart('${options}','${price}')">Add To Cart</a>`
+    var data = `<a class="btn btn-primary add-to-cart" onclick="addToCart('${options}','${price}','${name}')">Add To Cart</a>`
   }
   return data
 });

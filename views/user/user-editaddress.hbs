@@ -7,12 +7,9 @@
                         <h4 class="my-account-title">Add Address</h4>
                         <div class="personal-information-box">
                             <form action="/editaddress" method="POST">
-                            <input type="hidden" name="index" value="{{indexOfAddress}}">
                                 <div class="row">
-
-
                                     <div class="col-md-6 col-xs-12">
-
+                                        <input type="hidden" name="addressId" value="{{address._id}}" id="">
                                         <div class="pib-item">
                                             <label>First Name</label>
                                             <input type="text" value="{{address.firstname}}" name="firstname" placeholder="Enter your first name...">

@@ -2,9 +2,12 @@ const { response } = require('express');
 var express = require('express');
 var router = express.Router();
 var userHelpers = require('../helpers/user-helpers')
+var adminHelper = require('../helpers/admin-helpers')
 const keys = require('../config/otpkeys');
 const { parse } = require('dotenv');
 const client = require('twilio')(keys.accountsid, keys.authtoken);
+
+
 
 var userToresetPass
 var currentUser
@@ -26,21 +29,40 @@ router.get('/', async function (req, res, next) {
     // Getting Cart products to display in modal of cart 
     let Cartproducts = await userHelpers.getCartProducts(req.session.userDetails)
     userHelpers.getAllProducts().then((products) => {
-      res.render('user/user-home', { title: 'Home', user: true, Cartproducts, currentUser, typeOfPersonUser: true, products, logStatus: req.session.LoggedIn, cartCount, items: cartProductsTodisplay });
+      adminHelper.fetchAllMainCategories().then((allCategories) => {
+        adminHelper.findAllProductBrands().then((allProductBrands) => {
+          adminHelper.getAllbikebrands().then((allBikeBrands) => {
+            res.render('user/user-home', { title: 'Home', user: true, Cartproducts, currentUser, typeOfPersonUser: true, products, logStatus: req.session.LoggedIn, cartCount, items: cartProductsTodisplay, allCategories, allProductBrands, allBikeBrands});
+          })
+        })
+      })
     })
 
   } else if (req.session.LoggedInThruOtp) {
     req.session.LoggedIn = true
     userHelpers.getAllProducts().then((products) => {
       currentUser = req.session.resetUser
-      res.render('user/user-home', { title: 'Home', user: true, currentUser: req.session.user, typeOfPersonUser: true, products, cartCount });
+      adminHelper.fetchAllMainCategories().then((allCategories) => {
+        adminHelper.findAllProductBrands().then((allProductBrands) => {
+          adminHelper.getAllbikebrands().then((allBikeBrands) => {
+            res.render('user/user-home', { title: 'Home', user: true, currentUser: req.session.user, typeOfPersonUser: true, products, cartCount, allCategories, allProductBrands, allBikeBrands});
+          })
+        })
+      })
     })
   }
   else {
     var currentUser = req.session.user
     userHelpers.getAllProducts().then((products) => {
-      res.render('user/user-home', { title: 'Home', user: true, currentUser: false, typeOfPersonUser: true, products });
+      adminHelper.fetchAllMainCategories().then((allCategories) => {
+        adminHelper.findAllProductBrands().then((allProductBrands) => {
+          adminHelper.getAllbikebrands().then((allBikeBrands) => {
+            res.render('user/user-home', { title: 'Home', user: true, currentUser: false, typeOfPersonUser: true, products, allCategories, allProductBrands, allBikeBrands});
+          })
+        })
+      })
     })
+ 
 
   }
 });
@@ -64,12 +86,8 @@ router.get('/login', (req, res) => {
 // Posting Logged in user's data
 router.post('/login', (req, res) => {
   userHelpers.doLogin(req.body).then((response) => {
-    console.log("@login The response is : ", response);
-
-    if (response.status) {
+     if (response.status) {
       //  Assigning block to the session
-
-      console.log("🦠🦠🦠🦠🦠 : ",response );
       req.session.block = response.user.block
 
       if(req.session.block == 'true'){
@@ -373,10 +391,10 @@ router.get('/cart', async (req, res) => {
 })
 
 // Adding items to the cart
-router.get('/add-to-cart/:id/:proPrice', (req, res) => {
+router.get('/add-to-cart/:id/:proPrice/:proName', (req, res) => {
   if(req.session.LoggedIn){
     user = req.session.userDetails
-    userHelpers.addToCart(req.params.id, req.session.userDetails, req.params.proPrice).then(() => {
+    userHelpers.addToCart(req.params.id, req.session.userDetails, req.params.proPrice, req.params.proName).then(() => {
       res.json({ status: true })
     })
   }else{
@@ -399,12 +417,13 @@ router.post('/delete-cart-product', (req, res) => {
   })
 })
 
-// Getting the checkout page
+// Getting the checkout page for cart
 router.get('/checkout', async (req, res) => {
   if (req.session.LoggedIn) {
+    let addresses = await userHelpers.findUserAddress(req.session.userDetails)
     let products = await userHelpers.getCartProducts(req.session.userDetails)
     let user = req.session.userDetails
-    res.render('user/user-checkout', { title: 'Checkout', user: true, currentUser: req.session.user, typeOfPersonUser: true, logStatus, products, totalValue, user })
+    res.render('user/user-checkout', { title: 'Checkout', user: true, currentUser: req.session.user, typeOfPersonUser: true, logStatus, products, totalValue, user ,addresses})
   } else {
     res.redirect('/login')
   }
@@ -414,8 +433,10 @@ router.get('/checkout', async (req, res) => {
 router.get('/checkoutbuynow/:id', async (req, res) => {
   if (req.session.LoggedIn) {
     let userId = req.session.userDetails
-    let product = userHelpers.getProductForBuyNow(req.params.id).then((productToBuy) => {
-      res.render('user/user-buynowcheckout', { title: 'Checkout', user: true, userId, currentUser: req.session.user, typeOfPersonUser: true, logStatus, productToBuy })
+    let product = userHelpers.getProductForBuyNow(req.params.id).then(async(productToBuy) => {
+      
+    let addresses =await userHelpers.findUserAddress(req.session.userDetails)
+      res.render('user/user-buynowcheckout', { title: 'Checkout', user: true, userId, currentUser: req.session.user, typeOfPersonUser: true, logStatus, productToBuy, addresses})
     })
   } else {
     res.redirect('/login')
@@ -424,51 +445,77 @@ router.get('/checkoutbuynow/:id', async (req, res) => {
 
 // Posting Checkout form fro buy now
 router.post('/checkoutbuynow', async (req, res) => {
-
   if (req.session.LoggedIn) {
+    
     let product = await userHelpers.getProductForBuyNow(req.body.proId)
-
-    userHelpers.placeOrder(req.body, product, product.productprice).then((orderId) => {
-
-      // Checking Whether the payement method is COD or online
-      if (req.body.payment_method == 'COD') {
-        userHelpers.deleteCartProductsAfterOrder(req.body)
-        res.json({ codSuccess: true })
-      } else {
-        userHelpers.generateRazorpay(orderId, product.productprice).then((response) => {
-          res.json(response)
-        })
-      }
-
+    if (req.body.totalAmount){
+      productprice = req.body.totalAmount
+    }else{
+      productprice = product.productprice
+    }
+   userHelpers.placeOrder(req.body, product, productprice).then((orderId) => {
+      // Decreasing Product stock when buying product        
+        req.session.currentOrderId = orderId
+        // Checking Whether the payement method is COD or online
+        if (req.body.payment_method == 'COD') {
+           userHelpers.deleteCartProductsAfterOrder(req.body)
+            userHelpers.decreaseProductQuantity(req.body.proId).then((result) => {
+                res.json({ codSuccess: true })
+          })
+        } 
+        else {
+          userHelpers.generateRazorpay(orderId, productprice).then((response) => { 
+            userHelpers.decreaseProductQuantity(req.body.proId).then((result) => {
+                res.json(response)
+            })
+          }).catch((err)=>{
+            res.redirect('/404')
+          })
+        }
     })
-  }
-  else {
+  }else{
     res.redirect('/login')
   }
 })
 
-// Posting Checkout form
+// Posting Checkout form for Cart
 router.post('/checkout', async (req, res) => {
 
   if (req.session.LoggedIn) {
+    
     let products = await userHelpers.getCartProductList(req.body.userId)
     let totalPrice = await userHelpers.getTotalAmount(req.session.userDetails)
-    userHelpers.placeOrder(req.body, products, totalPrice).then((orderId) => {
 
-      console.log("req.body : ", req.body.payment_method);
+    if (req.body.totalAmount) {
+      productprice = req.body.totalAmount
+    } else {
+      productprice = totalPrice
+    }
+
+    userHelpers.placeOrderOnCart(req.body, products, productprice, req.body.coupon).then((orderId) => {
+      
+      
+      
+      req.session.currentOrderId = orderId
       // Checking Whether the payement method is COD or online
       if (req.body.payment_method == 'COD') {
+        userHelpers.decreseQuantityOncartOrder(products).then(() => {
         userHelpers.deleteCartProductsAfterOrder(req.body)
         res.json({ codSuccess: true })
+        })
       } else {
-        console.log("@ Payement method online");
-        userHelpers.generateRazorpay(orderId, totalPrice).then((response) => {
-          console.log("@Post checkout resopnse : ", response);
-          res.json(response)
+        
+        userHelpers.generateRazorpay(orderId, productprice).then((response) => {
+          
+          userHelpers.decreseQuantityOncartOrder(products).then(() => {
+          // Response get after payement
+            res.json(response)
+          })
         })
       }
 
     })
+    
   }
   else {
     res.redirect('/login')
@@ -489,14 +536,13 @@ router.get('/orderconfirmed', (req, res) => {
 router.get('/vieworders', async (req, res) => {
   if (req.session.LoggedIn) {
     userHelpers.getUserOrders(req.session.userDetails).then(async (orders) => {
-      singleProducts = await userHelpers.getSingleOrderedProducts(orders[0]._id)
-      var orders = orders[0]
+      singleProducts = await userHelpers.getSingleOrderedProducts(req.session.currentOrderId )
       req.session.deleteCartProducts = true
       res.render('user/user-vieworders', { title: 'View Orders', user: true, currentUser: req.session.user, orders, typeOfPersonUser: true, logStatus, cartCount, singleProducts })
     })
 
   }
-})
+})   
 
 // Funtion to verify the payement done
 router.post('/verify-payment', (req, res) => {
@@ -538,8 +584,10 @@ router.post('/edituserprofile/:id', (req, res) => {
 router.get('/yourorders', (req, res) => {
   if(req.session.LoggedIn){
     userHelpers.getAllOrders(req.session.userDetails).then((orders) => {
-      console.log(orders);
-      res.render('user/user-yourorders', { title: 'Your Orders', user: true, currentUser: req.session.user, typeOfPersonUser: true, cartCount, orders })
+      
+      
+        res.render('user/user-yourorders', { title: 'Your Orders', user: true, currentUser: req.session.user, typeOfPersonUser: true, cartCount, orders })
+   
     })
   }else{
     res.redirect('/login')
@@ -550,7 +598,7 @@ router.get('/yourorders', (req, res) => {
 router.get('/orderinvoice/', (req, res) => {
   if(req.session.LoggedIn){
     userHelpers.getTheCurrentOrder(req.query.orderId).then((order)=>{
-      res.render('user/user-invoice', { title: 'Invoice', loginAndSignup: true, typeOfPersonUser: true, cartCount,order })
+      res.render('user/user-invoice', { title: 'Invoice', loginAndSignup: true, typeOfPersonUser: true, cartCount,order,proName : req.query.proName })
     })
     
   }else{
@@ -578,26 +626,52 @@ router.get('/addaddress',(req,res)=>{
 })
 
 router.post('/addaddress',(req,res)=>{
-  userHelpers.AddNewAddress(req.body,req.session.userDetails).then(()=>{
+  userHelpers.AddNewAddress(req.body,req.session.userDetails).then((result)=>{
+    if (req.body.viaAjax){
+      res.json(result)
+    }else{
       res.redirect('/useraddress')
+    }
   })
 })
 
-router.get('/editaddress/:index',(req,res)=>{
-  var index = req.params.index
-  userHelpers.getUserAddresses(req.session.userDetails).then((address) => {
-    address = address[index]
-    res.render('user/user-editaddress', { title: 'Your Orders', user: true, currentUser: req.session.user, typeOfPersonUser: true, address ,indexOfAddress : index})
+router.get('/editaddress/:id',(req,res)=>{
+  userHelpers.getUserAddressesToEdit(req.session.userDetails,req.params.id).then((address) => {   
+    res.render('user/user-editaddress', { title: 'Your Orders', user: true, currentUser: req.session.user, typeOfPersonUser: true, address})
   })
 })
 
 router.post('/editaddress',(req,res)=>{
-
-  userHelpers.editUserAddress(req.body,req.session.userDetails).then((response)=>{
-    console.log('🐠🐠🐠🐠🐠🐠 : ',response);
+  userHelpers.editUserAddress(req.body, req.session.userDetails, req.body.addressId).then((response)=>{
     res.redirect('/useraddress')
   })
 })
+
+router.get('/deleteaddress/:id',(req,res)=>{
+  userHelpers.deleteAddress(req.params.id,req.session.userDetails).then((response)=>{
+    res.redirect('/useraddress')
+  })
+})
+// Function to cancel buynow orders
+router.get('/cancelbuynoworder/:orderId/:proId',(req,res)=>{
+  userHelpers.cancelBuynowOrder(req.params.orderId,req.params.proId).then((response)=>{
+    res.redirect('/yourorders')
+  })
+})
+
+router.get('/cancelcartorder/:proId/:orderId/:quantity',(req,res)=>{
+  userHelpers.cancelCartOrders(req.params.orderId,req.params.proId,parseInt(req.params.quantity)).then((response)=>{
+    res.redirect('/yourorders')
+  })
+})
+
+router.get('/checkcoupon/:couponcode/:userId',(req,res)=>{
+  
+  userHelpers.checkCouponCode(req.params.couponcode,req.params.userId).then((coupon)=>{
+    res.json({coupon})
+  })
+})
+
 
 // Logout
 router.get('/logout', (req, res) => {

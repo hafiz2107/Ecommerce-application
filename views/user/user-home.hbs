@@ -74,34 +74,39 @@
 
         <div class="product-img">
 
-
+{{!-- To display Sold out on the product if the quatity is 0 --}}
           {{#lte this.productquantity '0'}}
-          {{!-- <h4>Sold out</h4> --}}
-          <img id="soldout" src="/uploads/{{this._id}}__1.jpg" alt="Product" style="height: 430px;" />
-          {{else}}
-          <img src="/uploads/{{this._id}}__1.jpg" alt="Product" style="height: 430px;" />
-          <input type="text" hidden class="product-id" value="{{this._id}}">
+                <h4>Sold out</h4>
+                <img id="" src="/uploads/{{this._id}}__1.jpg" alt="Product" style="height: 430px;" />
+                  <input type="text" hidden class="product-id" value="{{this._id}}">
+              {{else}}
+                <img src="/uploads/{{this._id}}__1.jpg" alt="Product" style="height: 430px;" />
+                  <input type="text" hidden class="product-id" value="{{this._id}}">
           {{/lte}}
 
-          <div class="product-hover " style="cursor: pointer;">
+        <div class="product-hover " style="cursor: pointer;">
             <div class="product-action">
+              {{!-- To hide and display the add to cart and buy now related to the quantity --}}
+            {{#gt this.productquantity '0'}}
               {{#if ../logStatus}}
-              <a class="btn btn-primary payment">Buy Now</a>
-                {{else}}
-              <a href="/login" class="btn btn-primary payment">Buy Now</a>
-              {{/if}}
-
-              {{#gte this.productquantity '1'}}
-              {{#if ../logStatus}}
-                {{#hello ../items this._id this.productprice }}
-                {{/hello}}
+                <a id="" class="btn btn-primary payment">Buy Now</a>
               {{else}}
-                <a href="/login" class="btn btn-primary add-to-cart">Add To Cart</a>
+                <a href="/login" class="btn btn-primary payment">Buy Now</a>
+              {{/if}}
+              {{else}}
+                <a id="" class="btn btn-primary payment" style="display: none;">Buy Now</a>
+            {{/gt}}
+              {{#gt this.productquantity '0'}}
+                {{#if ../logStatus}}
+                  {{#hello ../items this._id this.productprice this.productname}}
+                      {{/hello}}
+                {{else}}
+                    <a href="/login" class="btn btn-primary add-to-cart">Add To Cart</a>
               {{/if}}
 
-              {{/gte}}
+              {{/gt}}
             </div>
-          </div>
+        </div>
 
         </div>
 
@@ -136,13 +141,17 @@
     var hover = document.getElementsByClassName('product-hover')
     var product_id = document.getElementsByClassName('product-id')
 
-    for (var i = 0; i < payment.length; i++) {
+
+      
+    for (var i = 0; i < hover.length; i++) {
+
       if (event.target === payment[i]) {
         location.href = '/checkoutbuynow/' + product_id[i].value
         break;
       } else if (event.target === addToCart[i]) {
         break;
-      } else if (event.target === hover[i]) {
+      } 
+      else if (event.target === hover[i]) {
         location.href = "/productview/" + product_id[i].value
         break;
       }
@@ -166,30 +175,29 @@
       <div class="dropdown" style="display: inline; float: right; margin-right: 5px;">
         <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown"
           aria-haspopup="true" aria-expanded="true">
-          Shop by Brands
+          Shop by Model
           <span class="caret"></span>
         </button>
         <ul class="dropdown-menu myScroll" aria-labelledby="dropdownMenu1">
-          <li><a href="#">Action</a></li>
-          <li><a href="#">Another action</a></li>
-          <li><a href="#">Something else here</a></li>
-          <li role="separator" class="divider"></li>
-          <li><a href="#">Separated link</a></li>
+          
+          {{#each allBikeBrands}}
+          {{#each this.models}}
+            <li><a href="#">{{this}}</a></li>
+          {{/each}}
+          {{/each}}
+
         </ul>
       </div>
       <div class="dropdown" style="display: inline; float: right; margin-right: 5px;">
         <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown"
           aria-haspopup="true" aria-expanded="true">
-          Shop by Model
+          Shop by Brand
           <span class="caret"></span>
         </button>
         <ul class="dropdown-menu myScroll" aria-labelledby="dropdownMenu1">
-          <li><a href="#">KTM</a></li>
-          <li><a href="#">Bajaj</a></li>
-          <li><a href="#">Honda</a></li>
-          {{! <li role="separator" class="divider"></li> }}
-          <li><a href="#">Others</a></li>
-          <li><a href="#">Others</a></li>
+          {{#each allBikeBrands}}
+            <li><a href="#">{{this.bikeBrand}}</a></li>
+          {{/each}}
         </ul>
       </div>
     </div>
@@ -201,46 +209,15 @@
       <div class="clients-bg" style="height: 150px;">
         <div class="row">
           <div class="col-xs-12 colsm-12 col-md-12 client-carousel">
-            <div class="client">
-              <img src="assets/images/clients/1.jpg" alt="client" style="height: 100px;" />
-              <H6 style="justify-content: last baseline;margin-top: 8px;">Bajaj</H6>
-            </div>
 
+            {{#each allBikeBrands}}
             <div class="client">
-              <div class="slide">
-                <img src="assets/images/clients/2.jpg" alt="client" style="height: 100px;" />
-                <H6 style="justify-content: last baseline;margin-top: 8px;">BMW</H6>
-              </div>
+              <img src="/bike brand logos/{{this._id}}__1.jpg" alt="client" style="height: 100px;" />
+              <H6 style="justify-content: last baseline;margin-top: 8px;">{{this.bikeBrand}}</H6>
             </div>
+            {{/each}}
 
-            <div class="client">
-              <img src="assets/images/clients/3.jpg" alt="client" style="height: 100px" ; />
-              <H6 style="justify-content: last baseline;margin-top: 8px;">Hero</H6>
-            </div>
 
-            <div class="client">
-              <img src="assets/images/clients/4.jpg" alt="client" style="height: 100px" ; />
-              <H6 style="justify-content: last baseline;margin-top: 8px;">Honda</H6>
-            </div>
-            <div class="client">
-              <img src="assets/images/clients/6.jpg" alt="client" style="height: 100px" ; />
-              <H6 style="justify-content: last baseline;margin-top: 8px;">KTM</H6>
-            </div>
-
-            <div class="client">
-              <img src="assets/images/clients/7.jpg" alt="client" style="height: 100px" />
-              <H6 style="justify-content: last baseline;margin-top: 8px;">Royal
-                enfield</H6>
-            </div>
-
-            <div class="client">
-              <img src="assets/images/clients/8.png" alt="client" style="height: 100px" />
-              <H6 style="justify-content: last baseline;margin-top: 8px;">Yamaha</H6>
-            </div>
-            <div class="client">
-              <img src="assets/images/clients/5.jpg" alt="client" style="height: 100px" ; />
-              <H6 style="justify-content: last baseline;margin-top: 8px;">Others</H6>
-            </div>
           </div>
         </div>
       </div>

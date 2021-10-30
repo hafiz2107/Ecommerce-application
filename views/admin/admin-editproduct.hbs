@@ -4,8 +4,7 @@
   <section class="col-sm-12 col-lg-12 col-md-12 ml-5 mt-5">
 
 
-    <form style="width: 70%;" method="POST" action="/admin/edit-product/{{productDetails._id}}"
-      enctype="multipart/form-data">
+    <form style="width: 70%;" method="POST" action="/admin/edit-product/{{productDetails._id}}" enctype="multipart/form-data">
 
       <div class="form-row">
         <div class="form-group col-md-6">
@@ -15,43 +14,74 @@
         </div>
       </div>
 
-      <div class="mb-3 form-row mt-3">
-        <input type="radio" id="" name="category" value="bikeaccessory" checked>
-        <label for="" class="pr-2">Bike Accessory</label>
-        <input type="radio" id="" name="category" value="touringaccessory">
-        <label for="">Touring Accessory</label>
-      </div>
       <div class="form-row mt-3">
-
         <div class="form-group col-md-6">
-          <select name="productbrand" id="" class="btn btn-primary text-light custom-select">
-            <option value="" class="dropdown-item text-dark bg-" selected disabled>Please select a bike brand</option>
-            <option value="jbracing" class="dropdown-item">JB Racing</option>
-          </select>
-
-
-          <select name="suitablebikebrand" id="bikebrand" class="btn btn-primary text-light custom-select">
-            <option value="" name="" class="dropdown-item text-dark bg-light" selected disabled>Select a bike brand
-            </option>
-            <option value="ktm">KTM</option>
-            <option value="Honda">Honda</option>
-            <option value="Hero">Hero</option>
-            <option value="BMW">BMW</option>
-            <option value="others">Others</option>
-          </select>
-
-          <select name="suitablebikemodel" id="bikemodel" class="btn text-light btn-primary  custom-select">
-            <option value="{{{productDetails.suitablebikemodel}}}" name="" class="dropdown-item text-dark bg-light"
-              selected='true' disabled>Suitable bike model</option>
-
-          </select>
-
-
-
+          <label for="">Product Code</label>
+          <input type="text" class="form-control" id="productcode" name="productcode" placeholder="">
         </div>
       </div>
 
+      <div class="mb-3 form-row mt-3">
+      
+        <select name="productcategory" id="mainCategory" class="btn btn-primary text-light custom-select">
+          <option value="" class="dropdown-item text-dark bg-" disabled>Product Category </option>
+          {{#each allCategories}}
+          <option value="{{this.mainCategory}}" class="dropdown-item">{{this.mainCategory}}</option>
+          {{/each}}
+        </select>
+      </div>
 
+      
+
+       
+        <div class="mb-3 form-row mt-3">
+          <select name="productsubcategory" id="" class="btn btn-primary text-light custom-select">
+            <option value="" class="dropdown-item text-dark bg-" disabled>Product sub Category </option>
+            {{#each allCategories}}
+            {{#each this.SubCategory}}
+            <option value="{{this}}" class="dropdown-item">{{this}}</option>
+            {{/each}}
+            {{/each}}
+        
+          </select>
+        </div>
+
+
+          <div class="mb-3 form-row mt-3">
+            <select name="productbrand" id="" class="btn btn-primary text-light custom-select">
+              <option value="" class="dropdown-item text-dark bg-" disabled>Product Brand </option>
+              {{#each allProductBrands}}
+          
+              <option value="{{this.ProBrand}}" class="dropdown-item">{{this.ProBrand}}</option>
+          
+              {{/each}}
+          
+            </select>
+          </div>
+
+        <div class="mb-3 form-row mt-3">
+          <select name="suitablebikebrand" id="bikebrand" class="btn btn-primary text-light custom-select">
+            <option value="" name="" class="dropdown-item text-dark bg-light">Suitable bike Brand </option>
+            {{#each allBikeBrands}}
+        
+            <option value="{{this.bikeBrand}}" class="dropdown-item">{{this.bikeBrand}}</option>
+        
+            {{/each}}
+        
+          </select>
+        </div>
+
+        <div class="mb-3 form-row mt-3">
+          <select name="suitablebikemodel" id="bikebrand1" class="btn btn-primary text-light custom-select">
+            <option value="" name="" class="dropdown-item text-dark bg-light">Suitable bike Model </option>
+            {{#each allBikeBrands}}
+            {{#each this.models}}
+            <option value="{{this}}" class="dropdown-item">{{this}}</option>
+            {{/each}}
+            {{/each}}
+        
+          </select>
+        </div>
 
 
       <div class="form-row mt-2">
@@ -158,8 +188,7 @@
  {{!-- Modal for cropping Ends--}}
 
       {{!-- Modal for edit confirmation --}}
-      <div class="modal fade bd-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel"
-        aria-hidden="true">
+      <div class="modal fade bd-example-modal-sm" id="editConfirm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-sm">
           <div class="modal-content">
             <div class="modal-header">
@@ -174,14 +203,14 @@
             <div class="modal-footer">
 
               <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-              <button type="submit" class="btn btn-success">Edit product</button>
+              <button type="submit" class="btn btn-success" >Edit product</button>
 
             </div>
           </div>
         </div>
       </div>
       {{!-- Modal for edit confirmation Ends--}}
-      <button type="button" id="confirm-btn" class="btn btn-primary">Edit</button>
+      <button type="button" data-toggle="modal" data-target="#editConfirm" id="confirm-btn"  class="btn btn-primary">Edit</button>
       <a href="/admin/view-product" class="btn btn-danger">Cancel</a>
     </form>
 

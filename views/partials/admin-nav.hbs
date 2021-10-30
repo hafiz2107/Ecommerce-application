@@ -1,17 +1,21 @@
-<div>
-  <div class="sidebar" data-color="danger" data-background-color="white">
+<div >
+  <div class="sidebar" data-color="danger" data-background-color="white" style="overflow-y: scroll;overflow-x:hidden ">
 
     <div class="logo">
       <a href="#" class="simple-text logo-normal" style="text-decoration: none;">
         <img src="/images/logo.png" alt="">
         <h3>Admin Panel</h3>
         <h6>Date : {{date}}</h6>
+        <h6>Day : {{weatherDet.day}}</h6>
+        <h6>Time :<span id="span"></span></h6>
+        <h6>Weather : {{weatherDet.temperature}}°C</h6>
+       
       </a>
     </div>
     <div class="sidebar-wrapper">
       <ul class="nav">
         <li class="nav-item active  ">
-          <a class="nav-link" href="./dashboard.html">
+          <a class="nav-link" href="/admin/home">
             <i class="material-icons">dashboard</i>
             <p>Home</p>
           </a>
@@ -97,7 +101,7 @@
           </a>
         </li>
         <li class="nav-item ">
-          <a class="nav-link" href="./notifications.html">
+          <a class="nav-link" href="/admin/coupons">
             <i class="material-icons">notifications</i>
             <p>Coupon Management</p>
           </a>
@@ -113,8 +117,19 @@
   </div>
 
   <script>
+      setInterval(time,1);
     function show() {
       document.getElementById('navContent').style.display = inline
     }
+
+    var span = document.getElementById('span');
+
+      function time() {
+        var d = new Date();
+        var s = d.getSeconds();
+        var m = d.getMinutes();
+        var h = d.getHours();
+        span.textContent = ("0" + h).substr(-2) + ":" + ("0" + m).substr(-2) + ":" + ("0" + s).substr(-2)
+      }
   </script>
 </div>

@@ -3,68 +3,101 @@
 
 
     <form style="width: 70%;" method="POST" action="/admin/add-product" enctype="multipart/form-data">
-
+ 
       <div class="form-row">
         <div class="form-group col-md-6">
           <label for="">Product Name</label>
           <input type="text" class="form-control" id="productname" name="productname" placeholder="">
         </div>
       </div>
+
       <div class="form-row mt-3">
         <div class="form-group col-md-6">
           <label for="">Product Code</label>
           <input type="text" class="form-control" id="productcode" name="productcode" placeholder="">
         </div>
       </div>
+        
+          <div class="mb-3 form-row mt-3">
+
+            <select name="productcategory" id="mainCategory" class="btn btn-primary text-light custom-select" >
+              <option value="" class="dropdown-item text-dark bg-" disabled>Product Category </option>
+              {{#each allCategories}}
+              <option value="{{this.mainCategory}}" class="dropdown-item">{{this.mainCategory}}</option>
+              {{/each}}
+            </select>
+          </div>
+
 
       <div class="mb-3 form-row mt-3">
-        <select name="productbrand" id="mainCategory" class="btn btn-primary text-light custom-select" onchange="displayAllSubCat()">
-          <option value="" class="dropdown-item text-dark bg-" disabled>Product Category </option>
+        <select name="productsubcategory" id="" class="btn btn-primary text-light custom-select">
+          <option value="" class="dropdown-item text-dark bg-" disabled>Product sub Category </option>
           {{#each allCategories}}
-            <option value="{{this.mainCategory}}" class="dropdown-item">{{this.mainCategory}}</option>   
+          {{#each this.SubCategory}}
+          <option value="{{this}}" class="dropdown-item">{{this}}</option>
           {{/each}}
+          {{/each}}
+
         </select>
       </div>
 
 
       <div class="mb-3 form-row mt-3">
         <select name="productbrand" id="" class="btn btn-primary text-light custom-select">
-          <option value="" class="dropdown-item text-dark bg-"  disabled>Product sub Category </option>
-          {{#each allCategories.SubCategory}}
-              <option value="{{this}}" class="dropdown-item">{{this}}</option>
+          <option value="" class="dropdown-item text-dark bg-" disabled>Product Brand </option>
+          {{#each allProductBrands}}
+
+          <option value="{{this.ProBrand}}" class="dropdown-item">{{this.ProBrand}}</option>
+
           {{/each}}
+
         </select>
       </div>
 
 
-      <div class="form-row mt-3">
+      <div class="mb-3 form-row mt-3">
+        <select name="suitablebikebrand" id="bikebrand" class="btn btn-primary text-light custom-select">
+          <option value="" name="" class="dropdown-item text-dark bg-light">Suitable bike Brand </option>
+          {{#each allBikeBrands}}
 
-        <div class="form-group col-md-6">
-          <select name="productbrand" id="" class="btn btn-primary text-light custom-select">
-            <option value="" class="dropdown-item text-dark bg-">Product Brand </option>
-            <option value="jbracing" class="dropdown-item">JB Racing</option>
-          </select>
+          <option value="{{this.bikeBrand}}" class="dropdown-item">{{this.bikeBrand}}</option>
 
+          {{/each}}
 
-          <select name="suitablebikebrand" id="bikebrand" class="btn btn-primary text-light custom-select">
-            <option value="" name="" class="dropdown-item text-dark bg-light">Suitable bike Brand </option>
-            <option value="ktm">KTM</option>
-            <option value="Honda">Honda</option>
-            <option value="Hero">Hero</option>
-            <option value="BMW">BMW</option>
-            <option value="bajaj">Bajaj</option>
-            <option value="yamaha">Yamaha</option>
-            <option value="others">Others</option>
-          </select>
-
-          <select name="suitablebikemodel" id="bikemodel" class="btn text-light btn-primary  custom-select">
-
-          </select>
-
-
-
-        </div>
+        </select>
       </div>
+
+      <div class="mb-3 form-row mt-3">
+        <select name="suitablebikemodel" id="bikebrand1" class="btn btn-primary text-light custom-select">
+          <option value="" name="" class="dropdown-item text-dark bg-light">Suitable bike Model </option>
+          {{#each allBikeBrands}}
+            {{#each this.models}}
+              <option value="{{this}}" class="dropdown-item">{{this}}</option>
+            {{/each}}
+          {{/each}}
+
+        </select>
+      </div>
+
+
+      {{!-- <select name="suitablebikebrand" id="bikebrand" class="btn btn-primary text-light custom-select">
+        <option value="" name="" class="dropdown-item text-dark bg-light">Suitable bike Brand </option>
+        <option value="ktm">KTM</option>
+        <option value="Honda">Honda</option>
+        <option value="Hero">Hero</option>
+        <option value="BMW">BMW</option>
+        <option value="bajaj">Bajaj</option>
+        <option value="yamaha">Yamaha</option>
+        <option value="others">Others</option>
+      </select>
+
+      <select name="suitablebikemodel" id="bikemodel" class="btn text-light btn-primary  custom-select">
+
+      </select>--}}
+
+
+
+
 
 
       <div class="form-row mt-2">
@@ -371,13 +404,14 @@
   });
 </script>
 
-{{!-- <script>
-  function displayAllSubCat(){
+{{!--
+<script>
+  function displayAllSubCat() {
     var cat = document.getElementById('mainCategory').value
-   $.ajax({
-     url : '/admin/getAppropriateCAt/'+cat,
-     method : 'get'
-   })
-    
+    $.ajax({
+      url: '/admin/getAppropriateCAt/' + cat,
+      method: 'get'
+    })
+
   }
 </script> --}}

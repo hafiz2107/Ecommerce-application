@@ -10,28 +10,63 @@
                             <div class="row">
 
                                 {{!-- Contents --}}
-                        {{#if orders}}
-                            {{#each orders}}
+                                {{#if orders}}
+                                {{#each orders}}
+                                {{#eq this.mode 'buynow'}}
+                                
                                 <div class="card col-sm-6 col-md-6 col-lg-4 col-xl-4 mt-4 cardbox"
                                     style="width: 18rem;margin-top: 15px;border-radius: 10px;">
-                                    <img src="/uploads/{{this.products._id}}__1.jpg" style="width: 100%;"
+                                    <img src="/uploads/{{this.productId}}__1.jpg" style="width: 100%;"
                                         class="card-img-top" alt="...">
                                     <div class="card-body text-center" style="margin-top: 15px;">
                                         <hr>
-                                        <a href="/productview/{{this.products._id}}" class="productview">
-                                            <h5 class="card-title ">{{this.products.productname}}</h5>
+                                        <a href="/productview/{{this.productId}}" class="productview">
+                                            <h5 class="card-title ">{{this.productName}}</h5>
                                         </a>
                                         <hr>
-                                        <h5>₹ <span style="color: red;">{{this.products.productprice}}</span></h5>
+                                        <h5>₹ <span style="color: red;">{{this.productprice}}</span></h5>
                                         <hr>
                                         <p>Ordered Date : {{this.orderDate}}</p>
+
+                                        {{#eq this.status 'pending'}}
+                                        <p>Status : <span style="color: red;">{{this.status}}</span></p>
+                                        <button class="btn btn-danger" data-toggle="modal" data-target="#{{this.productId}}11"
+                                            style="color: white;margin-bottom: 5px;">Cancel Order</button>
+                                        
+                                        <!-- Modal for order cancel for order placed -->
+                                        <div class="modal fade" id="{{this.productId}}11" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+                                            aria-hidden="true">
+                                            <div class="modal-dialog" role="document">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h3 class="modal-title" style="color: red;" id="exampleModalLabel">Cancel Order</h3>
+                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                            <span aria-hidden="true">&times;</span>
+                                                        </button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <h5>Are you sure you want to cancel the order ? </h5>
+                                                        <p>Once done cannot be reversed !</p>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-success" data-dismiss="modal">Cancel</button>
+                                                        <a class="btn btn-danger" href="cancelbuynoworder/{{this._id}}/{{this.productId}}">Ok</a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        {{!-- Modal End --}}
+                                        
+                                        {{/eq}}
+
                                         {{#eq this.status 'placed'}}
+                                        <p>Status : <span style="color: red;">{{this.status}}</span></p>
                                         <button class="btn btn-danger" data-toggle="modal"
-                                            data-target="#{{this.products._id}}11"
+                                            data-target="#{{this.productId}}11"
                                             style="color: white;margin-bottom: 5px;">Cancel Order</button>
 
                                         <!-- Modal for order cancel for order placed -->
-                                        <div class="modal fade" id="{{this.products._id}}11" tabindex="-1" role="dialog"
+                                        <div class="modal fade" id="{{this.productId}}11" tabindex="-1" role="dialog"
                                             aria-labelledby="exampleModalLabel" aria-hidden="true">
                                             <div class="modal-dialog" role="document">
                                                 <div class="modal-content">
@@ -50,9 +85,7 @@
                                                     <div class="modal-footer">
                                                         <button type="button" class="btn btn-success"
                                                             data-dismiss="modal">Cancel</button>
-                                                        <button type="button"
-                                                            onclick="deleteCartItem('{{this._id}}','{{this.product._id}}')"
-                                                            class="btn btn-danger" style="width: 70px;">Ok</button>
+                                                        <a class="btn btn-danger" href="cancelbuynoworder/{{this._id}}/{{this.productId}}">Ok</a>
                                                     </div>
                                                 </div>
                                             </div>
@@ -63,11 +96,12 @@
 
                                         {{!-- Checking status shipped --}}
                                         {{#eq this.status 'shipped'}}
+                                        <p>Status : <span style="color: red;">{{this.status}}</span></p>
                                         <button class="btn btn-danger" data-toggle="modal"
-                                            data-target="#{{this.products._id}}11"
+                                            data-target="#{{this.productId}}11"
                                             style="color: white;margin-bottom: 5px;">Cancel Order</button>
                                         <!-- Modal  for order cancel confirmation-->
-                                        <div class="modal fade" id="{{this.products._id}}11" tabindex="-1" role="dialog"
+                                        <div class="modal fade" id="{{this.productId}}11" tabindex="-1" role="dialog"
                                             aria-labelledby="exampleModalLabel" aria-hidden="true">
                                             <div class="modal-dialog" role="document">
                                                 <div class="modal-content">
@@ -86,9 +120,7 @@
                                                     <div class="modal-footer">
                                                         <button type="button" class="btn btn-success"
                                                             data-dismiss="modal">Cancel</button>
-                                                        <button type="button"
-                                                            onclick="deleteCartItem('{{this._id}}','{{this.product._id}}')"
-                                                            class="btn btn-danger" style="width: 70px;">Ok</button>
+                                                    <a class="btn btn-danger" href="cancelbuynoworder/{{this._id}}/{{this.productId}}">Ok</a>
                                                     </div>
                                                 </div>
                                             </div>
@@ -98,12 +130,154 @@
                                         {{/eq}}
 
                                         {{#eq this.status 'delivered'}}
-                                       
-                                        <a href="/orderinvoice?orderId={{this._id}}" class="btn btn-danger" style="color: white;margin-bottom: 5px;">View invoice</a>
+                                            <p>Status : <span style="color: red;">{{this.status}}</span></p>
+                                        <a href="/orderinvoice?orderId={{this._id}}&proName={{this.productName}}" class="btn btn-danger"
+                                            style="color: white;margin-bottom: 5px;">View invoice</a>
+                                        {{/eq}}
+
+                                        {{#eq this.status 'cancel'}}
+
+                                            <h5 style="color: red;">Cancelled</h5>
                                         {{/eq}}
 
                                     </div>
                                 </div>
+                               
+                                
+                                {{/eq}}
+                                {{/each}}
+
+
+                               
+                                {{!-- Displaying Cart orders if the order is made from cart --}}
+                                {{#each orders}}
+                                     {{#eq this.mode 'cartorder'}}
+                                        {{#each this.products}}
+                                            <div class="card col-sm-6 col-md-6 col-lg-4 col-xl-4 mt-4 cardbox"
+                                                style="width: 18rem;margin-top: 15px;border-radius: 10px;">
+                                                <img src="/uploads/{{this.item}}__1.jpg" style="width: 100%;" class="card-img-top" alt="...">
+                                                <div class="card-body text-center" style="margin-top: 15px;">
+                                                    <hr>
+                                                    <a href="/productview/{{this.item}}" class="productview">
+                                                        <h5 class="card-title ">{{this.name}}</h5>
+                                                    </a>
+                                                    <hr>
+                                                    <h5>₹ <span style="color: red;">{{this.price}}</span></h5>
+                                                    <hr>
+                                                    <p>Ordered Date : {{../this.orderDate}}</p>
+                                                    <p>Quantity : {{this.quantity}}</p>
+
+
+                                                    {{#eq this.status 'placed'}}
+                                                    <p>Status : <span style="color: red;">{{this.status}}</span></p>
+                                                    <button class="btn btn-danger" data-toggle="modal" data-target="#{{this.item}}11"
+                                                        style="color: white;margin-bottom: 5px;">Cancel Order</button>
+                                            
+                                                    <!-- Modal for order cancel for order placed -->
+                                                    <div class="modal fade" id="{{this.item}}11" tabindex="-1" role="dialog"
+                                                        aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                                        <div class="modal-dialog" role="document">
+                                                            <div class="modal-content">
+                                                                <div class="modal-header">
+                                                                    <h3 class="modal-title" style="color: red;" id="exampleModalLabel">Cancel Order</h3>
+                                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                        <span aria-hidden="true">&times;</span>
+                                                                    </button>
+                                                                </div>
+                                                                <div class="modal-body">
+                                                                    <h5>Are you sure you want to cancel the order ? </h5>
+                                                                    <p>Once done cannot be reversed !</p>
+                                                                </div>
+                                                                <div class="modal-footer">
+                                                                    <button type="button" class="btn btn-success" data-dismiss="modal">Cancel</button>
+                                                                    <a class="btn btn-danger" href="cancelcartorder/{{this.item}}/{{../this._id}}/{{this.quantity}}">Ok</a>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    {{!-- Modal End --}}
+                                            
+                                                    {{/eq}}
+
+                                                    {{#eq this.status 'pending'}}
+                                                    <p>Status : <span style="color: red;">{{this.status}}</span></p>
+                                                    <button class="btn btn-danger" data-toggle="modal" data-target="#{{this.item}}11"
+                                                        style="color: white;margin-bottom: 5px;">Cancel Order</button>
+                                                    
+                                                    <!-- Modal for order cancel for order placed -->
+                                                    <div class="modal fade" id="{{this.item}}11" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+                                                        aria-hidden="true">
+                                                        <div class="modal-dialog" role="document">
+                                                            <div class="modal-content">
+                                                                <div class="modal-header">
+                                                                    <h3 class="modal-title" style="color: red;" id="exampleModalLabel">Cancel Order</h3>
+                                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                        <span aria-hidden="true">&times;</span>
+                                                                    </button>
+                                                                </div>
+                                                                <div class="modal-body">
+                                                                    <h5>Are you sure you want to cancel the order ? </h5>
+                                                                    <p>Once done cannot be reversed !</p>
+                                                                </div>
+                                                                <div class="modal-footer">
+                                                                    <button type="button" class="btn btn-success" data-dismiss="modal">Cancel</button>
+                                                                    <a class="btn btn-danger" href="cancelcartorder/{{this.item}}/{{../this._id}}/{{this.quantity}}">Ok</a>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    {{!-- Modal End --}}
+                                                    
+                                                    {{/eq}}
+                                            
+                                                   
+                                            
+                                                    {{!-- Checking status shipped --}}
+                                                    {{#eq this.status 'shipped'}}
+                                                    <p>Status : <span style="color: red;">{{this.status}}</span></p>
+                                                    <button class="btn btn-danger" data-toggle="modal" data-target="#{{productId}}11"
+                                                        style="color: white;margin-bottom: 5px;">Cancel Order</button>
+                                                    <!-- Modal  for order cancel confirmation-->
+                                                    <div class="modal fade" id="{{productId}}11" tabindex="-1" role="dialog"
+                                                        aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                                        <div class="modal-dialog" role="document">
+                                                            <div class="modal-content">
+                                                                <div class="modal-header">
+                                                                    <h3 class="modal-title" style="color: red;" id="exampleModalLabel">Cancel Order</h3>
+                                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                        <span aria-hidden="true">&times;</span>
+                                                                    </button>
+                                                                </div>
+                                                                <div class="modal-body">
+                                                                    <h5>Are you sure you want to cancel the order ? </h5>
+                                                                    <p>Once done cannot be reversed !</p>
+                                                                </div>
+                                                                <div class="modal-footer">
+                                                                    <button type="button" class="btn btn-success" data-dismiss="modal">Cancel</button>
+                                                                    <a class="btn btn-danger" href="cancelcartorder/{{this.item}}/{{../this._id}}/{{this.quantity}}">Ok</a>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                            
+                                                    {{!-- Modal end --}}
+                                                    {{/eq}}
+                                            
+                                                    {{#eq this.status 'delivered'}}
+                                            
+                                                    <a href="/orderinvoice?orderId={{../this._id}}&proName={{this.name}}" class="btn btn-danger"
+                                                        style="color: white;margin-bottom: 5px;">View invoice</a>
+                                                    {{/eq}}
+
+                                                    {{#eq this.status 'cancel'}}
+                                                        <h3 style="color: red;">Cancelled</h3>
+                                                    {{/eq}}
+                                            
+                                                </div>
+                                            </div>
+                                            {{/each}}
+                                     {{/eq}}
+                               
                                 {{/each}}
                                 {{else}}
                                 <center>

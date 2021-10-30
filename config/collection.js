@@ -7,4 +7,5 @@ module.exports = {
     productCat : 'categories',
     proBrands : 'product_brands',
     bikeBrands : 'bike_brands',
+    coupon : 'coupons_collection',
 }

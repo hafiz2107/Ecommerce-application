@@ -1,9 +1,9 @@
 const { response } = require("express")
 const { DeactivationsList } = require("twilio/lib/rest/messaging/v1/deactivation")
 
-function addToCart(proId,proPrice) {
+function addToCart(proId, proPrice, proName) {
     $.ajax({
-        url: ' /add-to-cart/'+proId+'/'+proPrice,
+        url: ' /add-to-cart/'+proId+'/'+proPrice+'/'+proName,
         method: 'get',
         success: (response) => {
             if(response.status){
