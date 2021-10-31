@@ -372,11 +372,12 @@ router.get('/cart', async (req, res) => {
 
   if (req.session.LoggedIn) {
     let products = await userHelpers.getCartProducts(req.session.userDetails)
-
+    let allProducts = await userHelpers.fetchProducts()
+    
     if (products) {
       totalValue = await userHelpers.getTotalAmount(req.session.userDetails)
       let UserId = req.session.userDetails
-      res.render('user/user-cart', { title: 'Product', products, user: true, typeOfPersonUser: true, currentUser: req.session.user, userId, totalValue })
+      res.render('user/user-cart', { title: 'Product', products, user: true, typeOfPersonUser: true, currentUser: req.session.user, userId, totalValue, allProducts})
     }
     else {
       res.render('user/user-cart', { title: 'Product', currentUser, user: true, typeOfPersonUser: true, logStatus })
@@ -458,7 +459,7 @@ router.post('/checkoutbuynow', async (req, res) => {
         req.session.currentOrderId = orderId
         // Checking Whether the payement method is COD or online
         if (req.body.payment_method == 'COD') {
-           userHelpers.deleteCartProductsAfterOrder(req.body)
+           
             userHelpers.decreaseProductQuantity(req.body.proId).then((result) => {
                 res.json({ codSuccess: true })
           })
@@ -466,6 +467,7 @@ router.post('/checkoutbuynow', async (req, res) => {
         else {
           userHelpers.generateRazorpay(orderId, productprice).then((response) => { 
             userHelpers.decreaseProductQuantity(req.body.proId).then((result) => {
+              
                 res.json(response)
             })
           }).catch((err)=>{
@@ -491,26 +493,24 @@ router.post('/checkout', async (req, res) => {
     } else {
       productprice = totalPrice
     }
-
     userHelpers.placeOrderOnCart(req.body, products, productprice, req.body.coupon).then((orderId) => {
-      
-      
-      
+ 
       req.session.currentOrderId = orderId
       // Checking Whether the payement method is COD or online
       if (req.body.payment_method == 'COD') {
         userHelpers.decreseQuantityOncartOrder(products).then(() => {
-        userHelpers.deleteCartProductsAfterOrder(req.body)
+        // userHelpers.deleteCartProductsAfterOrder(req.body)
         res.json({ codSuccess: true })
         })
       } else {
-        
         userHelpers.generateRazorpay(orderId, productprice).then((response) => {
-          
           userHelpers.decreseQuantityOncartOrder(products).then(() => {
           // Response get after payement
-            res.json(response)
+            // userHelpers.deleteCartProductsAfterOrder(req.body)
+             res.json(response)
           })
+        }).catch((err)=>{
+          res.redirect('/404')
         })
       }
 

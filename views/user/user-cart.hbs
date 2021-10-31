@@ -1,141 +1,165 @@
-      <section id="shopcart" class="shop shop-cart">
-        <div class="container">
+<section id="shopcart" class="shop shop-cart">
+  <div class="container">
 
-          <div id="innerModal">
+    <div id="innerModal">
 
-          </div>
+    </div>
 
-          {{#if products}}
-          
-          <div class="row">
-              
-            <div class="col-xs-12 col-sm-12 col-md-12">
+    {{#if products}}
 
-            
-              <div class="cart-table table-responsive">
-                <table class="table table-bordered">
-                  <thead>
-                    <tr class="cart-product">
-                      <th class="cart-product-item">Product</th>
-                      <th class="cart-product-price">Price</th>
-                      <th class="cart-product-quantity">Quantity</th>
-                      <th class="cart-product-total">Total</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {{#each products}}
-                    <tr class="cart-product">
-                   
-                      
-                      <td class="cart-product-item">
-                        <div class="cart-product-remove">
+    <div class="row">
 
-                         <a data-toggle="modal" data-target="#{{this.product._id}}11" style="color: white;"><i class="bi bi-trash" ></i></a>
-                         {{!-- <button type="button" class="" data-toggle="modal" data-target="#exampleModal"><i class="bi bi-trash" ></button> --}}
-
-                          <!-- Modal -->
-                            <div class="modal fade" id="{{this.product._id}}11" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                              <div class="modal-dialog" role="document">
-                                <div class="modal-content">
-                                  <div class="modal-header">
-                                    <h3 class="modal-title" style="color: red;" id="exampleModalLabel">Delete</h3>
-                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                      <span aria-hidden="true">&times;</span>
-                                    </button>
-                                  </div>
-                                  <div class="modal-body">
-                                    <h5>Are you sure you want to delete ?</h5>
-                                  </div>
-                                  <div class="modal-footer">
-                                    <button type="button" class="btn btn-success" data-dismiss="modal">Cancel</button>
-                                    <button type="button" onclick="deleteCartItem('{{this._id}}','{{this.product._id}}')"  class="btn btn-danger" style="width: 90px;">Delete</button>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                            {{!-- Modal End --}}
-
-                        </div>
-                        <div class="cart-product-img">
-                          <img src="/uploads/{{this.product._id}}__1.jpg" alt="product" style="height: 50px;"/>
-                        </div>
-                        <div class="cart-product-name">
-                          <h6>{{this.product.productname}}</h6>
-                        </div>
-                      </td>
-                      
+      <div class="col-xs-12 col-sm-12 col-md-12">
 
 
-                      <td class="cart-product-price" style="color: brown;">₹  {{this.price}}</td>
-                      <td class="cart-product-quantity">
-                        <div class="product-quantity">
-                          {{#gt this.quantity '1'}}
-                          <button id="minus" onclick="changeQuantity('{{this._id}}','{{this.product._id}}',-1,'{{this.price}}','{{../userId}}')"><i class="fa fa-minus"></i></button>
-                          {{else}}
-                          <button id="minus" data-toggle="modal" data-target="#{{this.product._id}}11" style="width: 30px;"><i class="bi bi-trash" ></i></button>
-                          
-                          {{/gt}}
-                          <input type="text" value="{{this.quantity}}" id="{{this.product._id}}" readonly/>
-                          <button onclick="changeQuantity('{{this._id}}','{{this.product._id}}',1,'{{this.price}}','{{../userId}}')"><i class="fa fa-plus"></i></button>
-                         
-                        </div>
-                      </td>
-                      <td class="cart-product-total" id="{{this.product._id}}1">{{this.totalprice}}</td>
-                    </tr>
-                    {{/each}}
-
-                    <tr class="cart-product-action">
-                      <td colspan="4">
-                        <div class="row clearfix">
+        <div class="cart-table table-responsive">
+          <table class="table table-bordered">
+            <thead>
+              <tr class="cart-product">
+                <th class="cart-product-item">Product</th>
+                <th class="cart-product-price">Price</th>
+                <th class="cart-product-quantity">Quantity</th>
+                <th class="cart-product-total">Total</th>
+              </tr>
+            </thead>
+            <tbody>
+              {{#each products}}
+              <tr class="cart-product">
 
 
-{{!-- Apply coupon --}}
-                          {{!-- <div class="col-xs-12 col-sm-6 col-md-6">
-                            <form class="form-inline">
-                              <input type="text" class="form-control" id="coupon" placeholder="Coupon Code"/>
-                              <button type="submit" class="btn btn-primary">
-                                Apply Coupon
-                              </button>
-                            </form>
-                          </div> --}}
+                <td class="cart-product-item">
+                  <div class="cart-product-remove">
+                    <a data-toggle="modal" data-target="#{{this.product._id}}11" style="color: white;"><i
+                        class="bi bi-trash"></i></a>
+                    {{!-- <button type="button" class="" data-toggle="modal" data-target="#exampleModal"><i
+                        class="bi bi-trash"></button> --}}
 
-                          <div class="col-xs-12 col-sm-6 col-md-6 pull-right">
-                            <h6 class="pull-right mb-4" >Cart Totals : Rs. <span style="color: brown;font-weight:600;font-size: 19px;" id="total">{{totalValue}}</span></h6><br><hr>
-                            <a class="btn btn-primary pull-right " href="/checkout" onclick="reload()" style="float: right;">Proceed To Checkout</a>
+                    <!-- Modal -->
+                    <div class="modal fade" id="{{this.product._id}}11" tabindex="-1" role="dialog"
+                      aria-labelledby="exampleModalLabel" aria-hidden="true">
+                      <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <h3 class="modal-title" style="color: red;" id="exampleModalLabel">Delete</h3>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                              <span aria-hidden="true">&times;</span>
+                            </button>
+                          </div>
+                          <div class="modal-body">
+                            <h5>Are you sure you want to delete ?</h5>
+                          </div>
+                          <div class="modal-footer">
+                            <button type="button" class="btn btn-success" data-dismiss="modal">Cancel</button>
+                            <button type="button" onclick="deleteCartItem('{{this._id}}','{{this.product._id}}')"
+                              class="btn btn-danger" style="width: 90px;">Delete</button>
                           </div>
                         </div>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </div>
+                      </div>
+                    </div>
+                    {{!-- Modal End --}}
+
+                  </div>
+                  <div class="cart-product-img">
+                    <img src="/uploads/{{this.product._id}}__1.jpg" alt="product" style="height: 50px;" />
+                  </div>
+                  <div class="cart-product-name">
+                    <h6>{{this.product.productname}}</h6>
+                  </div>
+                </td>
+                <center>
+                  <div id="limitReached"></div>
+                </center>
+
+
+                <td class="cart-product-price" style="color: brown;">₹ {{this.price}}</td>
+                <td class="cart-product-quantity">
+
+                  <div class="product-quantity">
+
+                    {{#gt this.quantity '1'}}
+                    <button id="minus"
+                      onclick="changeQuantity('{{this._id}}','{{this.product._id}}',-1,'{{this.price}}','{{../userId}}')"><i
+                        class="fa fa-minus"></i></button>
+                    {{else}}
+                    <button id="minus" data-toggle="modal" data-target="#{{this.product._id}}11" style="width: 30px;"><i
+                        class="bi bi-trash"></i></button>
+                    {{/gt}}
+
+
+                    <input type="text" value="{{this.quantity}}" id="{{this.product._id}}" readonly />
+
+                    {{#quantityCheckInCart ../allProducts this.product._id this.quantity this._id this.price userId}}
+                    {{/quantityCheckInCart}}
 
 
 
-            <div class="col-xs-12 col-sm-12 col-md-6">
-              <div class="cart-total-amount">
-                <h6>Cart Totals :</h6>
-                <ul class="list-unstyled">
-                  <li>Cart Subtotal :<span class="pull-right text-right">$ 140.00</span>
-                  </li>
-                  <li>Shipping :<span class="pull-right text-right">Free Shipping</span>
-                  </li>
-                  <li>Order Total :<span class="pull-right text-right">$ 140.00</span>
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </div>
-         
-          {{else}}
-          <center>
-            <h1 style="color: red;">Sorry your cart is empty</h1>
-                       <img src="/images/3298067.jpg" alt="" style="height: 250px;"><br>
-                            <a class="btn btn-primary" href="/" style="margin-top: 67px;">Add some products</a>     
-          </center>
-           {{/if}}
+
+                  </div>
+                </td>
+                <td class="cart-product-total" id="{{this.product._id}}1">{{this.totalprice}}</td>
+              </tr>
+              {{/each}}
+
+              <tr class="cart-product-action">
+                <td colspan="4">
+                  <div class="row clearfix">
+
+
+                    {{!-- Apply coupon --}}
+                    {{!-- <div class="col-xs-12 col-sm-6 col-md-6">
+                      <form class="form-inline">
+                        <input type="text" class="form-control" id="coupon" placeholder="Coupon Code" />
+                        <button type="submit" class="btn btn-primary">
+                          Apply Coupon
+                        </button>
+                      </form>
+                    </div> --}}
+
+                    <div class="col-xs-12 col-sm-6 col-md-6 pull-right">
+                      <h6 class="pull-right mb-4">Cart Totals : Rs. <span
+                          style="color: brown;font-weight:600;font-size: 19px;" id="total">{{totalValue}}</span></h6>
+                      <br>
+                      <hr>
+                      <a class="btn btn-primary pull-right " href="/checkout" onclick="reload()"
+                        style="float: right;">Proceed To Checkout</a>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
-      </section>
+      </div>
 
-      
+
+
+      {{!-- <div class="col-xs-12 col-sm-12 col-md-6">
+        <div class="cart-total-amount">
+          <h6>Cart Totals :</h6>
+          <ul class="list-unstyled">
+            <li>Cart Subtotal :<span class="pull-right text-right">$ 140.00</span>
+            </li>
+            <li>Shipping :<span class="pull-right text-right">Free Shipping</span>
+            </li>
+            <li>Order Total :<span class="pull-right text-right">$ 140.00</span>
+            </li>
+          </ul>
+        </div>
+      </div> --}}
+    </div>
+
+    {{else}}
+    <center>
+      <h1 style="color: red;">Sorry your cart is empty</h1>
+      <img src="/images/3298067.jpg" alt="" style="height: 250px;"><br>
+      <a class="btn btn-primary" href="/" style="margin-top: 67px;">Add some products</a>
+    </center>
+    {{/if}}
+  </div>
+</section>
+
+<script>
+  function displayMessage() {
+    document.getElementById('limitReached').innerHTML = '<span style="color: red;">The maximum for this unit reached</span>'
+  }
+</script>

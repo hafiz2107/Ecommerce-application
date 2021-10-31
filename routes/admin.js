@@ -177,10 +177,13 @@ router.get('/unblockuser/:id', (req, res) => {
 })
 
 router.get('/ordermanagement', (req, res) => {
-
-  adminHelper.getAllOrders().then((orders) => {
-    res.render('admin/admin-ordermanagement', { typeOfPersonAdmin: true, adminHeader: true, adminNav: true, orders, weatherDet })
-  })
+  if (req.session.adminLoggedIn){
+    adminHelper.getAllOrders().then((orders) => {
+      res.render('admin/admin-ordermanagement', { typeOfPersonAdmin: true, adminHeader: true, adminNav: true, orders, weatherDet })
+    })
+  }else{
+    res.redirect('/admin/login');
+  }
 })
 
 router.post('/updateorderstatus', (req, res) => {
@@ -347,6 +350,12 @@ router.post('/editcoupon',(req,res)=>{
 router.get('/deletecoupon/:couponId',(req,res)=>{
   adminHelper.deleteCoupon(req.params.couponId).then(()=>{
     res.redirect('/admin/coupons')
+  })
+})
+
+router.get('/report',(req,res)=>{
+  adminHelper.getAllOrders().then((orders) => {
+    res.render('admin/admin-report', { typeOfPersonAdmin: true, adminHeader: true, adminNav: true, orders, weatherDet})
   })
 })
 module.exports = router;

@@ -275,7 +275,10 @@
       </div>
     </section>
 </center>
+
+
         
+<script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/jquery.validate.min.js"></script>
 		
 <script>
   $(document).ready(function(){
@@ -283,14 +286,15 @@
       rules : {	
       username : {
         required : true,
-        
       },
       pwd : {
         required: true,
+		minlength : 6,
       },
       pwdc : {
         required : true,
         equalto : '#pass',
+		minlength: 6,
       },
       email : {
         email : true,

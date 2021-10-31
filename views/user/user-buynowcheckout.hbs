@@ -124,17 +124,17 @@
 
 
                         {{!-- Already applied coupon --}}
-                            <div id="alreadyUsedCoupon" style="display: none;">
-                                <p style="color: red;">The Coupon have already applied by you</p>
-                            </div>
+                        <div id="alreadyUsedCoupon" style="display: none;">
+                            <p style="color: red;">The Coupon have already applied by you</p>
+                        </div>
 
-                            <div id="couponApplySuccess">
-                                {{!-- Coupon apply success --}}
-                            </div>
+                        <div id="couponApplySuccess">
+                            {{!-- Coupon apply success --}}
+                        </div>
 
-                            <div id="couponDontExist">
-                                {{!-- Coupon doesnt Exist --}}
-                            </div>
+                        <div id="couponDontExist">
+                            {{!-- Coupon doesnt Exist --}}
+                        </div>
                         <p id="couponEnterSuccess">Enter your coupon code if you have one</p>
 
                         <div class="pcb-cuppon-input clearfix">
@@ -154,6 +154,7 @@
                             <li class="clearfix">Shipping and Handling <span>Free Shipping</span></li>
                             <li class="order-total clearfix">Order Total <span>₹ <span
                                         id="orderTotal">{{productToBuy.productprice}}</span> </span>
+
                                 <input type="hidden" name="totalAmount" id="productprice" value="">
                                 <input type="hidden" id="actualPrice" value="{{productToBuy.productprice}}">
                             </li>
@@ -195,14 +196,87 @@
 
 </section>
 
+<script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/jquery.validate.js"></script>
+
+<script>
+    $(document).ready(function () {
+        $('#checkoutbuynow-form').validate({
+            rules: {
+                firstname: {
+                    required: true,
+                },
+                lastname: {
+                    required: true,
+                },
+                housename: {
+                    required: true,
+                },
+                address1: {
+                    required: true,
+                },
+                address2: {
+                    minlength: 10,
+                },
+                city: {
+                    required: true,
+                },
+                country: {
+                    required: true,
+                },
+                state: {
+                    required: true,
+                },
+                pincode: {
+                    required: true,
+                    minlength: 6
+                },
+                phone: {
+                    required: true,
+                    minlength: 10,
+                    maxlength: 10,
+                },
+                second_mobile: {
+                    minlength: 10,
+                    maxlength: 10,
+                },
+            },
+            submitHandler: function () {
+                $.ajax({
+                    url: '/checkoutbuynow',
+                    method: 'post',
+                    data: $('#checkoutbuynow-form').serialize(),
+                    success: (response) => {
+
+                        if (response.codSuccess) {
+
+                            location.href = '/orderconfirmed';
+                        } else {
+                            razorpayPayment(response)
+                        }
+                    }
+                })
+
+            }
+        })
+
+
+    })
+</script>
+
 <script>
     function checkCoupon1() {
         var couponCode = document.getElementById('coupon').value
+        if (couponCode) {
+            console.log('couponCode')
+        } else {
+            couponCode = 0;
+        }
         var totalPrice = document.getElementById('orderTotal').innerHTML
         var actualPrice = document.getElementById('actualPrice').value
         var userId = document.getElementById('user_id').value
 
         totalPrice = parseInt(totalPrice)
+
         $.ajax({
 
             url: '/checkcoupon/' + couponCode + '/' + userId,
@@ -216,9 +290,9 @@
                     document.getElementById('orderTotal').innerHTML = actualPrice
                     document.getElementById('productprice').value = actualPrice
                     document.getElementById('couponEnterSuccess').style.display = 'none';
-
                 }
                 else if (coupon.appliedCoupon == false) {
+
                     var discountPrice = (totalPrice / 100) * coupon.coupon.coupondiscount
 
                     document.getElementById('orderTotal').innerHTML = totalPrice - discountPrice
@@ -242,7 +316,7 @@
                     document.getElementById('productprice').value = actualPrice
                     document.getElementById('couponEnterSuccess').style.display = 'none';
                     document.getElementById('couponApplySuccess').style.display = 'none';
-                    document.getElementById('couponDontExist').innerHTML = '<span style="color: red;">Invalid Coupon entered</span>'
+                    document.getElementById('couponDontExist').innerHTML = '<span style="color: red;">Please Enter a coupon</span>'
                 }
 
 
@@ -303,24 +377,7 @@
         document.getElementById('second_mobile').value = second_mobile
     }
 
-    $("#checkoutbuynow-form").submit((e) => {
 
-        e.preventDefault();
-        $.ajax({
-            url: '/checkoutbuynow',
-            method: 'post',
-            data: $('#checkoutbuynow-form').serialize(),
-            success: (response) => {
-                
-                if (response.codSuccess) {
-
-                    location.href = '/orderconfirmed';
-                } else {
-                    razorpayPayment(response)
-                }
-            }
-        })
-    })
 
     function razorpayPayment(order) {
         var options = {
@@ -376,6 +433,9 @@
 
 
 <style>
+    .error{
+        color: red !important;
+    }
     dt {
         color: black;
     }

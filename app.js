@@ -91,17 +91,29 @@ Handlebars.registerHelper('checkItemExistInCart', function (items, proId,price) 
   return data
 });
 
-// Handlebars.registerHelper('imageDisplay' ,(index)=>{
-//   console.log(index);
-//   tag = `<img src="/uploads/{{this.orderObj.products.${index}.item}}__1.jpg" alt="" height="280px">`
-//   return tag;
-  
-  
-// })
-// Handlebars.registerHelper('imageDisplay', (index) => {
-//   console.log(index);
-//   // tag = `<img src="/uploads/{{this.orderObj.products.${index}.item}}__1.jpg" alt="" height="280px">`
-// })
+Handlebars.registerHelper('quantityCheckInCart',(allProducts,cartProId,cartProQuantity,cartId,price,userId)=>{
+
+ 
+  for(index in allProducts){
+    var inp 
+    if (allProducts[index]._id.toString() === cartProId.toString()){
+      if (allProducts[index].productquantity-1 >= cartProQuantity){
+        inp = true
+      }else{
+        inp = false
+        break;
+      }
+    }
+  }
+  if (inp === true) {
+    // Display plus button
+    btnToReturn = `<button onclick="changeQuantity('${cartId}','${cartProId}',1,'${price}','${userId}')"><i class="fa fa-plus"></i></button>`
+  } else {
+    // Hide plus button
+    btnToReturn = '<button onclick="displayMessage()"><i class="fa fa-plus"></i></button>'
+  }
+  return btnToReturn
+})
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

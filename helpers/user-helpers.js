@@ -98,8 +98,15 @@ module.exports = {
             resolve(allProducts)
         })
     },
+    fetchProducts : ()=>{
+        return new Promise(async (resolve, reject) => {
+            var allProducts = await db.get().collection(collection.newproducts).find().toArray();
+            resolve(allProducts)
+        })
+    },
+    
     // TO get a single peoduct form database
-    singleProduct: (productId) => {
+    singleProduct : (productId) => {
         return new Promise(async (resolve, reject) => {
             var product = await db.get().collection(collection.newproducts).findOne({ _id: objectId(productId) })
 
@@ -409,8 +416,8 @@ module.exports = {
 
 
     // Function to delte the cart products after making order
-    deleteCartProductsAfterOrder: (details) => {
-        db.get().collection(collection.cartItems).deleteOne({ user: objectId(details.userId) })
+    deleteCartProductsAfterOrder: (userId) => {
+        db.get().collection(collection.cartItems).deleteOne({ user: objectId(userId) })
     },
 
     // function to get cart products to display in view orders page
@@ -458,13 +465,17 @@ module.exports = {
     },
 
     // Function to check the payement made is correct
-    verifyPayment: (details) => {
+    verifyPayment: (details,userId) => {
         return new Promise((resolve, reject) => {
             let crypto = require("crypto")
             let hmac = crypto.createHmac("sha256", "cN0l9zD6cn9mh8DdO2hvfdad")
             hmac.update(details['payment[razorpay_order_id]'] + '|' + details['payment[razorpay_payment_id]'])
             hmac = hmac.digest("hex");
             if (hmac == details['payment[razorpay_signature]']) {
+                // var deleteCart = function (){
+                //     this.deleteCartProductsAfterOrder(userId);
+                // }
+                // deleteCart.call(module.exports)
                 resolve()
             } else {
                 reject()
@@ -628,7 +639,7 @@ module.exports = {
     },deleteAddress : (addressId, userId)=>{
         return new Promise((resolve,reject)=>{
             db.get().collection(collection.userAddress).updateOne({ user: objectId(userId) }, { $pull: { address: { _id: addressId}}},{multi : true}).then((response)=>{
-                console.log("🐸🐸🐸💖💖 : ",response);
+              
                 resolve(response)
             })
         })

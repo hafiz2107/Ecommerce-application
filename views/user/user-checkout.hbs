@@ -180,17 +180,83 @@
                                 Payment</label>
 
                         </div>
+                        <in put type="hidden" id="user_id" value="{{user}}" name="userId">
                         <div class="create-account-checkout-method">
                             <div class="place-order">
                                 <button type="submit" class="checkout-page-button hvr-bs">Place order</button>
                             </div>
                         </div>
-                        <input type="hidden" id="user_id" value="{{user}}" name="userId">
                         </form>
                     </div>
                 </div>
             </div>
 </section>
+
+<script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/jquery.validate.js"></script>
+
+<script>
+    $(document).ready(function () {
+        $('#checkoutbuynow-form').validate({
+            rules: {
+                firstname: {
+                    required: true,
+                },
+                lastname: {
+                    required: true,
+                },
+                housename: {
+                    required: true,
+                },
+                address1: {
+                    required: true,
+                },
+                address2: {
+                    minlength: 10,
+                },
+                city: {
+                    required: true,
+                },
+                country: {
+                    required: true,
+                },
+                state: {
+                    required: true,
+                },
+                pincode: {
+                    required: true,
+                     minlength: 6
+                },
+                phone: {
+                    required: true,
+                     minlength: 10,
+                     maxlength: 10,
+                },
+                second_mobile: {
+                    minlength: 10,
+                    maxlength: 10,
+                },
+            },
+            submitHandler: function () {
+
+                $.ajax({
+                    url: '/checkout',
+                    method: 'post',
+                    data: $('#checkoutbuynow-form').serialize(),
+                    success: (response) => {
+
+                        if (response.codSuccess) {
+                            location.href = '/orderconfirmed';
+                        } else {
+                            razorpayPayment(response)
+                        }
+                    }
+                })
+            }
+        })
+     
+         
+    })
+</script>
 
 <script>
     function checkCoupon1() {
@@ -249,24 +315,7 @@
 </script>
 
 <script>
-    $("#checkoutbuynow-form").submit((e) => {
-
-        e.preventDefault();
-        $.ajax({
-            url: '/checkout',
-            method: 'post',
-            data: $('#checkoutbuynow-form').serialize(),
-            success: (response) => {
-
-                if (response.codSuccess) {
-                    location.href = '/orderconfirmed';
-                } else {
-                    razorpayPayment(response)
-                }
-            }
-        })
-    })
-
+   
 
 function saveaddress2(){
    
@@ -372,6 +421,10 @@ function saveaddress2(){
 
 
 <style>
+
+    .error{
+        color: red !important;
+    }
     dt {
         color: black;
     }
