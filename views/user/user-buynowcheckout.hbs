@@ -13,8 +13,10 @@
     <div class="container">
 
         <div class="row">
-            <div class="col-xs-6" style="margin-bottom: 10px ;">
+            <div class="col-xs-12" style="margin-bottom: 10px ;">
                 <div class="billing-address">
+                    {{#if addresses.address}}
+
 
                     <h5 class="checkout-box-title">SAVED ADDRESS</h5>
 
@@ -25,17 +27,18 @@
                                 <dt>{{this.firstname}} {{this.lastname}}</dt>
                                 <dd>{{this.address1}}</dd>
                                 <dt>
-                                    <label for="useaddress">Use Address</label>
-                                    <input type="checkbox" id="useaddress"
-                                        onclick="changeAddress('{{this.firstname}}','{{this.lastname}}','{{this.address1}}','{{this.address2}}','{{this.country}}','{{this.state}}','{{this.pincode}}','{{this.phone}}','{{this.second_mobile}}','{{this.housename}}')">
+                                    <label for="useaddress" style="color: #047bd5;">Use Address</label>
+                                    <input type="checkbox" id="{{this._id}}"
+                                        onclick="changeAddress('{{this.firstname}}','{{this.lastname}}','{{this.address1}}','{{this.address2}}','{{this.country}}','{{this.state}}','{{this.pincode}}','{{this.phone}}','{{this.second_mobile}}','{{this.housename}}','{{this.city}}','{{this._id}}')">
                                 </dt>
                                 <br>
                             </dl>
                         </div>
 
                         {{/each}}
+                           
                     </div>
-
+                    {{/if}}
                 </div>
             </div>
         </div>
@@ -64,8 +67,7 @@
                             <div class="billing-address-input clearfix">
                                 <label>ADDRESS *</label>
                                 <input type="text" placeholder="Street Address" name="address1" id="address1">
-                                <input type="text" placeholder="Fashin, suite, unite ect (optinal)" name="address2"
-                                    id="address2">
+                                <input type="text" placeholder="Fashin, suite, unite etc" name="address2" id="address2">
                             </div>
 
                             <div class="billing-address-input clearfix">
@@ -97,6 +99,8 @@
                             <div class="billing-address-input clearfix" style="margin-bottom:0px">
                                 <label>PHONE *</label>
                                 <input type="text" name="phone" id="phone">
+                                <label for="useRegPh">Use Registered Phone</label>
+                                <input type="checkbox" id="useRegPh" onclick="useRegPhone()" style="display: block;">
                             </div>
 
                             <div class="billing-address-input clearfix">
@@ -106,12 +110,11 @@
 
                             <br>
                             <div class="billing-address-input clearfix">
-                                <label id="saveaddresslabel" for="">Save Address</label>
-                                <input type="radio" id="saveaddress" onclick="saveaddress2()">
+                                <label id="saveaddresslabel" for="">  Save Address  </label>
+                                <input name="saveaddress" style="margin-left: 5px;" type="checkbox" id="saveaddress">
                             </div>
-                            <div id="addresssuccess" style="display: none;">
-                                <p style="color: green;">Address saved successfully</p>
-                            </div>
+
+
                     </div>
                 </div>
             </div>
@@ -123,18 +126,7 @@
                     <div class="pcb-content">
 
 
-                        {{!-- Already applied coupon --}}
-                        <div id="alreadyUsedCoupon" style="display: none;">
-                            <p style="color: red;">The Coupon have already applied by you</p>
-                        </div>
-
-                        <div id="couponApplySuccess">
-                            {{!-- Coupon apply success --}}
-                        </div>
-
-                        <div id="couponDontExist">
-                            {{!-- Coupon doesnt Exist --}}
-                        </div>
+  
                         <p id="couponEnterSuccess">Enter your coupon code if you have one</p>
 
                         <div class="pcb-cuppon-input clearfix">
@@ -151,7 +143,7 @@
                         <ul>
                             <li class="clearfix">Amount <span style="font-weight: bolder;font-size: 20px;">₹
                                     {{productToBuy.productprice}}</span></li>
-                            <li class="clearfix">Shipping and Handling <span>Free Shipping</span></li>
+                            <li class="clearfix">Discount <span>₹<span id="discount">0</span></span></li>
                             <li class="order-total clearfix">Order Total <span>₹ <span
                                         id="orderTotal">{{productToBuy.productprice}}</span> </span>
 
@@ -166,16 +158,15 @@
                     <h5 class="checkout-box-title">PAYMENT METHOD</h5>
                     <div class="pcb-content">
                         <p>Select your payment method</p>
+                        
                         <div class="pcb-cuppon-input clearfix">
-                            <input type="radio" name="payment_method" id="payementChoice" value="COD">
-                            <label
-                                style="margin-left: 10px;color: #000000;font-size: 14px;font-weight: 400;">COD</label>
+                            <input type="radio" name="payment_method" id="payementChoiceCod" value="COD" onclick="hideError()">
+                            <label style="margin-left: 10px;color: #000000;font-size: 14px;font-weight: 400;">COD</label>
                         </div>
                         <div class="pcb-cuppon-input clearfix">
-                            <input type="radio" name="payment_method" id="payementChoice" value="online">
-                            <label style="margin-left: 10px;color: #000000;font-size: 14px;font-weight: 400;">Online
-                                Payment</label>
-
+                            <input type="radio" name="payment_method" id="payementChoiceOnline" value="online" onclick="hideError()">
+                            <label style="margin-left: 10px;color: #000000;font-size: 14px;font-weight: 400;">Online Payment</label>
+                            <div id="showPayError"></div>
                         </div>
                         <div class="create-account-checkout-method">
                             <div class="place-order">
@@ -197,6 +188,24 @@
 </section>
 
 <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/jquery.validate.js"></script>
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
+<script>
+    //For Hiding the error shown when no payement selected
+    function hideError(){
+        document.getElementById('showPayError').style.display = 'none';
+    }
+
+//For displaying registered phoen number when clicking the checkbox
+    function useRegPhone(){
+    if(document.getElementById('useRegPh').checked == true){
+        document.getElementById('phone').value = {{theUser.mobile}}
+    }
+    else{
+         document.getElementById('phone').value = ''
+    }
+    }
+</script>
 
 <script>
     $(document).ready(function () {
@@ -215,7 +224,7 @@
                     required: true,
                 },
                 address2: {
-                    minlength: 10,
+                     required: true,
                 },
                 city: {
                     required: true,
@@ -239,24 +248,32 @@
                     minlength: 10,
                     maxlength: 10,
                 },
+                payment_method: {
+                    required: true,
+                }
             },
             submitHandler: function () {
-                $.ajax({
-                    url: '/checkoutbuynow',
-                    method: 'post',
-                    data: $('#checkoutbuynow-form').serialize(),
-                    success: (response) => {
+                
+                if (document.getElementById('payementChoiceCod').checked == true || document.getElementById('payementChoiceOnline').checked == true) {
+                    $.ajax({
+                        url: '/checkoutbuynow',
+                        method: 'post',
+                        data: $('#checkoutbuynow-form').serialize(),
+                        success: (response) => {
 
-                        if (response.codSuccess) {
+                            if (response.codSuccess) {
 
-                            location.href = '/orderconfirmed';
-                        } else {
-                            razorpayPayment(response)
+                                location.href = '/orderconfirmed';
+                            } else {
+                                razorpayPayment(response)
+                            }
                         }
-                    }
-                })
-
+                    })
+                } else {
+                    document.getElementById('showPayError').innerHTML = '<span style="color: red;">Please choose a payement method</span>'
+                }
             }
+
         })
 
 
@@ -267,7 +284,7 @@
     function checkCoupon1() {
         var couponCode = document.getElementById('coupon').value
         if (couponCode) {
-            console.log('couponCode')
+            console.log('Coupon Applied')
         } else {
             couponCode = 0;
         }
@@ -279,44 +296,38 @@
 
         $.ajax({
 
-            url: '/checkcoupon/' + couponCode + '/' + userId,
+            url: '/checkcoupon/' + couponCode + '/' + actualPrice,
             method: 'get',
 
             success: ({ coupon }) => {
 
                 if (coupon.appliedCoupon) {
-                    document.getElementById('alreadyUsedCoupon').style.display = 'block'
-                    document.getElementById('coupon').style.backgroundColor = '#ff4747';
+                   
+                    document.getElementById('discount').innerHTML = '0';
                     document.getElementById('orderTotal').innerHTML = actualPrice
                     document.getElementById('productprice').value = actualPrice
-                    document.getElementById('couponEnterSuccess').style.display = 'none';
+                    document.getElementById('couponEnterSuccess').style.display = 'block';
+                    swal("Coupon Alredy Applied", `Looks Like you have alredy applied the coupon`, "info");
                 }
                 else if (coupon.appliedCoupon == false) {
-
-                    var discountPrice = (totalPrice / 100) * coupon.coupon.coupondiscount
-
-                    document.getElementById('orderTotal').innerHTML = totalPrice - discountPrice
-                    document.getElementById('productprice').value = totalPrice - discountPrice
-                    document.getElementById('coupon').style.backgroundColor = '#47ff69';
-                    document.getElementById('couponApplySuccess').style.display = 'block';
-                    document.getElementById('couponApplySuccess').innerHTML = '<span style="color: red;">Coupon Applied <br> You are eligible for ' + coupon.coupon.coupondiscount + '% discount</span>'
+                    document.getElementById('orderTotal').innerHTML = coupon.priceAfterDiscount
+                    document.getElementById('productprice').value = coupon.priceAfterDiscount
+                    document.getElementById('discount').innerHTML = coupon.discount
                     document.getElementById('couponEnterSuccess').style.display = 'none';
-                    document.getElementById('couponDontExist').style.display = 'none'
+                    swal("Coupon Applied", `You are eligible for ${coupon.coupon.coupondiscount} % discount`, "success");
                 }
                 else if (coupon.couponDontExist) {
-                    document.getElementById('coupon').style.backgroundColor = '#ff4747';
+                    document.getElementById('discount').innerHTML = '0';
                     document.getElementById('orderTotal').innerHTML = actualPrice
-                    document.getElementById('productprice').value = actualPrice
-                    document.getElementById('couponEnterSuccess').style.display = 'none';
-                    document.getElementById('couponApplySuccess').style.display = 'none';
-                    document.getElementById('couponDontExist').innerHTML = '<span style="color: red;">Invalid Coupon entered</span>'
+                    document.getElementById('productprice').value = actualPrice  
+                    document.getElementById('couponEnterSuccess').style.display = 'block';
+                    swal("Coupon Error", `Invalid Coupon entered`, "error");
                 } else {
                     document.getElementById('coupon').style.backgroundColor = '#ff4747';
+                    document.getElementById('discount').innerHTML = '0';
                     document.getElementById('orderTotal').innerHTML = actualPrice
                     document.getElementById('productprice').value = actualPrice
-                    document.getElementById('couponEnterSuccess').style.display = 'none';
-                    document.getElementById('couponApplySuccess').style.display = 'none';
-                    document.getElementById('couponDontExist').innerHTML = '<span style="color: red;">Please Enter a coupon</span>'
+           
                 }
 
 
@@ -326,6 +337,7 @@
 </script>
 
 <script>
+
     function saveaddress2() {
 
         firstname = document.getElementById('firstname').value
@@ -363,18 +375,32 @@
 
 <script>
 
-    function changeAddress(firstname, lastname, address1, address2, country, state, pincode, phone, second_mobile, housename) {
+    function changeAddress(firstname, lastname, address1, address2, country, state, pincode, phone, second_mobile, housename, city,id) {
+console.log(document.getElementById(id).checked)
+        if (document.getElementById(id).checked === true) {
 
-        document.getElementById('firstname').value = firstname
-        document.getElementById('lastname').value = lastname
-        document.getElementById('housename').value = housename
-        document.getElementById('address1').value = address1
-        document.getElementById('address2').value = address2
-        document.getElementById('country').value = country
-
-        document.getElementById('pincode').value = pincode
-        document.getElementById('phone').value = phone
-        document.getElementById('second_mobile').value = second_mobile
+            document.getElementById('firstname').value = firstname
+            document.getElementById('lastname').value = lastname
+            document.getElementById('housename').value = housename
+            document.getElementById('address1').value = address1
+            document.getElementById('address2').value = address2
+            document.getElementById('country').value = country
+            document.getElementById('pincode').value = pincode
+            document.getElementById('phone').value = phone
+            document.getElementById('second_mobile').value = second_mobile
+            document.getElementById('city').value = city
+        } else {
+            document.getElementById('firstname').value = ''
+            document.getElementById('lastname').value = ''
+            document.getElementById('housename').value = ''
+            document.getElementById('address1').value = ''
+            document.getElementById('address2').value = ''
+            document.getElementById('country').value = ''
+            document.getElementById('pincode').value = ''
+            document.getElementById('phone').value = ''
+            document.getElementById('second_mobile').value = ''
+            document.getElementById('city').value = ''
+        }
     }
 
 
@@ -433,9 +459,10 @@
 
 
 <style>
-    .error{
+    .error {
         color: red !important;
     }
+
     dt {
         color: black;
     }

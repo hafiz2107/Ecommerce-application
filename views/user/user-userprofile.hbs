@@ -17,10 +17,11 @@
 
                                     {{!-- Profile Image --}}
                                     <div class="img__wrap">
-                                        <div id="errMess1"></div>
+                                        
                                         <img class="img__img" src="/profileImages/{{user._id}}1.jpg" height="150px" id="imgview1" />
-                                        <label data-toggle="modal" data-target="#exampleModal" class="img__description" id="edit_img" for="profileimage"><h5 class="editText"><i class="bi bi-pencil"></i>  Edit</h5></label>
-                                        <input type="file" name="profileImage" id="profileimage" onchange="return fileValidation1()">
+                                        <label  class="img__description" id="edit_img" for="profileimage"><h5 class="editText"><i class="bi bi-pencil"></i>  Edit</h5></label>
+                                        <input type="file" data-toggle="modal" name="profileImage" id="profileimage" onchange="return fileValidation1()">
+                                        <div id="errMess1"></div>
                                     </div>
 
                                     {{!-- Modal for image croping --}}
@@ -37,7 +38,8 @@
                                                     <div class="modal-body">
                                                         <div class="col-12">
                                                             <div style="width: 300px; height: auto; display: none;" id="image-box"></div>
-                                                            <button type="button" class="btn btn-success" data-dismiss="modal"  style="float: right;">Close</button>
+                                                            
+                                                            <button type="button" class="btn btn-success" data-dismiss="modal">Close</button>
                                                             <button style="display: none;" class="btn btn-danger mt-4" type="button" id="crop-btn" data-dismiss="modal"  style="float: right;">Crop</button>
                                                         </div>
                                                     </div>
@@ -171,10 +173,20 @@
             var allowedExtensions = /(\.jpg)$/i;
             if (!allowedExtensions.exec(filePath)) {
                 document.getElementById('errMess1').innerHTML = '<p style="color:red; display: block;">Invalid file type</p>'
+                document.getElementById('image-box ').style.display = 'none'
                 fileInput.value = '';
                 return false;
             } else {
                 document.getElementById('errMess1').innerHTML = ''
+
+                var fileTrue = document.getElementById('profileimage').onchange.length
+                if(fileTrue == 1){
+                    document.getElementById('profileimage').dataset.target = '#exampleModal'
+                    document.getElementById('profileimage').click()
+                    fileTrue = 0
+                }
+                document.getElementById('profileimage').dataset.target = 'none'
+
                 //Image preview
                 const img_data = fileInput.files[0]
                 const url = URL.createObjectURL(img_data)

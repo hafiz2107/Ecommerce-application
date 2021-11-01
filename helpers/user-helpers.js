@@ -425,6 +425,7 @@ module.exports = {
 
         return new Promise(async (resolve, reject) => {
             let cart = await db.get().collection(collection.cartItems).findOne({ user: objectId(userId) })
+           
             resolve(cart.products)
         })
 
@@ -527,14 +528,15 @@ module.exports = {
                         email: details.email,
                         mobile: details.mobile,
                         second_mobile: details.secondphone,
+                      
                         address1: details.address1,
                         address2: details.address2,
+                        
                         country: details.country,
                         state: details.state,
                         pincode: details.pincode,
                     }
                 }).then((response) => {
-                    console.log('😆😆😆😆 : ', response)
                     resolve(response);
                 })
         })
@@ -559,8 +561,10 @@ module.exports = {
             lastname: newAddress.lastname,
             phone: newAddress.phone,
             second_mobile: newAddress.second_mobile,
+            housename: newAddress.housename,
             address1: newAddress.address1,
             address2: newAddress.address2,
+            city: newAddress.city,
             state: newAddress.state,
             country: newAddress.country,
             pincode: newAddress.pincode,
@@ -688,7 +692,7 @@ module.exports = {
             })
         })
     },
-    checkCouponCode: (couponCode, userId) => {
+    checkCouponCode: (couponCode, proPrice, userId ) => {
         return new Promise(async (resolve, reject) => {
             await db.get().collection(collection.coupon).findOne({ couponcode: couponCode }).then((coupon) => {
                 if (coupon) {
@@ -697,7 +701,10 @@ module.exports = {
                         if (userAppliedCoupon) {
                             resolve({ appliedCoupon: true })
                         } else {
-                            resolve({ appliedCoupon: false, coupon })
+                            proPrice = parseInt(proPrice)
+                            var discount = (proPrice / 100) * parseInt(coupon.coupondiscount)
+                            var priceAfterDiscount = proPrice - discount
+                            resolve({ appliedCoupon: false, coupon, discount, priceAfterDiscount})
                         }
                     })
                 } else {

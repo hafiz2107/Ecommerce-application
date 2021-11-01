@@ -14,6 +14,7 @@ var currentUser
 let cartCount
 let cartProductsTodisplay
 let totalValue
+var theUser
 
 /* GET home page. */
 router.get('/', async function (req, res, next) {
@@ -88,6 +89,7 @@ router.post('/login', (req, res) => {
   userHelpers.doLogin(req.body).then((response) => {
      if (response.status) {
       //  Assigning block to the session
+       theUser = response.user
       req.session.block = response.user.block
 
       if(req.session.block == 'true'){
@@ -434,10 +436,9 @@ router.get('/checkout', async (req, res) => {
 router.get('/checkoutbuynow/:id', async (req, res) => {
   if (req.session.LoggedIn) {
     let userId = req.session.userDetails
-    let product = userHelpers.getProductForBuyNow(req.params.id).then(async(productToBuy) => {
-      
+    userHelpers.getProductForBuyNow(req.params.id).then(async(productToBuy) => {
     let addresses =await userHelpers.findUserAddress(req.session.userDetails)
-      res.render('user/user-buynowcheckout', { title: 'Checkout', user: true, userId, currentUser: req.session.user, typeOfPersonUser: true, logStatus, productToBuy, addresses})
+      res.render('user/user-buynowcheckout', { title: 'Checkout',theUser,user: true, userId, currentUser: req.session.user, typeOfPersonUser: true, logStatus, productToBuy, addresses})
     })
   } else {
     res.redirect('/login')
@@ -447,7 +448,10 @@ router.get('/checkoutbuynow/:id', async (req, res) => {
 // Posting Checkout form fro buy now
 router.post('/checkoutbuynow', async (req, res) => {
   if (req.session.LoggedIn) {
-    
+
+    if (req.body.saveaddress == 'on') {
+      userHelpers.AddNewAddress(req.body,req.session.userDetails)
+    }
     let product = await userHelpers.getProductForBuyNow(req.body.proId)
     if (req.body.totalAmount){
       productprice = req.body.totalAmount
@@ -485,15 +489,15 @@ router.post('/checkout', async (req, res) => {
 
   if (req.session.LoggedIn) {
     
-    let products = await userHelpers.getCartProductList(req.body.userId)
+    let products = await userHelpers.getCartProductList(req.session.userDetails)
     let totalPrice = await userHelpers.getTotalAmount(req.session.userDetails)
 
     if (req.body.totalAmount) {
       productprice = req.body.totalAmount
-    } else {
+    } else {   
       productprice = totalPrice
     }
-    userHelpers.placeOrderOnCart(req.body, products, productprice, req.body.coupon).then((orderId) => {
+    userHelpers.placeOrderOnCart(req.body, products, parseInt(productprice), req.body.coupon).then((orderId) => {
  
       req.session.currentOrderId = orderId
       // Checking Whether the payement method is COD or online
@@ -503,7 +507,7 @@ router.post('/checkout', async (req, res) => {
         res.json({ codSuccess: true })
         })
       } else {
-        userHelpers.generateRazorpay(orderId, productprice).then((response) => {
+        userHelpers.generateRazorpay(orderId, parseInt(productprice)).then((response) => {
           userHelpers.decreseQuantityOncartOrder(products).then(() => {
           // Response get after payement
             // userHelpers.deleteCartProductsAfterOrder(req.body)
@@ -665,9 +669,9 @@ router.get('/cancelcartorder/:proId/:orderId/:quantity',(req,res)=>{
   })
 })
 
-router.get('/checkcoupon/:couponcode/:userId',(req,res)=>{
+router.get('/checkcoupon/:couponcode/:proPrice',(req,res)=>{
   
-  userHelpers.checkCouponCode(req.params.couponcode,req.params.userId).then((coupon)=>{
+  userHelpers.checkCouponCode(req.params.couponcode, req.params.proPrice,req.session.userDetails).then((coupon)=>{
     res.json({coupon})
   })
 })

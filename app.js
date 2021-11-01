@@ -110,7 +110,7 @@ Handlebars.registerHelper('quantityCheckInCart',(allProducts,cartProId,cartProQu
     btnToReturn = `<button onclick="changeQuantity('${cartId}','${cartProId}',1,'${price}','${userId}')"><i class="fa fa-plus"></i></button>`
   } else {
     // Hide plus button
-    btnToReturn = '<button onclick="displayMessage()"><i class="fa fa-plus"></i></button>'
+    btnToReturn = `<button onclick="limitReachedInCart('${cartProQuantity}')"><i class="fa fa-plus"></i></button>`
   }
   return btnToReturn
 })

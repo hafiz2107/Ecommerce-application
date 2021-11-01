@@ -70,14 +70,14 @@
     <div class="row">
 
       {{#each products}}
-      <div class="col-xs-6 col-sm-6 col-md-4 product">
+      <div class="col-xs-12 col-sm-12 col-md-4 product">
 
         <div class="product-img">
 
 {{!-- To display Sold out on the product if the quatity is 0 --}}
           {{#lte this.productquantity '0'}}
-                <h4>Sold out</h4>
                 <img id="" src="/uploads/{{this._id}}__1.jpg" alt="Product" style="height: 430px;" />
+                <img src="/images/Sold Out.png" alt="" style="display: inline; top: -440px; margin-bottom: -270px;">
                   <input type="text" hidden class="product-id" value="{{this._id}}">
               {{else}}
                 <img src="/uploads/{{this._id}}__1.jpg" alt="Product" style="height: 430px;" />

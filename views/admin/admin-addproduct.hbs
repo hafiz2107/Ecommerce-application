@@ -33,9 +33,9 @@
         <select name="productsubcategory" id="" class="btn btn-primary text-light custom-select">
           <option value="" class="dropdown-item text-dark bg-" disabled>Product sub Category </option>
           {{#each allCategories}}
-          {{#each this.SubCategory}}
-          <option value="{{this}}" class="dropdown-item">{{this}}</option>
-          {{/each}}
+            {{#each this.SubCategory}}
+              <option value="{{this}}" class="dropdown-item">{{this}}</option>
+            {{/each}}
           {{/each}}
 
         </select>

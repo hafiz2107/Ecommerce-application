@@ -154,7 +154,7 @@
                         <ul>
                             <li class="clearfix">Cart Subtotal <span style="font-weight: bolder;font-size: 20px;">₹
                                     {{totalValue}}</span></li>
-                            <li class="clearfix">Shipping and Handling <span>Free Shipping</span></li>
+                        <li class="clearfix">Discount <span>₹<span id="discount">0</span></span></li>
                             {{!-- <li class="order-total clearfix">Order Total <span>₹ {{totalValue}}</span></li> --}}
 
                             <li class="order-total clearfix">Order Total <span>₹ <span id="orderTotal">{{totalValue}}</span> </span>
@@ -170,27 +170,26 @@
                     <div class="pcb-content">
                         <p>Select your payment method</p>
                         <div class="pcb-cuppon-input clearfix">
-                            <input type="radio" name="payment_method" id="payementChoice" value="COD">
-                            <label
-                                style="margin-left: 10px;color: #000000;font-size: 14px;font-weight: 400;">COD</label>
+                            <input type="radio" name="payment_method" id="payementChoiceCod" value="COD">
+                            <label style="margin-left: 10px;color: #000000;font-size: 14px;font-weight: 400;">COD</label>
                         </div>
                         <div class="pcb-cuppon-input clearfix">
-                            <input type="radio" name="payment_method" id="payementChoice" value="online">
-                            <label style="margin-left: 10px;color: #000000;font-size: 14px;font-weight: 400;">Online
-                                Payment</label>
-
+                            <input type="radio" name="payment_method" id="payementChoiceOnline" value="online">
+                            <label style="margin-left: 10px;color: #000000;font-size: 14px;font-weight: 400;">Online Payment</label>
+                            <div id="showPayError"></div>
                         </div>
-                        <in put type="hidden" id="user_id" value="{{user}}" name="userId">
+                        <input type="hidden" id="user_id" value="{{user}}" name="userId">
+                        
                         <div class="create-account-checkout-method">
                             <div class="place-order">
                                 <button type="submit" class="checkout-page-button hvr-bs">Place order</button>
                             </div>
                         </div>
-                        </form>
+                </form>
                     </div>
                 </div>
             </div>
-</section>
+</section> 
 
 <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/jquery.validate.js"></script>
 
@@ -234,10 +233,12 @@
                 second_mobile: {
                     minlength: 10,
                     maxlength: 10,
-                },
+                }, 
+               
             },
             submitHandler: function () {
-
+                if(document.getElementById('payementChoiceCod').checked == true || document.getElementById('payementChoiceOnline').checked == true){
+                    document.getElementById('showPayError').style.display = 'none'
                 $.ajax({
                     url: '/checkout',
                     method: 'post',
@@ -251,6 +252,11 @@
                         }
                     }
                 })
+                }
+                else{
+                    document.getElementById('showPayError').style.display = 'block'
+                    document.getElementById('showPayError').innerHTML = '<span style="color: red;">Please choose a payement method</span>'
+                }
             }
         })
      
@@ -268,31 +274,32 @@
         totalPrice = parseInt(totalPrice)
         $.ajax({
 
-            url: '/checkcoupon/'+couponCode+'/'+userId,
+            url: '/checkcoupon/'+couponCode+'/'+actualPrice,
             method: 'get',
 
             success: ({ coupon }) => {
 
                 if (coupon.appliedCoupon) {
                     document.getElementById('alreadyUsedCoupon').style.display = 'block'
+                     document.getElementById('discount').innerHTML = '0';
                     document.getElementById('coupon').style.backgroundColor = '#ff4747';
                     document.getElementById('orderTotal').innerHTML = actualPrice
                     document.getElementById('productprice').value = actualPrice
+                    document.getElementById('couponDontExist').style.display = 'none'
                     document.getElementById('couponEnterSuccess').style.display = 'none';
 
                 }
                 else if (coupon.appliedCoupon == false) {
                     //Calculating Discounted Price
-                    var discountPrice = (totalPrice / 100) * coupon.coupon.coupondiscount
-
-
-                    document.getElementById('orderTotal').innerHTML =  totalPrice - discountPrice
-                    document.getElementById('productprice').value = totalPrice - discountPrice
+                    document.getElementById('orderTotal').innerHTML =  coupon.priceAfterDiscount
+                    document.getElementById('productprice').value = coupon.priceAfterDiscount
+                     document.getElementById('discount').innerHTML = coupon.discount
                     document.getElementById('coupon').style.backgroundColor = '#47ff69';
                     document.getElementById('couponApplySuccess').style.display = 'block';
                     document.getElementById('couponApplySuccess').innerHTML = '<span style="color: red;">Coupon Applied <br> You are eligible for ' + coupon.coupon.coupondiscount + '% discount</span>'
                     document.getElementById('couponEnterSuccess').style.display = 'none';
                     document.getElementById('couponDontExist').style.display = 'none'
+                    document.getElementById('alreadyUsedCoupon').style.display = 'none'
                 }
                 else if (coupon.couponDontExist) {
                     document.getElementById('coupon').style.backgroundColor = '#ff4747';
@@ -300,6 +307,7 @@
                     document.getElementById('productprice').value = actualPrice
                     document.getElementById('couponEnterSuccess').style.display = 'none';
                     document.getElementById('couponApplySuccess').style.display = 'none';
+                    document.getElementById('alreadyUsedCoupon').style.display = 'none';
                     document.getElementById('couponDontExist').innerHTML = '<span style="color: red;">Invalid Coupon entered</span>'
                 } else {
                     document.getElementById('coupon').style.backgroundColor = '#ff4747';
@@ -307,6 +315,8 @@
                     document.getElementById('productprice').value = actualPrice
                     document.getElementById('couponEnterSuccess').style.display = 'none';
                     document.getElementById('couponApplySuccess').style.display = 'none';
+                    document.getElementById('alreadyUsedCoupon').style.display = 'none'
+                    document.getElementById('couponDontExist').style.display = 'block '
                     document.getElementById('couponDontExist').innerHTML = '<span style="color: red;">Invalid Coupon entered</span>'
                 }
             }

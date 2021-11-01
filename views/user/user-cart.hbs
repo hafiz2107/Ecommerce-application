@@ -28,44 +28,20 @@
 
 
                 <td class="cart-product-item">
-                  <div class="cart-product-remove">
-                    <a data-toggle="modal" data-target="#{{this.product._id}}11" style="color: white;"><i
-                        class="bi bi-trash"></i></a>
-                    {{!-- <button type="button" class="" data-toggle="modal" data-target="#exampleModal"><i
-                        class="bi bi-trash"></button> --}}
 
-                    <!-- Modal -->
-                    <div class="modal fade" id="{{this.product._id}}11" tabindex="-1" role="dialog"
-                      aria-labelledby="exampleModalLabel" aria-hidden="true">
-                      <div class="modal-dialog" role="document">
-                        <div class="modal-content">
-                          <div class="modal-header">
-                            <h3 class="modal-title" style="color: red;" id="exampleModalLabel">Delete</h3>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                              <span aria-hidden="true">&times;</span>
-                            </button>
-                          </div>
-                          <div class="modal-body">
-                            <h5>Are you sure you want to delete ?</h5>
-                          </div>
-                          <div class="modal-footer">
-                            <button type="button" class="btn btn-success" data-dismiss="modal">Cancel</button>
-                            <button type="button" onclick="deleteCartItem('{{this._id}}','{{this.product._id}}')"
-                              class="btn btn-danger" style="width: 90px;">Delete</button>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    {{!-- Modal End --}}
+                  <div>
+                    <a class="cart-product-remove" onclick="deleteCartProduct('{{this._id}}','{{this.product._id}}')" style="color: white;"><i class="fa fa-close"></i></a>
+                 </div>
 
-                  </div>
                   <div class="cart-product-img">
                     <img src="/uploads/{{this.product._id}}__1.jpg" alt="product" style="height: 50px;" />
                   </div>
+
                   <div class="cart-product-name">
                     <h6>{{this.product.productname}}</h6>
                   </div>
                 </td>
+                
                 <center>
                   <div id="limitReached"></div>
                 </center>
@@ -77,12 +53,9 @@
                   <div class="product-quantity">
 
                     {{#gt this.quantity '1'}}
-                    <button id="minus"
-                      onclick="changeQuantity('{{this._id}}','{{this.product._id}}',-1,'{{this.price}}','{{../userId}}')"><i
-                        class="fa fa-minus"></i></button>
+                    <button id="minus" onclick="changeQuantity('{{this._id}}','{{this.product._id}}',-1,'{{this.price}}','{{../userId}}')"><i class="fa fa-minus"></i></button>
                     {{else}}
-                    <button id="minus" data-toggle="modal" data-target="#{{this.product._id}}11" style="width: 30px;"><i
-                        class="bi bi-trash"></i></button>
+                    <button id="minus" data-toggle="modal" data-target="#{{this.product._id}}11" style="width: 30px;" hidden><i class="bi bi-trash"></i></button>
                     {{/gt}}
 
 
@@ -105,15 +78,7 @@
                   <div class="row clearfix">
 
 
-                    {{!-- Apply coupon --}}
-                    {{!-- <div class="col-xs-12 col-sm-6 col-md-6">
-                      <form class="form-inline">
-                        <input type="text" class="form-control" id="coupon" placeholder="Coupon Code" />
-                        <button type="submit" class="btn btn-primary">
-                          Apply Coupon
-                        </button>
-                      </form>
-                    </div> --}}
+
 
                     <div class="col-xs-12 col-sm-6 col-md-6 pull-right">
                       <h6 class="pull-right mb-4">Cart Totals : Rs. <span
@@ -158,8 +123,3 @@
   </div>
 </section>
 
-<script>
-  function displayMessage() {
-    document.getElementById('limitReached').innerHTML = '<span style="color: red;">The maximum for this unit reached</span>'
-  }
-</script>
