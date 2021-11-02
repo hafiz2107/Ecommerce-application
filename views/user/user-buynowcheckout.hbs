@@ -22,13 +22,13 @@
 
                     <div class="row checkout-billing-adress-box">
                         {{#each addresses.address}}
-                        <div class="col-md-4">
+                        <div class="col-md-2">
                             <dl>
                                 <dt>{{this.firstname}} {{this.lastname}}</dt>
                                 <dd>{{this.address1}}</dd>
                                 <dt>
                                     <label for="useaddress" style="color: #047bd5;">Use Address</label>
-                                    <input type="checkbox" id="{{this._id}}"
+                                    <input type="radio" name="use" id="{{this._id}}"
                                         onclick="changeAddress('{{this.firstname}}','{{this.lastname}}','{{this.address1}}','{{this.address2}}','{{this.country}}','{{this.state}}','{{this.pincode}}','{{this.phone}}','{{this.second_mobile}}','{{this.housename}}','{{this.city}}','{{this._id}}')">
                                 </dt>
                                 <br>
@@ -99,9 +99,9 @@
                             <div class="billing-address-input clearfix" style="margin-bottom:0px">
                                 <label>PHONE *</label>
                                 <input type="text" name="phone" id="phone">
-                                <label for="useRegPh">Use Registered Phone</label>
-                                <input type="checkbox" id="useRegPh" onclick="useRegPhone()" style="display: block;">
                             </div>
+                                <label for="useRegPh"style="margin-bottom: 20px;">Use Registered Phone</label>
+                                <input type="checkbox" id="useRegPh" onclick="useRegPhone()">
 
                             <div class="billing-address-input clearfix">
                                 <label>ALTERNATE PHONE *</label>
@@ -208,14 +208,20 @@
 </script>
 
 <script>
+    $.validator.addMethod("alpha", function (value, element) {
+            return this.optional(element) || value == value.match(/^[a-zA-Z\s]+$/);
+        });
+
     $(document).ready(function () {
         $('#checkoutbuynow-form').validate({
             rules: {
                 firstname: {
                     required: true,
+                    alpha:true,
                 },
                 lastname: {
                     required: true,
+                     alpha: true,
                 },
                 housename: {
                     required: true,
@@ -228,6 +234,7 @@
                 },
                 city: {
                     required: true,
+                     alpha: true,
                 },
                 country: {
                     required: true,
@@ -237,20 +244,32 @@
                 },
                 pincode: {
                     required: true,
-                    minlength: 6
+                    digits:true,
+                    minlength: 6,
+                    maxlength : 6,
                 },
                 phone: {
                     required: true,
+                    digits:true,
                     minlength: 10,
                     maxlength: 10,
                 },
                 second_mobile: {
                     minlength: 10,
+                    digits:true,
                     maxlength: 10,
                 },
                 payment_method: {
                     required: true,
                 }
+            },
+            messages:{
+                firstname: {
+                    alpha: "Please Enter alphabets only",
+                },
+                lastname: {
+                    alpha: "Please Enter alphabets only",
+                },
             },
             submitHandler: function () {
                 
@@ -262,7 +281,6 @@
                         success: (response) => {
 
                             if (response.codSuccess) {
-
                                 location.href = '/orderconfirmed';
                             } else {
                                 razorpayPayment(response)
@@ -376,7 +394,7 @@
 <script>
 
     function changeAddress(firstname, lastname, address1, address2, country, state, pincode, phone, second_mobile, housename, city,id) {
-console.log(document.getElementById(id).checked)
+
         if (document.getElementById(id).checked === true) {
 
             document.getElementById('firstname').value = firstname
@@ -461,6 +479,7 @@ console.log(document.getElementById(id).checked)
 <style>
     .error {
         color: red !important;
+        font-size: x-small !important;
     }
 
     dt {

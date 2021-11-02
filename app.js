@@ -115,6 +115,25 @@ Handlebars.registerHelper('quantityCheckInCart',(allProducts,cartProId,cartProQu
   return btnToReturn
 })
 
+// Function to display all wishlist items
+Handlebars.registerHelper('checkItemExistOnWishlist',(wishlistItems , proId)=>{
+  for(key in wishlistItems){
+    var inp
+    if (wishlistItems[key].item.toString() == proId.toString()){
+      inp = true
+      break;
+    }else{
+      inp = false;
+    }
+  }
+  if(inp === true){
+    btnToReturn = `<a class="wishOn" style="width: 20px; border: white " onclick=" removeFromWish('${proId}')"><i style="color: #ff4343;" class="bi bi-heart-fill"></i></a>`
+  }else{
+    btnToReturn = `<a class="wishOn " style=" width: 20px; border: white " onclick="addToWishList('${proId}')"><i class="bi bi-heart"></i></a>`
+  }
+
+  return btnToReturn;
+})
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   next(createError(404));

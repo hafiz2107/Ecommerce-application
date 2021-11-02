@@ -45,12 +45,10 @@ function addToCart(proId, proPrice, proName) {
             else{
                 response.quantity = parseInt(response.quantity)
                 response.count = parseInt(response.count)
-
                 quantity = document.getElementById(pro_id).value = quantity+count;
                 document.getElementById(id).innerHTML = quantity*price;
                 document.getElementById('total').innerHTML = response.total
                 location.reload()
-               
             }
         }
           })

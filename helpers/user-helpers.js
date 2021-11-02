@@ -7,6 +7,7 @@ const Razorpay = require('razorpay');
 const { resolve } = require('path')
 const { DayContext } = require('twilio/lib/rest/bulkexports/v1/export/day')
 const { v4: uuidv4 } = require('uuid');
+const { wishlist } = require('../config/collection')
 
 var instance = new Razorpay({
     key_id: 'rzp_test_6unoyhPHG9D97d',
@@ -710,6 +711,49 @@ module.exports = {
                 } else {
                     resolve({ couponDontExist: true })
                 }
+            })
+        })
+    },
+    addToWishlist : (proId , userId)=>{
+        return new Promise(async(resolve,reject)=>{
+            var product = await db.get().collection(collection.newproducts).findOne({_id : objectId(proId)})
+            var wishObj = {
+                item : objectId(proId),
+                proName: product.productname,
+                proPrice: product.productprice,
+                quantity: product.productquantity,
+            }
+
+            var userWishlist = await db.get().collection(collection.wishlist).findOne({user:objectId(userId)})
+
+            if (userWishlist){
+                db.get().collection(collection.wishlist).updateOne({user : objectId(userId)},{$push : {products:wishObj}}).then((updatedResponse)=>{
+                    resolve(updatedResponse)  
+                })
+            }else{
+                var wishlist = {
+                    user : objectId(userId),
+                    products : [wishObj],
+                }
+                db.get().collection(collection.wishlist).insertOne(wishlist).then((response)=>{
+                 
+                    resolve(response)  
+                })
+            }
+
+        })
+    },
+    getUserWish : (userId)=>{
+        return new Promise(async(resolve,reject)=>{
+            var userWish = await db.get().collection(collection.wishlist).findOne({user : objectId(userId)})
+            // resolving an array of objects containing products
+            resolve(userWish.products)
+        })
+    },
+    removeFromWish : (proId , userId)=>{
+        return new Promise((resolve,reject)=>{
+            db.get().collection(collection.wishlist).updateOne({user :objectId(userId)},{$pull : {products:{item: objectId(proId)}}}).then((response)=>{
+                resolve(response)
             })
         })
     }

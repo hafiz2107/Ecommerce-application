@@ -8,4 +8,5 @@ module.exports = {
     proBrands : 'product_brands',
     bikeBrands : 'bike_brands',
     coupon : 'coupons_collection',
+    wishlist : 'wishlist_collection',
 }
