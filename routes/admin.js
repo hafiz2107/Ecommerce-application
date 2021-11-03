@@ -213,7 +213,6 @@ router.get('/viewoderlistofBuyNow/:orderId/:userId',(req,res)=>{
 router.get('/addmaincategory', (req, res) => {
   if (req.session.adminLoggedIn) {
     adminHelper.fetchAllMainCategories().then((allCategories) => {
-      console.log('🪱🪱🪱🪱🪱🪱🪱 : ', allCategories);
       res.render('admin/admin-adminmaincategory', { typeOfPersonAdmin: true, adminHeader: true, adminNav: true, allCategories, catDeleted: req.session.catDeleted, NewcatAdded: req.session.NewcatAdded, weatherDet })
       req.session.catDeleted = false
       req.session.NewcatAdded = false

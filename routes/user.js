@@ -183,7 +183,6 @@ router.post('/mobileConfirmation', (req, res) => {
     .then((verification_check) => {
       // If the OTP is wright It will give status as Approved else it will give status as Pending
       if (verification_check.status == 'approved') {
-        console.log('👉👉👉👉 ', req.session.newUser);
         userHelpers.insertNewUserToDB(req.session.newUser).then((data) => {
           if (data) {
             res.redirect('/login');
@@ -244,7 +243,6 @@ router.post('/signinconfirmation', (req, res) => {
 
         userHelpers.findUser(phoneNo).then((user) => {
           if (user) {
-            console.log('🦈🦈🦈🦈🦈🦈🐬 : ', user);
             req.session.unblock = true
             req.session.block = user.block
             req.session.userDetails = user._id;
@@ -360,9 +358,18 @@ router.get('/productview/:id', async (req, res) => {
     let cartProductsTodisplay = await userHelpers.getCartProducts(req.session.userDetails)
     let cartCount = await userHelpers.getCartCount(req.session.userDetails)
     let wishlist =await userHelpers.getUserWish(req.session.userDetails)
-
+    let review = await userHelpers.getAllReviews(req.params.id)
+    let reviewCount
+    let checkUserPurchasedItem = await userHelpers.checkUserPurchasedItem(req.session.userDetails,req.params.id)
+    // Buy Now
+    console.log('check : ', checkUserPurchasedItem)
+    if(review === false){
+         reviewCount = 0
+    }else{
+        reviewCount = review.proReview.length
+    } 
     userHelpers.singleProduct(proId).then(([singleProduct, relatedProduct]) => {
-      res.render('user/user-singleproduct', { title: 'Product', user: true, typeOfPersonUser: true, singleProduct, relatedProduct, cartCount, currentUser: req.session.user, logStatus, items: cartProductsTodisplay, wishlist})
+      res.render('user/user-singleproduct', { title: 'Product', user: true, typeOfPersonUser: true, singleProduct, relatedProduct, cartCount, theUser, logStatus, items: cartProductsTodisplay, wishlist, review, reviewCount, checkUserPurchasedItem : checkUserPurchasedItem.order})
     })
   } else {
     res.redirect('/login')
@@ -558,14 +565,11 @@ router.get('/vieworders', async (req, res) => {
 
 // Funtion to verify the payement done
 router.post('/verify-payment', (req, res) => {
-  console.log("@Verify payement : ", req.body);
   userHelpers.verifyPayment(req.body).then(() => {
     userHelpers.changePaymentStatus(req.body['order[receipt]']).then(() => {
-      console.log("Payment success ");
       res.json({ status: true })
     })
   }).catch((err) => {
-    console.log("The error in payment  : ", err);
     res.json({ status: false })
   })
 })
@@ -618,7 +622,6 @@ router.get('/orderinvoice/', (req, res) => {
 router.get('/useraddress', (req, res) => {
   if (req.session.LoggedIn) {
     userHelpers.getUserAddresses(req.session.userDetails).then((address) => {
-      console.log("YUIYU : ", address);
       res.render('user/user-useraddress', { title: 'Address', user: true, currentUser: req.session.user, typeOfPersonUser: true, address })
     })
   } else {
@@ -704,14 +707,19 @@ router.get('/wishlist',(req,res)=>{
 })
 
 router.get('/removefromwish/:proId/',(req,res)=>{
-  console.log(req.params.proId);
   userHelpers.removeFromWish(req.params.proId,req.session.userDetails).then((response)=>{
     res.json(response)
   })
 })
+
+// Posting review 
+router.post('/postreviewform',(req,res)=>{
+ userHelpers.postUserReview(req.body).then((response)=>{
+   res.json(response)
+ })
+})
 // Logout
 router.get('/logout', (req, res) => {
-  console.log("Loggin out");
   req.session.LoggedIn = false
   req.session.LoggedInThruOtp = false
   req.session.loggedInErr = false

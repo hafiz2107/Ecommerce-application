@@ -9,4 +9,5 @@ module.exports = {
     bikeBrands : 'bike_brands',
     coupon : 'coupons_collection',
     wishlist : 'wishlist_collection',
+    userreviews : 'user_reviews',
 }

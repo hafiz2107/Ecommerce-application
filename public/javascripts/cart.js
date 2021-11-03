@@ -55,7 +55,6 @@ function addToCart(proId, proPrice, proName) {
 }
 function deleteCartItem(cart_id , pro_id){
 
-    console.log(cart_id,pro_id);
 
     $.ajax({
         url: '/delete-cart-product',

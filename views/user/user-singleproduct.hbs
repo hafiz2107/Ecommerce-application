@@ -1,7 +1,7 @@
 <section id="shopgrid" class="shop shop-single">
   <div class="container shop-content">
     {{!-- Product Main single image --}}
-    <div class="row">
+    <div class="row" id="topDiv">
       <div class="col-xs-12 col-sm-12 col-md-5">
         <div class="prodcut-images">
           <div class="product-img-slider">
@@ -27,8 +27,10 @@
         <div class="product-title text-center-xs">
           <h3>{{singleProduct.productname}}
             <div class="wishBack" style="display: inline;margin-left: 10px;">
+              {{#if wishlist}}
               {{#checkItemExistOnWishlist wishlist singleProduct._id}}
               {{/checkItemExistOnWishlist}}
+              {{/if}}
             </div>
           </h3>
           {{#lte singleProduct.productquantity '0'}}
@@ -91,62 +93,151 @@
 
     <div class="row">
       <div class="col-xs-12 col-sm-12 col-md-12">
-        <div class="product-tabs">
+        <center>
+          <div class="product-tabs" style="width: 80%;margin-top: 5em;">
 
-          <ul class="nav nav-tabs" role="tablist">
-            <li role="presentation" class="active">
-              <a href="#description" aria-controls="description" role="tab" data-toggle="tab">description</a>
-            </li>
-            <li role="presentation">
-              <a href="#details" aria-controls="details" role="tab" data-toggle="tab">details</a>
-            </li>
-          </ul>
+            <ul class="nav nav-tabs" role="tablist">
+              <li role="presentation" class="active">
+                <a href="#description" aria-controls="description" role="tab" data-toggle="tab">description</a>
+              </li>
+              <li role="presentation">
+                <a href="#details" aria-controls="details" role="tab" data-toggle="tab">details</a>
+              </li>
+              
+              <li role="presentation">
+                <a href="#reviews" aria-controls="reviews" role="tab" data-toggle="tab">reviews ({{reviewCount}})</a>
+              </li>
+              
+            </ul>
 
-          <div class="tab-content">
-            <div role="tabpanel" class="tab-pane active" id="description">
-              <p>{{singleProduct.productdes}}</p>
+            <div class="tab-content">
+              <div role="tabpanel" class="tab-pane active" id="description">
+                <p>{{singleProduct.productdes}}</p>
+              </div>
 
+              <div role="tabpanel" class="tab-pane" id="details">
+                <h5>Technical Details</h5>
+                <table class="table table-striped">
+                  <tbody>
+                    <tr>
+                      <td>Part Number</td>
+                      <td>60-MCTE</td>
+                    </tr>
+                    <tr>
+                      <td>Item Weight</td>
+                      <td>54 pounds</td>
+                    </tr>
+                    <tr>
+                      <td>Product Dimensions</td>
+                      <td>92.8 x 92.8 x 92.8 inches</td>
+                    </tr>
+                    <tr>
+                      <td>Item model number</td>
+                      <td>60-MCTE</td>
+                    </tr>
+                    <tr>
+                      <td>Item Package Quantity</td>
+                      <td>1</td>
+                    </tr>
+                    <tr>
+                      <td>Number of Handles</td>
+                      <td>1</td>
+                    </tr>
+                    <tr>
+                      <td>Batteries Required?</td>
+                      <td>No</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              {{!-- Review Section --}}
+              <div role="tabpanel" class="tab-pane reviews" id="reviews">
+                {{#if review}}
+                {{#if checkUserPurchasedItem}}
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal"
+                  style="margin-bottom: 3em;">
+                  Add Review
+                </button>
+                {{/if}}
+                <center>
+                  <ul class="product-review list-unstyled" style="overflow-y: scroll;height: 30em;">
+                    {{#each review.proReview}}
+                    <li class="review-comment">
+
+                      <h6>{{this.username}}</h6>
+
+                      <p class="review-date">{{this.reviewDate}}</p>
+                      <div class="product-rating">
+                        {{#printStar this.rating}}
+                        {{/printStar}}
+                      </div>
+
+                      <div class="product-comment">
+                        <p>{{this.review}}</p>
+                      </div>
+                    </li>
+                    {{/each}}
+
+                  </ul>
+                </center>
+                <hr>
+                {{else}}
+                <h3 style="color: rgb(122, 122, 122);">No reviews Yet !</h3><br>
+                <img src="/images/No review.svg" alt="" height="300px">
+                {{#if checkUserPurchasedItem}}
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal"
+                  style="margin-bottom: 3em;">
+                  Add Review
+                </button>
+                {{/if}}
+                {{/if}}
+
+                {{!-- Modal --}}
+                <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog"
+                  aria-labelledby="exampleModalLabel" aria-hidden="true">
+                  <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Your Rating</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                          <span aria-hidden="true">&times;</span>
+                        </button>
+                      </div>
+                      <div class="modal-body">
+                        <center>
+                          <div class="form-review">
+                            <form id="reviewform">
+                              {{!-- Star Rating --}}
+                              <label>Rating</label><br>
+                              <span class="star-rating">
+                                <input type="radio" name="rating1" value="1"><i></i>
+                                <input type="radio" name="rating1" value="2"><i></i>
+                                <input type="radio" name="rating1" value="3"><i></i>
+                                <input type="radio" name="rating1" value="4"><i></i>
+                                <input type="radio" name="rating1" value="5"><i></i>
+                              </span>
+                              {{!-- Start Rating --}}
+                              <textarea class="form-control" id="review" rows="2" placeholder="Review"></textarea>
+                              <button
+                                onclick="postReviewForm('{{singleProduct._id}}','{{singleProduct.productname}}','{{theUser._id}}','{{theUser.username}}')"
+                                class="btn btn-primary btn-black btn-block">Post Your review</button>
+                            </form>
+                          </div>
+                        </center>
+                      </div>
+
+                    </div>
+                  </div>
+                </div>
+                {{!-- Modal Ends --}}
+               
+              </div>
+              {{!-- Review section Ends --}}
             </div>
 
-            <div role="tabpanel" class="tab-pane" id="details">
-              <h5>Technical Details</h5>
-              <table class="table table-striped">
-                <tbody>
-                  <tr>
-                    <td>Part Number</td>
-                    <td>60-MCTE</td>
-                  </tr>
-                  <tr>
-                    <td>Item Weight</td>
-                    <td>54 pounds</td>
-                  </tr>
-                  <tr>
-                    <td>Product Dimensions</td>
-                    <td>92.8 x 92.8 x 92.8 inches</td>
-                  </tr>
-                  <tr>
-                    <td>Item model number</td>
-                    <td>60-MCTE</td>
-                  </tr>
-                  <tr>
-                    <td>Item Package Quantity</td>
-                    <td>1</td>
-                  </tr>
-                  <tr>
-                    <td>Number of Handles</td>
-                    <td>1</td>
-                  </tr>
-                  <tr>
-                    <td>Batteries Required?</td>
-                    <td>No</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
           </div>
-
-        </div>
-
+        </center>
       </div>
     </div>
 
@@ -228,16 +319,6 @@
 
 </section>
 
-<style>
-  .wishBack {
-    background-color: #c2c2c23d;
-    padding: 6px;
-    border-radius: 60px;
-  }
-</style>
-
-
-
 <script>
   function addToWishList(proId) {
 
@@ -249,8 +330,182 @@
       }
     })
   }
+  function postReviewForm(proId, proName, userId, userName) {
+    //var rating = document.getElementById('reviewform').value
+    ratingCheck = document.querySelector('input[name="rating1"]:checked')
+    var rating = ratingCheck ? parseInt(ratingCheck.value) : '';
 
+    if (rating == '') {
+      rating = 0;
+    }
+    var review = document.getElementById('review').value
+
+    $.ajax({
+      url: '/postreviewform',
+      data: {
+        proId: proId,
+        proName: proName,
+        user: userId,
+        userName: userName,
+        rating: rating,
+        review: review,
+      },
+      method: 'post',
+
+      success: (response1) => {
+        location.hash = '#'
+        var myDiv = document.getElementById("topDiv");
+        myDiv.scrollTop = myDiv.scrollHeight;
+      }
+    })
+  }
 </script>
+<style>
+  .wishBack {
+    background-color: #c2c2c23d;
+    padding: 6px;
+    border-radius: 60px;
+  }
+
+  /*Rating*/
+
+
+  .star-rating {
+    margin: 25px 0 0px;
+    font-size: 0;
+    white-space: nowrap;
+    display: inline-block;
+    width: 175px;
+    height: 35px;
+    overflow: hidden;
+    position: relative;
+    background: url('data:image/svg+xml;base64,PHN2ZyB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHg9IjBweCIgeT0iMHB4IiB3aWR0aD0iMjBweCIgaGVpZ2h0PSIyMHB4IiB2aWV3Qm94PSIwIDAgMjAgMjAiIGVuYWJsZS1iYWNrZ3JvdW5kPSJuZXcgMCAwIDIwIDIwIiB4bWw6c3BhY2U9InByZXNlcnZlIj48cG9seWdvbiBmaWxsPSIjREREREREIiBwb2ludHM9IjEwLDAgMTMuMDksNi41ODMgMjAsNy42MzkgMTUsMTIuNzY0IDE2LjE4LDIwIDEwLDE2LjU4MyAzLjgyLDIwIDUsMTIuNzY0IDAsNy42MzkgNi45MSw2LjU4MyAiLz48L3N2Zz4=');
+    background-size: contain;
+  }
+
+  .star-rating i {
+    opacity: 0;
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 20%;
+    z-index: 1;
+    background: url('data:image/svg+xml;base64,PHN2ZyB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHg9IjBweCIgeT0iMHB4IiB3aWR0aD0iMjBweCIgaGVpZ2h0PSIyMHB4IiB2aWV3Qm94PSIwIDAgMjAgMjAiIGVuYWJsZS1iYWNrZ3JvdW5kPSJuZXcgMCAwIDIwIDIwIiB4bWw6c3BhY2U9InByZXNlcnZlIj48cG9seWdvbiBmaWxsPSIjRkZERjg4IiBwb2ludHM9IjEwLDAgMTMuMDksNi41ODMgMjAsNy42MzkgMTUsMTIuNzY0IDE2LjE4LDIwIDEwLDE2LjU4MyAzLjgyLDIwIDUsMTIuNzY0IDAsNy42MzkgNi45MSw2LjU4MyAiLz48L3N2Zz4=');
+    background-size: contain;
+  }
+
+  .star-rating input {
+    -moz-appearance: none;
+    -webkit-appearance: none;
+    opacity: 0;
+    display: inline-block;
+    width: 20%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    z-index: 2;
+    position: relative;
+  }
+
+  .star-rating input:hover+i,
+  .star-rating input:checked+i {
+    opacity: 1;
+  }
+
+  .star-rating i~i {
+    width: 40%;
+  }
+
+  .star-rating i~i~i {
+    width: 60%;
+  }
+
+  .star-rating i~i~i~i {
+    width: 80%;
+  }
+
+  .star-rating i~i~i~i~i {
+    width: 100%;
+  }
+
+  span.scale-rating {
+    margin: 5px 0 15px;
+    display: inline-block;
+
+    width: 100%;
+
+  }
+
+  span.scale-rating>label {
+    position: relative;
+    -webkit-appearance: none;
+    outline: 0 !important;
+    border: 1px solid grey;
+    height: 33px;
+    margin: 0 5px 0 0;
+    width: calc(10% - 7px);
+    float: left;
+    cursor: pointer;
+  }
+
+  span.scale-rating label {
+    position: relative;
+    -webkit-appearance: none;
+    outline: 0 !important;
+    height: 33px;
+
+    margin: 0 5px 0 0;
+    width: calc(10% - 7px);
+    float: left;
+    cursor: pointer;
+  }
+
+  span.scale-rating input[type=radio] {
+    position: absolute;
+    -webkit-appearance: none;
+    opacity: 0;
+    outline: 0 !important;
+    /*border-right: 1px solid grey;*/
+    height: 33px;
+
+    margin: 0 5px 0 0;
+
+    width: 100%;
+    float: left;
+    cursor: pointer;
+    z-index: 3;
+  }
+
+  span.scale-rating label:hover {
+    background: #fddf8d;
+  }
+
+  span.scale-rating input[type=radio]:last-child {
+    border-right: 0;
+  }
+
+  span.scale-rating label input[type=radio]:checked~label {
+    -webkit-appearance: none;
+
+    margin: 0;
+    background: #fddf8d;
+  }
+
+  span.scale-rating label:before {
+    content: attr(value);
+    top: 7px;
+    width: 100%;
+    position: absolute;
+    left: 0;
+    right: 0;
+    text-align: center;
+    vertical-align: middle;
+    z-index: 2;
+  }
+
+  /*Rating Ends */
+</style>
 <script>
   function removeFromWish(proId) {
     $.ajax({

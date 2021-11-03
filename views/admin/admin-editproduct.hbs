@@ -226,7 +226,6 @@ function buttonDisplay(){
 
 
     function fileValidation1() {
-      console.log("1")
         const imagebox = document.getElementById('image-box')
         const crop_btn = document.getElementById('crop-btn')
         var fileInput = document.getElementById('file1');
@@ -238,7 +237,6 @@ function buttonDisplay(){
           fileInput.value = '';
           return false;
         } else {
-          console.log('1.1')
           document.getElementById('errMess1').innerHTML = ''
           //Image preview
           const img_data = fileInput.files[0]
@@ -261,7 +259,6 @@ function buttonDisplay(){
             minCropBoxHeight: 240,
           })
           crop_btn.addEventListener('click', () => {
-            console.log('1.2')
             cropper.getCroppedCanvas().toBlob((blob) => {
               let fileInputElement = document.getElementById('file1');
               let file = new File([blob], img_data.name, { type: "image/*", lastModified: new Date().getTime() });
@@ -282,7 +279,6 @@ function buttonDisplay(){
 
 
   function fileValidation2() {
-    console.log('2')
     const imagebox = document.getElementById('image-box')
     const crop_btn = document.getElementById('crop-btn')
     var fileInput = document.getElementById('file2');
@@ -294,7 +290,6 @@ function buttonDisplay(){
       fileInput.value = '';
       return false;
     } else {
-      console.log('2.1')
       document.getElementById('errMess2').innerHTML = ''
       //Image preview
       const img_data = fileInput.files[0]
@@ -317,14 +312,12 @@ function buttonDisplay(){
         minCropBoxHeight: 240,
       })
       crop_btn.addEventListener('click', () => {
-        console.log('2.2')
         cropper.getCroppedCanvas().toBlob((blob) => {
           let fileInputElement = document.getElementById('file2');
           let file = new File([blob], img_data.name, { type: "image/*", lastModified: new Date().getTime() });
           let container = new DataTransfer();
 
           container.items.add(file);
-          console.log(container.files[0])
           const img = container.files[0]
           var url = URL.createObjectURL(img)
           fileInputElement.files = container.files;
@@ -377,7 +370,6 @@ function buttonDisplay(){
           let container = new DataTransfer();
 
           container.items.add(file);
-          console.log(container.files[0])
           const img = container.files[0]
           var url = URL.createObjectURL(img)
           fileInputElement.files = container.files;

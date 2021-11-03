@@ -315,7 +315,6 @@
           let container = new DataTransfer();
 
           container.items.add(file);
-          console.log(container.files[0])
           const img = container.files[0]
           var url = URL.createObjectURL(img)
           fileInputElement.files = container.files;
@@ -368,7 +367,6 @@
           let container = new DataTransfer();
 
           container.items.add(file);
-          console.log(container.files[0])
           const img = container.files[0]
           var url = URL.createObjectURL(img)
           fileInputElement.files = container.files;

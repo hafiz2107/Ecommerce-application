@@ -143,12 +143,7 @@ module.exports = {
             allOrders = allPendingOrders + allPlacedOrders + allShippedOrders + allDeliveredOrders
 
 
-            // console.log('ASDF1 : ', allPendingOrders);
-            // console.log('ASDF2 : ', allPlacedOrders);
-            // console.log('ASDF3 : ', allShippedOrders);
-            // console.log('ASDF4 : ', allDeliveredOrders);
-            // console.log('ASDF5 : ', allCancelledOrders);
-            // console.log('ASDF6 : ', allOrders);
+           
 
             resolve({ allPendingOrders, allPlacedOrders, allShippedOrders, allDeliveredOrders, allCancelledOrders, allOrders, totalOrdersToday})
         })
@@ -291,7 +286,6 @@ module.exports = {
     addNewMainCat: (catDetails) => {
         return new Promise((resolve, reject) => {
             db.get().collection(collection.productCat).insertOne(catDetails).then((response) => {
-                console.log("The inserterd details  : ", catDetails);
                 resolve(catDetails)
             })
         })
@@ -348,7 +342,6 @@ module.exports = {
     }, deleteBrand: (brandId) => {
         return new Promise(async (resolve, reject) => {
             db.get().collection(collection.proBrands).deleteOne({ _id: objectId(brandId) }).then((result) => {
-                console.log("RAESULT : ", result);
                 resolve();
             })
         })
