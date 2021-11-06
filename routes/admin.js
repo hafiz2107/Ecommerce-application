@@ -16,11 +16,10 @@ const admin = {
 var weatherDet
 
 weather.find({ search: '673303', degreeType: 'C' }, function (err, result) {
-  if (err) 
-  { 
+  if (err) {
     weatherDet = null
     console.log(err);
-  }else{
+  } else {
     weatherDet = result[0].current
   }
 });
@@ -31,7 +30,7 @@ router.get('/login', (req, res) => {
     res.redirect('/admin/home')
   } else
     error = req.session.adminLoggedInError
-  res.render('admin/admin-login', { typeOfPersonAdmin: true, error, weatherDet});
+  res.render('admin/admin-login', { typeOfPersonAdmin: true, error, weatherDet });
   error = false;
   req.session.adminLoggedInError = false;
 })
@@ -52,12 +51,12 @@ router.post('/', (req, res) => {
 router.get('/home', function (req, res, next) {
   if (req.session.adminLoggedIn) {
     date = new Date().toISOString().slice(0, 10)
-    adminHelper.findAllOrders().then((orderCount)=>{  
+    adminHelper.findAllOrders().then((orderCount) => {
       var orders = []
-      orders = [orderCount.allOrders,orderCount.allPendingOrders, orderCount.allPlacedOrders, orderCount.allShippedOrders, orderCount.allDeliveredOrders, orderCount.allCancelledOrders]
+      orders = [orderCount.allOrders, orderCount.allPendingOrders, orderCount.allPlacedOrders, orderCount.allShippedOrders, orderCount.allDeliveredOrders, orderCount.allCancelledOrders]
       res.render('admin/admin-home', { typeOfPersonAdmin: true, adminHeader: true, adminNav: true, date, weatherDet, orders, totalOrdersToday: orderCount.totalOrdersToday })
     })
-    
+
 
   } else {
     res.redirect('/admin/login')
@@ -87,8 +86,6 @@ router.get('/add-product', (req, res) => {
 // Posting add product form to database
 router.post('/add-product', (req, res) => {
   // Calling function for uploading add product form
-
-
   adminHelper.addProduct(req.body).then((id) => {
 
     let image1 = req.files.image1
@@ -106,7 +103,7 @@ router.post('/add-product', (req, res) => {
 
 router.get('/view-product', (req, res) => {
   adminHelper.getAllproducts().then((products) => {
-    res.render('admin/admin-productview', { typeOfPersonAdmin: true, adminHeader: true, adminNav: true, products, weatherDet})
+    res.render('admin/admin-productview', { typeOfPersonAdmin: true, adminHeader: true, adminNav: true, products, weatherDet })
   })
 })
 
@@ -153,7 +150,7 @@ router.get('/logout', (req, res) => {
 
 router.get('/usermanagement', async (req, res) => {
   let allUsers = await adminHelper.getAllUsers()
-  res.render('admin/admin-usermanagement', { typeOfPersonAdmin: true, adminHeader: true, adminNav: true, allUsers, weatherDet})
+  res.render('admin/admin-usermanagement', { typeOfPersonAdmin: true, adminHeader: true, adminNav: true, allUsers, weatherDet })
 })
 
 router.get('/blockuser/:id', (req, res) => {
@@ -177,17 +174,17 @@ router.get('/unblockuser/:id', (req, res) => {
 })
 
 router.get('/ordermanagement', (req, res) => {
-  if (req.session.adminLoggedIn){
+  if (req.session.adminLoggedIn) {
     adminHelper.getAllOrders().then((orders) => {
       res.render('admin/admin-ordermanagement', { typeOfPersonAdmin: true, adminHeader: true, adminNav: true, orders, weatherDet })
     })
-  }else{
+  } else {
     res.redirect('/admin/login');
   }
 })
 
 router.post('/updateorderstatus', (req, res) => {
-   adminHelper.updateOrderStatus(req.body.orderId, req.body.userId, req.body.status, req.body.proId).then((response) => {
+  adminHelper.updateOrderStatus(req.body.orderId, req.body.userId, req.body.status, req.body.proId).then((response) => {
     res.json(response)
   })
 })
@@ -203,11 +200,11 @@ router.get('/viewoderlist/:orderId/:userId', (req, res) => {
     res.render('admin/admin-veiwcartorders', { typeOfPersonAdmin: true, adminHeader: true, adminNav: true, cartOrders, weatherDet })
   })
 })
-router.get('/viewoderlistofBuyNow/:orderId/:userId',(req,res)=>{
-    adminHelper.getBuyNowOrders(req.params.userId, req.params.orderId).then((buynowOrders) => {
-      res.render('admin/admin-veiwbuynoworders', { typeOfPersonAdmin: true, adminHeader: true, adminNav: true, buynowOrders, weatherDet })
-    })
-  
+router.get('/viewoderlistofBuyNow/:orderId/:userId', (req, res) => {
+  adminHelper.getBuyNowOrders(req.params.userId, req.params.orderId).then((buynowOrders) => {
+    res.render('admin/admin-veiwbuynoworders', { typeOfPersonAdmin: true, adminHeader: true, adminNav: true, buynowOrders, weatherDet })
+  })
+
 })
 
 router.get('/addmaincategory', (req, res) => {
@@ -217,7 +214,7 @@ router.get('/addmaincategory', (req, res) => {
       req.session.catDeleted = false
       req.session.NewcatAdded = false
     })
-  } else {       
+  } else {
     res.redirect('/admin/login')
   }
 })
@@ -230,7 +227,9 @@ router.post('/addmaincategory', (req, res) => {
 
 })
 router.post('/addsubcat', (req, res) => {
-  adminHelper.addSubCategory(req.body).then(() => {
+  adminHelper.addSubCategory(req.body).then((id) => {
+    let image = req.files.subCatImg
+    image.mv('./public/subCat Logo/' + id + '__1.jpg')
     res.redirect('/admin/addmaincategory')
   })
 })
@@ -250,8 +249,7 @@ router.get('/deletecategory/:id', (req, res) => {
 router.get('/brands', (req, res) => {
   if (req.session.adminLoggedIn) {
     adminHelper.findAllProductBrands().then((allBrands) => {
-      res.render('admin/admin-addbrand', ({ typeOfPersonAdmin: true, adminHeader: true, adminNav: true, allBrands, proBrandAddSuccess: req.session.proBrandAddSuccess, brandDeleteSuccess: req.session.brandDeleteSuccess, weatherDet}))
-      req.session.brandDeleteSuccess = false
+      res.render('admin/admin-addbrand', ({ typeOfPersonAdmin: true, adminHeader: true, adminNav: true, allBrands, proBrandAddSuccess: req.session.proBrandAddSuccess, brandDeleteSuccess: req.session.brandDeleteSuccess, weatherDet }))
       req.session.brandDeleteSuccess = false
       req.session.proBrandAddSuccess = false
     })
@@ -279,7 +277,7 @@ router.get('/deletebrand/:id', (req, res) => {
 router.get('/bikebrands', (req, res) => {
   if (req.session.adminLoggedIn) {
     adminHelpers.getAllbikebrands().then((allBikeBrands) => {
-      res.render('admin/admin-bikebrands', { typeOfPersonAdmin: true, adminHeader: true, adminNav: true, allBikeBrands, bikebrandDelted: req.session.bikebrandDelted, weatherDet})
+      res.render('admin/admin-bikebrands', { typeOfPersonAdmin: true, adminHeader: true, adminNav: true, allBikeBrands, bikebrandDelted: req.session.bikebrandDelted, weatherDet })
     })
   } else {
     res.redirect('/admin/login')
@@ -297,7 +295,12 @@ router.post('/addbikebrand', (req, res) => {
 
 
 router.post('/addbikemodel', (req, res) => {
-  adminHelper.addBikeModel(req.body).then((result) => {
+  console.log('HGHGHGHHG  : ', req.body);
+  console.log('🐬🐬🐬🐬🐬 : ', req.files)
+
+  adminHelper.addBikeModel(req.body).then(([result, id]) => {
+    let logo = req.files.modelLogo
+    logo.mv('./public/bike model logos/' + id + '__1.jpg')
     res.redirect('/admin/bikebrands')
   })
 })
@@ -315,46 +318,46 @@ router.get('/deletebikebrand/:id', (req, res) => {
   })
 })
 
-router.get('/coupons',(req,res)=>{
-  if (req.session.adminLoggedIn){
-    adminHelper.getAllCoupons().then((allCoupons)=>{
-      res.render('admin/admin-addcoupon', { typeOfPersonAdmin: true, adminHeader: true, adminNav: true, allCoupons, weatherDet})
+router.get('/coupons', (req, res) => {
+  if (req.session.adminLoggedIn) {
+    adminHelper.getAllCoupons().then((allCoupons) => {
+      res.render('admin/admin-addcoupon', { typeOfPersonAdmin: true, adminHeader: true, adminNav: true, allCoupons, weatherDet })
     })
-  }else{
+  } else {
     res.redirect('/admin/login')
   }
 })
 
-router.post('/addcoupon',(req,res)=>{
-  adminHelper.addCoupon(req.body).then(()=>{
+router.post('/addcoupon', (req, res) => {
+  adminHelper.addCoupon(req.body).then(() => {
     res.redirect('/admin/coupons')
   })
 })
 
-router.get('/editcoupon/:couponId',(req,res)=>{
+router.get('/editcoupon/:couponId', (req, res) => {
 
   adminHelper.getAllCoupons().then((allCoupons) => {
-    var coupon = adminHelper.getCouponToEdit(req.params.couponId).then((couponToEdit)=>{
+    var coupon = adminHelper.getCouponToEdit(req.params.couponId).then((couponToEdit) => {
       res.json(couponToEdit)
     })
   })
 })
 
-router.post('/editcoupon',(req,res)=>{
-  adminHelper.editCoupon(req.body).then(()=>{
+router.post('/editcoupon', (req, res) => {
+  adminHelper.editCoupon(req.body).then(() => {
     res.redirect('/admin/coupons')
   })
 })
 
-router.get('/deletecoupon/:couponId',(req,res)=>{
-  adminHelper.deleteCoupon(req.params.couponId).then(()=>{
+router.get('/deletecoupon/:couponId', (req, res) => {
+  adminHelper.deleteCoupon(req.params.couponId).then(() => {
     res.redirect('/admin/coupons')
   })
 })
 
-router.get('/report',(req,res)=>{
+router.get('/report', (req, res) => {
   adminHelper.getAllOrders().then((orders) => {
-    res.render('admin/admin-report', { typeOfPersonAdmin: true, adminHeader: true, adminNav: true, orders, weatherDet})
+    res.render('admin/admin-report', { typeOfPersonAdmin: true, adminHeader: true, adminNav: true, orders, weatherDet })
   })
 })
 module.exports = router;

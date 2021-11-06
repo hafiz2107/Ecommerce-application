@@ -1,110 +1,182 @@
 <div id="wrap" class="container-fluid" style="padding-left: 285px;">
-    <div class="">
+    <div>
         <h3>Bike brand Management</h3>
+        <div class="row">
+            <div class="col-md-6">
+                <form method="POST" action='/admin/addbikebrand' enctype="multipart/form-data">
+                    <label for="brandName" style="color: black;">New Brand Name : </label><br>
+                    <input type="text" id="brandName" class="form-control" style="width: 50%;" name="brandName"
+                        placeholder="Enter The brand name">
+                    <label data-toggle="modal" data-target="#exampleModal" for="file1" class="btn btn-success"
+                        type="button" class="btn btn-primary">Add Image</label>
+                    <input type="file" name="productlogo" id="file1" onchange="return fileValidation()" hidden>
+                    {{!-- Image preview --}}
+                    <img src="" alt="" style="width: 100px; height:auto;display: inherit;" id="imgview1">
+                    <div id="errMess1"></div>
+                    <button type="submit" class="btn btn-primary" id="confirm-btn">Add bike Brand</button>
+                </form>
 
-        <form method="POST" action='/admin/addbikebrand' enctype="multipart/form-data">
-
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th scope="col"><strong>New bike brand</strong></th>
-                        <th scope="col"><strong>Brand Logo</strong></th>
-
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td scope="row">
-                            <input type="text" name="brandName" placeholder="Enter The brand name">
-                        </td>
-
-                        <td>
-                            <div id="errMess1"></div>
-
-                            <label data-toggle="modal" data-target="#exampleModal" for="file1" class="btn btn-primary"
-                                type="button" class="btn btn-primary">Add Image</label>
-                            <input type="file" name="productlogo" id="file1" onchange="return fileValidation()" hidden>
-                            <img src="" alt="" style="width: 100px; height:auto;display: inherit;" id="imgview1">
-                        </td>
-
-                        <td>
-                            <button type="submit" class="btn btn-primary" id="confirm-btn">Add bike Brand</button>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-            {{!-- Modal for image cropping --}}
-            <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-                aria-hidden="true">
-                <div class="modal-dialog" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="exampleModalLabel">Crop Image</h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                        <div class="modal-body">
-                            <div class="col-12">
-                                <div style="width: 300px; height: auto; display: none;" id="image-box"></div>
-                                <button style="display: none;" class="btn btn-primary mt-4" type="button" id="crop-btn"
-                                    data-dismiss="modal">Crop</button>
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal"
-                                    onclick="buttonChange()">Close</button>
+                {{!-- Modal For image cropping --}}
+                <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog"
+                    aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">Crop Image</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="col-12">
+                                    <div style="width: 300px; height: auto; display: none;" id="image-box"></div>
+                                    <button style="display: none;" class="btn btn-primary mt-4" type="button"
+                                        id="crop-btn" data-dismiss="modal">Crop</button>
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal"
+                                        onclick="buttonChange()">Close</button>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
+                {{!-- Modal ends --}}
             </div>
-            {{!-- Modal for image cropping ends --}}
-        </form>
 
-        <table cellpadding="0" cellspacing="0" border="0" class="datatable table table-striped table-bordered"
-            id="myTable">
-            <thead>
-                <tr>
-                    <th><strong>Sl. No</strong></th>
-                    <th><strong>Bike Brand</strong></th>
-                    <th><strong>Bike Models</strong></th>
-                    <th><strong>Action</strong></th>
-                </tr>
-            </thead>
+            {{!-- Adding models --}}
+            <div class="col-md-6">
+                <form action="/admin/addbikemodel" method="post" enctype="multipart/form-data">
+                    <label for="bikemodel" style="color: black;">Add new Model : </label>
+                    <br>
+                    <input type="text" class="form-control" id="bikemodel" name="bikemodel" placeholder="Enter Bike Model" style="width: 50%;">
+                    {{!-- Bike brands --}}
 
-            {{!-- Loop for displaying all catgories --}}
 
-            {{#each allBikeBrands}}
-            <tr class="gradeX">
-                <td>{{add @index '1'}}</td>
-                <td>
-                    {{this.bikeBrand}}
-                    <img src="/bike brand logos/{{this._id}}__1.jpg" alt="" style="height: 80px;display: block;">
-                </td>
-                {{!-- Loop for sub catgory --}}
+                    <label for="selBrand" style="color: black;">Select Brand :</label>
+                    <select name="bikeBrandId" id="selBrand" class="form-select  dropdownMenuButton1">
+                        {{#each allBikeBrands}}
+                            <option class="dropdown-item" value="{{this._id}}">{{this.bikeBrand}}</option>
+                        {{/each}}
+                    </select>
 
-                <td>
 
-                    <form action="/admin/addbikemodel" method="post" enctype="multipart/form-data">
-                        <input type="hidden" name="bikeBrandId" value="{{this._id}}">
-                        <input type="text" name="bikemodel" placeholder="Enter Bike Model">
-                        
-                        <button type="submit" id="confirm-btn" class="btn btn-success">Add Model</button>
-                    </form>
+                    {{!-- Bike brands ends --}}
+                    <label data-toggle="modal" data-target="#modelImages" for="model" class="btn btn-success"
+                        type="button" class="btn btn-primary">Add Image</label>
+                    <input type="file" name="modelLogo" id="model" onchange="return modelImage()" hidden><br>
+                    <button type="submit" id="confirm-btn1" class="btn btn-primary">Add Model</button>
 
-                  
+                    {{!-- Image preview --}}
+                    <img alt="" src="" style="width: 100px; height:auto;display: inherit;" id="image-view-model">
 
-                    <ol>
-                        {{#each this.models}}
-                            <li>
-                                {{this}}
-                                {{!-- Delete button --}}
-                                <a class=" btn-secondary" data-toggle="modal" data-target="#{{@index}}1"> <i class="bi bi-trash"></i></a>
-                            </li>
-                            <div class="modal fade" id="{{@index}}1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-                                aria-hidden="true">
+                    {{!-- Image cropping modal --}}
+                    <div class="modal fade" id="modelImages" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLabel">Crop Image</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="col-12">
+                                        <div id="errMess2"></div>
+                                        <div style="width: 300px; height: auto; display: none;" id="image-box1"></div>
+                                        <button style="display: none;" class="btn btn-primary mt-4" type="button"
+                                            id="crop-btn1" data-dismiss="modal">Crop</button>
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="buttonChange()">Close</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {{!-- Image cropping modal ends --}}
+
+                </form>
+            </div>
+            {{!-- models End --}}
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <table cellpadding="0" cellspacing="0" border="0" class="datatable table table-striped table-bordered"
+                    id="myTable">
+                    <thead>
+                        <tr>
+                            <th><strong>Sl. No</strong></th>
+                            <th><strong>Bike Brand</strong></th>
+                            <th><strong>Bike Models</strong></th>
+                            <th><strong>Action</strong></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{#each allBikeBrands}}
+                        <tr>
+                            <td>{{add @index '1'}}</td>
+                            <td>
+                                {{this.bikeBrand}}
+                                <img src="/bike brand logos/{{this._id}}__1.jpg" alt=""
+                                    style="height: 80px;display: block;">
+                            </td>
+
+                            <td>
+                                <ol>
+                                    {{#each this.models}}
+                                    <li>
+                                        <img src="/bike model logos/{{this.id}}__1.jpg" alt=""  style="height: 80px;">
+                                        {{this.bikemodels}}
+                                        {{!-- Delete button --}}
+                                        <a class=" btn-secondary" data-toggle="modal" data-target="#{{this.id}}"> <i
+                                                class="bi bi-trash"></i></a>
+                                                <hr>
+                                    </li>
+
+                                    <div class="modal fade" id="{{this.id}}" tabindex="-1" role="dialog"
+                                        aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h3 class="modal-title" style="color: red;" id="exampleModalLabel">
+                                                        Delete </h3>
+                                                    <button type="button" class="close" data-dismiss="modal"
+                                                        aria-label="Close">
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <h5>Are you sure you want to delete ?</h5>
+                                                </div>
+
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-success"
+                                                        data-dismiss="modal">Cancel</button>
+                                                    <a type="button"
+                                                        href="/admin/deletebikemodel?index={{@index}}&id={{../this._id}}&name={{this.id}}"
+                                                        class="btn btn-danger" style="width: 90px;">Delete</a>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {{/each}}
+
+                             
+
+
+                                    {{!-- modal for category deletion for sub cat --}}
+
+                                    {{!-- modal ends --}}
+
+                                </ol>
+                            </td>
+
+                            {{!-- Modal for delete confirmation --}}
+                            <div class="modal fade" id="{{this._id}}" tabindex="-1" role="dialog"
+                                aria-labelledby="exampleModalLabel" aria-hidden="true">
                                 <div class="modal-dialog" role="document">
                                     <div class="modal-content">
                                         <div class="modal-header">
-                                            <h3 class="modal-title" style="color: red;" id="exampleModalLabel">Delete </h3>
+                                            <h3 class="modal-title" style="color: red;" id="exampleModalLabel">Delete
+                                            </h3>
                                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                                 <span aria-hidden="true">&times;</span>
                                             </button>
@@ -112,65 +184,57 @@
                                         <div class="modal-body">
                                             <h5>Are you sure you want to delete ?</h5>
                                         </div>
-                            
                                         <div class="modal-footer">
-                                            <button type="button" class="btn btn-success" data-dismiss="modal">Cancel</button>
-                                            <a type="button" href="/admin/deletebikemodel?index={{@index}}&id={{../this._id}}&name={{this}}" class="btn btn-danger" style="width: 90px;">Delete</a>
+                                            <button type="button" class="btn btn-success"
+                                                data-dismiss="modal">Cancel</button>
+                                            <a type="button" href="/admin/deletebikebrand/{{this._id}}"
+                                                class="btn btn-danger" style="width: 90px;">Delete</a>
                                         </div>
-                            
                                     </div>
                                 </div>
                             </div>
+                            {{!-- Modal ends --}}
+
+                            <td>
+                                <a data-toggle="modal" data-target="#{{this._id}}" class="btn btn-danger">Delete
+                                    Brand</a>
+                            </td>
+                        </tr>
                         {{/each}}
-                        
-                        <hr>
 
 
-                        {{!-- modal for category deletion for sub cat --}}
-                        
-                        {{!-- modal ends --}}
-
-                    </ol>
-                </td>
-
-
-                {{!-- Modal for delete confirmation --}}
-                <div class="modal fade" id="{{this._id}}" tabindex="-1" role="dialog"
-                    aria-labelledby="exampleModalLabel" aria-hidden="true">
-                    <div class="modal-dialog" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h3 class="modal-title" style="color: red;" id="exampleModalLabel">Delete</h3>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <div class="modal-body">
-                                <h5>Are you sure you want to delete ?</h5>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-success" data-dismiss="modal">Cancel</button>
-                                <a type="button" href="/admin/deletebikebrand/{{this._id}}" class="btn btn-danger"
-                                    style="width: 90px;">Delete</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                {{!-- Modal ends --}}
-
-                <td>
-                    <a data-toggle="modal" data-target="#{{this._id}}" class="btn btn-danger">Delete Brand</a>
-
-                </td>
-
-                {{!-- Loop end --}}
-            </tr>
-
-            {{/each}}
-        </table>
-
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
 </div>
+
+<style>
+    select {
+
+        appearance: none;
+        background-color: rgb(255, 255, 255);
+        border: 1px solid black;
+        border-radius: 8px;
+        padding: 0 1em 0 0;
+        margin: 0;
+        width: auto;
+        font-family: inherit;
+        font-size: inherit;
+        cursor: inherit;
+        line-height: inherit;
+    }
+
+    select::-ms-expand {
+        display: none;
+    }
+
+    select {
+
+        outline: none;
+    }
+</style>
 
 <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk="
     crossorigin="anonymous"></script>
@@ -207,7 +271,7 @@
                 scalable: false,
                 zoomable: true,
                 movable: true,
-                aspectRatio: 16/ 9,
+                aspectRatio: 16 / 9,
                 //  preview: '.preview',
                 minCropBoxWidth: 180,
                 minCropBoxHeight: 240,
@@ -231,27 +295,32 @@
             });
         }
     }
-    function fileValidation1() {
-        const imagebox = document.getElementById('image-box')
-        const crop_btn = document.getElementById('crop-btn')
-        var fileInput = document.getElementById('file1');
+</script>
+<script>
+function modelImage() {
 
+        const imagebox = document.getElementById('image-box1')
+        const crop_btn = document.getElementById('crop-btn1')
+        var fileInput = document.getElementById('model');
         var filePath = fileInput.value;
+
+        console.log(filePath)
+
         var allowedExtensions = /(\.jpg)$/i;
         if (!allowedExtensions.exec(filePath)) {
-            document.getElementById('errMess1').innerHTML = '<p style="color:red; display: block;">Invalid file type</p>'
+            document.getElementById('errMess2').innerHTML = '<p style="color:red; display: block;">Invalid file type</p>'
             fileInput.value = '';
             return false;
         } else {
-            document.getElementById('errMess1').innerHTML = ''
+            document.getElementById('errMess2').innerHTML = ''
             //Image preview
             const img_data = fileInput.files[0]
             const url = URL.createObjectURL(img_data)
-            imagebox.innerHTML = `<img src="${url}" id="image" style="width:100%">`
-            const image = document.getElementById('image')
-            document.getElementById('image-box').style.display = 'block'
-            document.getElementById('crop-btn').style.display = 'block'
-            document.getElementById('confirm-btn').style.display = 'block'
+            imagebox.innerHTML = `<img src="${url}" id="image1" style="width:100%">`
+            const image = document.getElementById('image1')
+            document.getElementById('image-box1').style.display = 'block'
+            document.getElementById('crop-btn1').style.display = 'block'
+            document.getElementById('confirm-btn1').style.display = 'block'
 
             const cropper = new Cropper(image, {
                 autoCropArea: 1,
@@ -259,14 +328,14 @@
                 scalable: false,
                 zoomable: true,
                 movable: true,
-                aspectRatio: 0.75 / 1,
+                aspectRatio: 16 / 9,
                 //  preview: '.preview',
                 minCropBoxWidth: 180,
                 minCropBoxHeight: 240,
             })
             crop_btn.addEventListener('click', () => {
                 cropper.getCroppedCanvas().toBlob((blob) => {
-                    let fileInputElement = document.getElementById('file1');
+                    let fileInputElement = document.getElementById('model');
                     let file = new File([blob], img_data.name, { type: "image/*", lastModified: new Date().getTime() });
                     let container = new DataTransfer();
 
@@ -274,10 +343,10 @@
                     const img = container.files[0]
                     var url = URL.createObjectURL(img)
                     fileInputElement.files = container.files;
-                    document.getElementById('imgview1').src = url
-                    document.getElementById('image-box').style.display = 'none'
-                    document.getElementById('crop-btn').style.display = 'none'
-                    document.getElementById('confirm-btn').style.display = 'block'
+                    document.getElementById('image-view-model').src = url;
+                    document.getElementById('image-box1').style.display = 'none'
+                    document.getElementById('crop-btn1').style.display = 'none'
+                    document.getElementById('confirm-btn1').style.display = 'block'
 
                 });
             });

@@ -34,7 +34,7 @@
           <option value="" class="dropdown-item text-dark bg-" disabled>Product sub Category </option>
           {{#each allCategories}}
             {{#each this.SubCategory}}
-              <option value="{{this}}" class="dropdown-item">{{this}}</option>
+              <option value="{{this.id}}" class="dropdown-item">{{this.subCat}}</option>
             {{/each}}
           {{/each}}
 
@@ -72,7 +72,7 @@
           <option value="" name="" class="dropdown-item text-dark bg-light">Suitable bike Model </option>
           {{#each allBikeBrands}}
             {{#each this.models}}
-              <option value="{{this}}" class="dropdown-item">{{this}}</option>
+              <option value="{{this.id}}" class="dropdown-item">{{this.bikemodels}}</option>
             {{/each}}
           {{/each}}
 
@@ -119,12 +119,12 @@
         </div>
       </div>
 
-      <div class="form-row mt-2">
+      {{!-- <div class="form-row mt-2">
         <div class="form-group col-md-6  btn">
           <h6>Uploading Date And Time</h6>
           <input type="date" class="form-control" name="productdate" id="productdate" placeholder="" value="{{{date}}}">
         </div>
-      </div>
+      </div> --}}
 
       <div class="form-row mt-4">
         <div class="form-group col-md-6">

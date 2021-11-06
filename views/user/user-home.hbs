@@ -203,6 +203,7 @@
     </div>
   </div>
   {{! Client Description End}}
+
   {{! Client Section }}
   <section class="client" style="margin-top: -60px;">
     <div class="container">
@@ -212,8 +213,10 @@
 
             {{#each allBikeBrands}}
             <div class="client">
+              <a href="/bikemodel/{{this._id}}">
               <img src="/bike brand logos/{{this._id}}__1.jpg" alt="client" style="height: 100px;" />
               <H6 style="justify-content: last baseline;margin-top: 8px;">{{this.bikeBrand}}</H6>
+              </a>
             </div>
             {{/each}}
 
@@ -225,6 +228,62 @@
   </section>
 </section>
 {{! Client section End }}
+
+{{! Shop by category }}
+<section id="featuredItems client" class="shop" style="margin-top: 10px; padding-top: 8px;">
+  <div class="container heading">
+    <div class="row">
+      <div class="col-xs-12 col-sm-12 col-md-12">
+        <p class="subheading">LET'S SEE WHAT YOU ARE LOOKING FOR</p>
+        <h2>SHOP BY CATEGORY</h2>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    <ul style="width:100%" class="nav  nav-tabs navbar-nav navbar-left">
+      {{#each allCategories}}
+      <li>
+        <a id="catNav" style="color:black" data-toggle="tab" href="#{{this._id}}">{{this.mainCategory}}</a>
+      </li>
+      {{/each}}
+    </ul>
+
+    <div class="tab-content">
+      {{#each allCategories}}
+      <div class="tab-pane" id="{{this._id}}">
+        <div class="row product-boxes">
+
+          {{#each this.SubCategory}}
+          <div class="col-md-3 product-box" style="margin-top: 15px;">
+
+            <a href="#">
+
+              <div class="product-img" style="display:flex; justify-content:center;">
+                <img src="subCat Logo/{{this.id}}__1.jpg" style="height:150px;width:230px"
+                  alt="Product" />
+              </div>
+
+              <div class="text-center" style="margin-top:12px;">
+                <h6>{{this.subCat}}</h6>
+              </div>
+
+            </a>
+
+          </div>
+          {{/each}}
+
+
+        </div>
+      </div>
+
+      {{/each}}
+
+
+    </div>
+  </div>
+</section>
+{{! Shop By category ends}}
 
 {{! Advertisement 2 Bottom }}
 <section id="hero" class="hero container">
@@ -435,6 +494,8 @@
   </div>
 </section>
 
-<script>
-
-</script>
+<style>
+  #catNav{
+border: 0px solid #ddd !important;
+  }
+</style>

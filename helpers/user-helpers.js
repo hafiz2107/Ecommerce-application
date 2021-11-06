@@ -548,10 +548,24 @@ module.exports = {
             resolve(orders)
         })
     },
-    getTheCurrentOrder: (orderId) => {
+    getTheCurrentOrder: (orderId,proId) => {
         return new Promise(async (resolve, reject) => {
             var order = await db.get().collection(collection.orders).findOne({ _id: objectId(orderId) })
-            resolve(order)
+            if (order.mode == 'cartorder'){
+                order = await db.get().collection(collection.orders).aggregate([
+                    {
+                        $match:{_id : objectId(orderId)}
+                    },{
+                        $unwind : '$products'
+                    },{
+                        $match: {'products.item' : objectId(proId)}
+                    }
+                ]).toArray()
+                console.log("order : 🐬🐬🐬 : ",order[0])
+                resolve(order[0])
+            }else{
+                resolve(order)
+            }
         })
     },
 
@@ -828,6 +842,20 @@ module.exports = {
             }else{
                 resolve({ order: false })
             }
+        })
+    },
+    findSearch :(key)=>{
+        return new Promise(async(resolve,reject)=>{
+            db.get().collection(collection.newproducts).createIndex({ productname : "text"})
+            var result = await db.get().collection(collection.newproducts).find({ $text: { $search: `/${key}/i`, "$caseSensitive": false }}).toArray()
+            resolve(result)
+        })
+    },
+    findBikeModels : (brandId)=>{
+        return new Promise(async(resolve,reject)=>{
+            var models = await db.get().collection(collection.bikeBrands).findOne({ _id: objectId(brandId) })
+            
+            resolve(models)
         })
     }
 

@@ -1,6 +1,7 @@
 var collection = require('../config/collection')
 var db = require('../config/connection')
 var objectId = require('mongodb').ObjectId
+const { v4: uuidv4 } = require('uuid');
 
 module.exports = {
 
@@ -161,7 +162,7 @@ module.exports = {
             productprice: parseInt(productData.productprice),
             productofferprice: parseInt(productData.productofferprice),
             productquantity: parseInt(productData.productquantity),
-            productdate: productData.productdate,
+            productdate: new Date(),
             productdes: productData.productdes,
             status: productData.status,
         }
@@ -295,6 +296,7 @@ module.exports = {
             var allCategories = await db.get().collection(collection.productCat).find().toArray()
 
             if (allCategories) {
+                console.log('💖💖🦈💖💖💖🦈💖💖💖 : ',allCategories)
                 resolve(allCategories)
             }
             else {
@@ -302,18 +304,18 @@ module.exports = {
             }
         })
     }, addSubCategory: (catData) => {
+        
         return new Promise(async (resolve, reject) => {
-
-
-            db.get().collection(collection.productCat).updateOne({ _id: objectId(catData.mainCatId) }, { $push: { SubCategory: catData.subCat } }).then((id) => {
-                resolve();
+            var newId = uuidv4()
+            db.get().collection(collection.productCat).updateOne({ _id: objectId(catData.mainCatId) }, { $push: { SubCategory: {id : newId , subCat : catData.subCat} } }).then((id) => {
+                resolve(newId);
             })
         })
     },
     deleteSubcat: (index, id, subName) => {
         return new Promise((resolve, reject) => {
             SubCategory = `SubCategory. ${index}`
-            db.get().collection(collection.productCat).updateOne({ _id: objectId(id) }, { $pull: { SubCategory: subName } }).then((response) => {
+            db.get().collection(collection.productCat).updateOne({ _id: objectId(id) }, { $pull: { SubCategory:{ id:subName }} }).then((response) => {
 
                 resolve()
             })
@@ -360,16 +362,15 @@ module.exports = {
         })
     }, addBikeModel: (models) => {
         return new Promise((resolve, reject) => {
-            db.get().collection(collection.bikeBrands).updateOne({ _id: objectId(models.bikeBrandId) }, { $push: { models: models.bikemodel } }).then((result) => {
-
-
-                resolve(result)
+            let newId = uuidv4();
+            db.get().collection(collection.bikeBrands).updateOne({ _id: objectId(models.bikeBrandId) }, { $push: { models: { bikemodels: models.bikemodel, id: newId}}},{multi : true}).then((result) => {
+                resolve([result,newId])
             })
         })
-    }, deleteBikeModel: (index, id, name) => {
+    }, deleteBikeModel: (index, iD, name) => {
 
         return new Promise((resolve, reject) => {
-            db.get().collection(collection.bikeBrands).updateOne({ _id: objectId(id) }, { $pull: { models: name } }).then((result) => {
+            db.get().collection(collection.bikeBrands).updateOne({ _id: objectId(iD) }, { $pull: { models:{id : name}} }).then((result) => {
                 resolve()
             })
         })

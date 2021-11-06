@@ -33,6 +33,7 @@ router.get('/', async function (req, res, next) {
       adminHelper.fetchAllMainCategories().then((allCategories) => {
         adminHelper.findAllProductBrands().then((allProductBrands) => {
           adminHelper.getAllbikebrands().then((allBikeBrands) => {
+            
             res.render('user/user-home', { title: 'Home', user: true, Cartproducts, currentUser, typeOfPersonUser: true, products, logStatus: req.session.LoggedIn, cartCount, items: cartProductsTodisplay, allCategories, allProductBrands, allBikeBrands });
           })
         })
@@ -386,14 +387,13 @@ router.get('/cart', async (req, res) => {
   if (req.session.LoggedIn) {
     let products = await userHelpers.getCartProducts(req.session.userDetails)
     let allProducts = await userHelpers.fetchProducts()
-
     if (products) {
       totalValue = await userHelpers.getTotalAmount(req.session.userDetails)
       let UserId = req.session.userDetails
-      res.render('user/user-cart', { title: 'Product', products, user: true, typeOfPersonUser: true, currentUser: req.session.user, userId, totalValue, allProducts })
+      res.render('user/user-cart', { title: 'Cart', products, user: true, typeOfPersonUser: true, currentUser: req.session.user, UserId, totalValue, allProducts })
     }
     else {
-      res.render('user/user-cart', { title: 'Product', currentUser, user: true, typeOfPersonUser: true, logStatus })
+      res.render('user/user-cart', { title: 'Cart', currentUser, user: true, typeOfPersonUser: true, logStatus })
     }
 
   } else {
@@ -420,6 +420,7 @@ router.get('/add-to-cart/:id/:proPrice/:proName', (req, res) => {
 router.post('/change-product-quantity', async (req, res) => {
   userHelpers.changeProductQuantity(req.body).then(async (response) => {
     response.total = await userHelpers.getTotalAmount(req.session.userDetails)
+      
     res.json(response)
   })
 })
@@ -436,8 +437,9 @@ router.get('/checkout', async (req, res) => {
   if (req.session.LoggedIn) {
     let addresses = await userHelpers.findUserAddress(req.session.userDetails)
     let products = await userHelpers.getCartProducts(req.session.userDetails)
+    let total = await userHelpers.getTotalAmount(req.session.userDetails)
     let user = req.session.userDetails
-    res.render('user/user-checkout', { title: 'Checkout', user: true, theUser, currentUser: req.session.user, typeOfPersonUser: true, logStatus, products, totalValue, user, addresses })
+    res.render('user/user-checkout', { title: 'Checkout', user: true, theUser, currentUser: req.session.user, typeOfPersonUser: true, logStatus, products, total, user, addresses })
   } else {
     res.redirect('/login')
   }
@@ -610,7 +612,7 @@ router.get('/yourorders', (req, res) => {
 // Funtion to get the invoice of the specific order
 router.get('/orderinvoice/', (req, res) => {
   if (req.session.LoggedIn) {
-    userHelpers.getTheCurrentOrder(req.query.orderId).then((order) => {
+    userHelpers.getTheCurrentOrder(req.query.orderId, req.query.proId).then((order) => {
       res.render('user/user-invoice', { title: 'Invoice', loginAndSignup: true, typeOfPersonUser: true, cartCount, order, proName: req.query.proName })
     })
 
@@ -618,6 +620,8 @@ router.get('/orderinvoice/', (req, res) => {
     res.redirect('/login')
   }
 })
+
+
 
 router.get('/useraddress', (req, res) => {
   if (req.session.LoggedIn) {
@@ -717,6 +721,26 @@ router.post('/postreviewform',(req,res)=>{
  userHelpers.postUserReview(req.body).then((response)=>{
    res.json(response)
  })
+})
+
+router.post('/search',async (req,res)=>{
+  var searchResult = await userHelpers.findSearch(req.body.key)
+  res.json(searchResult)
+})
+
+router.get('/searchresult/:id',(req,res)=>{
+  console.log(req.body)
+})
+
+router.get('/test',(req,res)=>{
+  res.render('user/test', { title: 'Wishlist', user: true, currentUser: req.session.user, typeOfPersonUser: true})
+})
+
+router.get('/bikemodel/:brandId',(req,res)=>{
+  console.log('💩💩💖💖 : ',req.params.brandId)
+  userHelpers.findBikeModels(req.params.brandId).then((models)=>{
+    res.render('user/user-bikemodel', { title: 'Wishlist', user: true, currentUser: req.session.user, typeOfPersonUser: true ,models})
+  })
 })
 // Logout
 router.get('/logout', (req, res) => {

@@ -32,7 +32,8 @@
           <tr>
             
             <th class="desc">Product Name</th>
-            <th class="unit">UNIT PRICE</th>
+            <th class="unit">Unit Price</th>
+            <th class="unit">Quantity</th>
             <th class="qty">Payment Method</th>
             <th class="total">TOTAL</th>
           </tr>
@@ -41,9 +42,24 @@
           <tr>
             
             <td class="desc"><h3>{{proName}}</h3></td>
+            {{#eq order.mode 'cartorder'}}
+            <td class="unit">₹ {{order.products.totalprice}}</td>
+              {{else}}
             <td class="unit">₹ {{order.totalAmount}}</td>
+            {{/eq}}
+
+            {{#eq order.mode 'cartorder'}}
+            <td class="unit">{{order.products.quantity}}</td>
+              {{else}}
+              <td class="unit">1</td>
+            {{/eq}}
+
             <td class="qty">{{order.payment_method}}</td>
+            {{#eq order.mode 'cartorder'}}
+            <td class="total">₹ {{order.products.totalprice}}</td>
+              {{else}}
             <td class="total">₹ {{order.totalAmount}}</td>
+            {{/eq}}
           </tr>
          
         </tbody>
@@ -53,7 +69,12 @@
           <tr>
             <td colspan="2"></td>
             <td colspan="2">GRAND TOTAL</td>
+          {{#eq order.mode 'cartorder'}}
+            <td>₹ {{order.products.totalprice}}</td>
+              
+              {{else}}
             <td>₹ {{order.totalAmount}}</td>
+            {{/eq}}
           </tr>
         </tfoot>
       </table>

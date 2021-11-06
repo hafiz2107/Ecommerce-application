@@ -93,12 +93,10 @@ Handlebars.registerHelper('checkItemExistInCart', function (items, proId, price)
 });
 
 Handlebars.registerHelper('quantityCheckInCart', (allProducts, cartProId, cartProQuantity, cartId, price, userId) => {
-
-
   for (index in allProducts) {
     var inp
     if (allProducts[index]._id.toString() === cartProId.toString()) {
-      if (allProducts[index].productquantity - 1 >= cartProQuantity) {
+      if (allProducts[index].productquantity - 1 >= cartProQuantity){
         inp = true
       } else {
         inp = false

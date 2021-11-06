@@ -35,3 +35,57 @@ function limitReachedInCart(quantity){
     });
 }
 
+function limitOneInCart(){
+    swal({
+        title: "OOPS !",
+        text: `You Cannot decrease anymore quantity of the item`,
+        icon: "info",
+        button: "Ok",
+    });
+}
+
+function cancelOrderBuyNow(orderId , proId) {
+    swal({
+        title: "Are you sure you want to cancel the order?",
+        text: "Once deleted, you will not be able to undo !",
+        icon: "error",
+        buttons: true,
+        dangerMode: true,
+    }).then((willDelete) => {
+        if (willDelete) {
+            location.href = '/cancelbuynoworder/'+orderId+'/'+proId
+        } 
+    });
+}
+
+function confirmCheckOut(totalAmount){
+     swal({
+        title: "Are you sure?",
+        text: "Are you sure to proceed to checkout for the amount of ₹ " +totalAmount,
+        icon: "info",
+        button: "Proceed",
+        dangerMode: false,
+    })
+        .then((willDelete) => {
+            if (willDelete) {
+                location.reload(true)
+                location.assign("/checkout")
+            } 
+        });
+}
+
+function cancelCartOrder(proId,orderId,proQty){
+
+swal({
+    title: "Are you sure?",
+    text: "Are You sure you want to cancel the order ?",
+    icon: "warning",
+    buttons: true,
+    dangerMode: true,
+})
+    .then((willDelete) => {
+        if (willDelete) {
+            location.href = '/cancelcartorder/'+proId+'/'+orderId+'/'+proQty
+        } 
+    });
+}
