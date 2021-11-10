@@ -51,10 +51,12 @@ router.post('/', (req, res) => {
 router.get('/home', function (req, res, next) {
   if (req.session.adminLoggedIn) {
     date = new Date().toISOString().slice(0, 10)
-    adminHelper.findAllOrders().then((orderCount) => {
+    adminHelper.findAllOrders().then(async (orderCount) => {
       var orders = []
-      orders = [orderCount.allOrders, orderCount.allPendingOrders, orderCount.allPlacedOrders, orderCount.allShippedOrders, orderCount.allDeliveredOrders, orderCount.allCancelledOrders]
-      res.render('admin/admin-home', { typeOfPersonAdmin: true, adminHeader: true, adminNav: true, date, weatherDet, orders, totalOrdersToday: orderCount.totalOrdersToday })
+      adminHelper.fetchDeliveredProductsOfTodayBuyNow().then(([delivered, placed, totalCancel, totalcod, activeUsers, totalProducts, itemsLowOnStock, productsOnOffer, stockOverProducts]) => {
+        orders = [orderCount.allOrders, orderCount.allPendingOrders, orderCount.allPlacedOrders, orderCount.allShippedOrders, orderCount.allDeliveredOrders, orderCount.allCancelledOrders]
+        res.render('admin/admin-home', { typeOfPersonAdmin: true, adminHeader: true, adminNav: true, date, weatherDet, orders, totalOrdersToday: orderCount.totalOrdersToday, delivered, placed, totalCancel, totalcod, activeUsers, totalProducts, itemsLowOnStock, productsOnOffer, stockOverProducts})
+      })
     })
 
 
@@ -295,9 +297,6 @@ router.post('/addbikebrand', (req, res) => {
 
 
 router.post('/addbikemodel', (req, res) => {
-  console.log('HGHGHGHHG  : ', req.body);
-  console.log('🐬🐬🐬🐬🐬 : ', req.files)
-
   adminHelper.addBikeModel(req.body).then(([result, id]) => {
     let logo = req.files.modelLogo
     logo.mv('./public/bike model logos/' + id + '__1.jpg')
@@ -357,7 +356,110 @@ router.get('/deletecoupon/:couponId', (req, res) => {
 
 router.get('/report', (req, res) => {
   adminHelper.getAllOrders().then((orders) => {
-    res.render('admin/admin-report', { typeOfPersonAdmin: true, adminHeader: true, adminNav: true, orders, weatherDet })
+    adminHelper.getDeliveredOrders().then(([buyNowDo, cartDo]) => {
+      var deliveredOrders = [...buyNowDo, ...cartDo]
+      deliveredOrders = deliveredOrders.sort(function (a, b) { return new Date(b.orderDate) - new Date(a.orderDate) });
+
+      res.render('admin/admin-report', { typeOfPersonAdmin: true, adminHeader: true, adminNav: true, orders, weatherDet, orderSortedInDate: req.session.orderSortedInDate, deliveredOrders, deliveredReportonDate: req.session.deliveredReportonDate })
+    })
   })
+})
+router.get('/report/:re', (req, res) => {
+  req.session.deliveredReportonDate = false
+  req.session.orderSortedInDate = false
+  res.redirect('/admin/report')
+})
+
+router.get('/offermanagement', (req, res) => {
+  adminHelper.getAllCatOffers().then((offers) => {
+    adminHelper.fetchAllMainCategories().then((allCats) => {
+      res.render('admin/admin-offerManagement', { typeOfPersonAdmin: true, adminHeader: true, adminNav: true, weatherDet, offers, allCats })
+    })
+  })
+})
+
+router.post('/addcatoffer', (req, res) => {
+
+  console.log('THe time : ', new Date(req.body.offerexpiry).getTime())
+  adminHelper.addNewCatOffer(req.body).then((products) => {
+    products.map((proDetails) => {
+      adminHelper.updatePrice(proDetails).then((response) => {
+        console.log('The resu;t : ', response)
+        res.redirect('/admin/offermanagement')
+      })
+    })
+  })
+})
+
+router.get('/checkoffer/:offercat', (req, res) => {
+  adminHelper.checkOffer(req.params.offercat).then((response) => {
+    res.json(response)
+  })
+})
+
+router.get('/deleteoffer/', (req, res) => {
+  adminHelper.deleteoffer(req.query.offerId, req.query.category).then((products) => {
+    products.map((productToUpdate) => {
+      adminHelper.updateProductsWhenOfferDeleted(productToUpdate).then((result) => {
+        res.json(response)
+      })
+    })
+  })
+})
+
+router.get('/productoffers', async (req, res) => {
+  if (req.session.adminLoggedIn) {
+    var offers = await adminHelpers.getAllProductOffer()
+    adminHelpers.getAllproducts().then((products) => {
+      res.render('admin/admin-productoffers', { typeOfPersonAdmin: true, adminHeader: true, adminNav: true, weatherDet, products, offers })
+    })
+  }else{
+    res.redirect('/admin/login')
+  }
+})
+
+router.get('/checkproducthaveoffer/:proId', (req, res) => {
+  if (req.session.adminLoggedIn) {
+    adminHelper.checkProductHaveOffer(req.params.proId).then((reponse) => {
+      res.json(reponse)
+    })
+  } else {
+    res.redirect('/admin/login')
+  }
+})
+
+router.post('/addprooffer', (req, res) => {
+  adminHelper.addProOffer(req.body).then(() => {
+    res.redirect('/admin/productoffers')
+  })
+})
+
+router.get('/getreportondate/:from/:to', (req, res) => {
+  adminHelper.getOrderReportOnDate(req.params.from, req.params.to).then((orderSortedInDate) => {
+    req.session.orderSortedInDate = orderSortedInDate
+    res.redirect('/admin/report')
+  })
+})
+
+router.get('/getorderdetails/:id', (req, res) => {
+  adminHelper.getSpecificOrder(req.params.id).then((order) => {
+    res.json(order)
+  })
+})
+
+router.get('/deliverygetreportondate/:from/:to', (req, res) => {
+  adminHelper.getDeliveryOnDate(req.params.from, req.params.to).then(([buyNowOrders, cartOrders]) => {
+    deliveredReportonDate = [...buyNowOrders, ...cartOrders]
+    req.session.deliveredReportonDate = deliveredReportonDate.sort(function (a, b) { return new Date(b.orderDate) - new Date(a.orderDate) });
+    res.redirect('/admin/report')
+  })
+})
+
+router.get('/admanagement',(req,res)=>{
+  if(req.session.adminLoggedIn){
+    res.render('admin/admin-admanagement', { typeOfPersonAdmin: true, adminHeader: true, adminNav: true, weatherDet})
+  }else{
+    res.redirect('/admin/login')
+  }
 })
 module.exports = router;

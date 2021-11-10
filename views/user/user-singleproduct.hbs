@@ -27,10 +27,10 @@
         <div class="product-title text-center-xs">
           <h3>{{singleProduct.productname}}
             <div class="wishBack" style="display: inline;margin-left: 10px;">
-              {{#if wishlist}}
+              
               {{#checkItemExistOnWishlist wishlist singleProduct._id}}
               {{/checkItemExistOnWishlist}}
-              {{/if}}
+        
             </div>
           </h3>
           {{#lte singleProduct.productquantity '0'}}
@@ -330,6 +330,7 @@
       }
     })
   }
+  
   function postReviewForm(proId, proName, userId, userName) {
     //var rating = document.getElementById('reviewform').value
     ratingCheck = document.querySelector('input[name="rating1"]:checked')

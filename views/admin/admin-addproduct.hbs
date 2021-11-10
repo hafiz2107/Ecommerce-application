@@ -80,26 +80,6 @@
       </div>
 
 
-      {{!-- <select name="suitablebikebrand" id="bikebrand" class="btn btn-primary text-light custom-select">
-        <option value="" name="" class="dropdown-item text-dark bg-light">Suitable bike Brand </option>
-        <option value="ktm">KTM</option>
-        <option value="Honda">Honda</option>
-        <option value="Hero">Hero</option>
-        <option value="BMW">BMW</option>
-        <option value="bajaj">Bajaj</option>
-        <option value="yamaha">Yamaha</option>
-        <option value="others">Others</option>
-      </select>
-
-      <select name="suitablebikemodel" id="bikemodel" class="btn text-light btn-primary  custom-select">
-
-      </select>--}}
-
-
-
-
-
-
       <div class="form-row mt-2">
         <div class="form-group col-md-6">
           <label for="">Price</label>
@@ -138,13 +118,6 @@
 
       <div class="form-row mt-5">
         <div class="form-group col-md-6">
-
-
-          {{!-- Modal for displaying error --}}
-
-
-          {{!-- Modal for displaying error ends --}}
-
           {{!-- Modal for image cropping --}}
           <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
             aria-hidden="true">
@@ -172,8 +145,7 @@
 
           {{!-- Image 1 --}}
 
-          <label data-toggle="modal" data-target="#exampleModal" for="file1" class="btn btn-primary" type="button"
-            class="btn btn-primary">Image 1</label>
+          <label data-toggle="modal" data-target="#exampleModal" for="file1" class="btn btn-primary" type="button" class="btn btn-primary">Image 1</label>
           <img src="" alt="" style="width: 100px; height:auto;display: inherit;" id="imgview1">
           <div id="errMess1"></div>
           <input type="file" name="image1" id="file1" class="form-control" onchange="return fileValidation1()">

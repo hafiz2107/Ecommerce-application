@@ -10,4 +10,6 @@ module.exports = {
     coupon : 'coupons_collection',
     wishlist : 'wishlist_collection',
     userreviews : 'user_reviews',
+    categoryoffer : 'category_offers',
+    productoffer : 'product_offers'
 }

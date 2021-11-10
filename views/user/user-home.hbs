@@ -122,8 +122,14 @@
           </div>
 
           <div class="product-price">
+
             <span class="symbole">₹ </span><span>{{this.productprice}}</span>
+            
           </div>
+          {{#if this.offer}}
+          <span>MRP : ₹<s>{{this.productofferprice}}</s><span style="color: green;">    {{this.offer}} % OFF</span></span>
+          
+          {{/if}}
         </div>
       </div>
       {{/each}}
@@ -248,7 +254,7 @@
       </li>
       {{/each}}
     </ul>
-
+ 
     <div class="tab-content">
       {{#each allCategories}}
       <div class="tab-pane" id="{{this._id}}">

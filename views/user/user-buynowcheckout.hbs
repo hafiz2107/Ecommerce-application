@@ -36,7 +36,7 @@
                         </div>
 
                         {{/each}}
-                           
+
                     </div>
                     {{/if}}
                 </div>
@@ -100,8 +100,8 @@
                                 <label>PHONE *</label>
                                 <input type="text" name="phone" id="phone">
                             </div>
-                                <label for="useRegPh"style="margin-bottom: 20px;">Use Registered Phone</label>
-                                <input type="checkbox" id="useRegPh" onclick="useRegPhone()">
+                            <label for="useRegPh" style="margin-bottom: 20px;">Use Registered Phone</label>
+                            <input type="checkbox" id="useRegPh" onclick="useRegPhone()">
 
                             <div class="billing-address-input clearfix">
                                 <label>ALTERNATE PHONE *</label>
@@ -110,7 +110,7 @@
 
                             <br>
                             <div class="billing-address-input clearfix">
-                                <label id="saveaddresslabel" for="">  Save Address  </label>
+                                <label id="saveaddresslabel" for=""> Save Address </label>
                                 <input name="saveaddress" style="margin-left: 5px;" type="checkbox" id="saveaddress">
                             </div>
 
@@ -126,7 +126,7 @@
                     <div class="pcb-content">
 
 
-  
+
                         <p id="couponEnterSuccess">Enter your coupon code if you have one</p>
 
                         <div class="pcb-cuppon-input clearfix">
@@ -158,21 +158,41 @@
                     <h5 class="checkout-box-title">PAYMENT METHOD</h5>
                     <div class="pcb-content">
                         <p>Select your payment method</p>
-                        
+
                         <div class="pcb-cuppon-input clearfix">
-                            <input type="radio" name="payment_method" id="payementChoiceCod" value="COD" onclick="hideError()">
-                            <label style="margin-left: 10px;color: #000000;font-size: 14px;font-weight: 400;">COD</label>
+                            <input type="radio" name="payment_method" id="payementChoiceCod" value="COD"
+                                onclick="hideError()">
+                            <label
+                                style="margin-left: 10px;color: #000000;font-size: 14px;font-weight: 400;">COD</label>
                         </div>
+
                         <div class="pcb-cuppon-input clearfix">
-                            <input type="radio" name="payment_method" id="payementChoiceOnline" value="online" onclick="hideError()">
-                            <label style="margin-left: 10px;color: #000000;font-size: 14px;font-weight: 400;">Online Payment</label>
+
+                            <input type="radio" name="payment_method" id="payementChoiceRazor" value="razorpay"
+                                onclick="hideError()">
+                            <label style="margin-left: 10px;color: #000000;font-size: 14px;font-weight: 400;">Razor
+                                Pay</label><br>
+
+                            <input type="radio" name="payment_method" id="payementChoicePay" value="paypal"
+                                onclick="hideError()">
+                            <label
+                                style="margin-left: 10px;color: #000000;font-size: 14px;font-weight: 400;">PayPal</label>
+
+                            <div id="paypal-button"></div>
+
+
+                            {{!-- <label for="paypal-button">Paypal</label>
+                            <input type="radio" name="" id="paypal-button"> --}}
+
                             <div id="showPayError"></div>
                         </div>
+
                         <div class="create-account-checkout-method">
                             <div class="place-order">
                                 <button type="submit" class="checkout-page-button hvr-bs">Place order</button>
                             </div>
                         </div>
+
                         <input type="hidden" value="{{productToBuy._id}}" name="proId">
                         <input type="hidden" id="user_id" value="{{userId}}" name="userId">
                         </form>
@@ -181,7 +201,7 @@
             </div>
 
 
-
+            <input type="hidden" name="" id="usdToInr">
             <!-- Modal HTML -->
 
 
@@ -192,36 +212,36 @@
 
 <script>
     //For Hiding the error shown when no payement selected
-    function hideError(){
+    function hideError() {
         document.getElementById('showPayError').style.display = 'none';
     }
 
-//For displaying registered phoen number when clicking the checkbox
-    function useRegPhone(){
-    if(document.getElementById('useRegPh').checked == true){
-        document.getElementById('phone').value = {{theUser.mobile}}
+    //For displaying registered phoen number when clicking the checkbox
+    function useRegPhone() {
+        if (document.getElementById('useRegPh').checked == true) {
+            document.getElementById('phone').value = {{ theUser.mobile }}
     }
-    else{
-         document.getElementById('phone').value = ''
+    else {
+        document.getElementById('phone').value = ''
     }
     }
 </script>
 
 <script>
     $.validator.addMethod("alpha", function (value, element) {
-            return this.optional(element) || value == value.match(/^[a-zA-Z\s]+$/);
-        });
+        return this.optional(element) || value == value.match(/^[a-zA-Z\s]+$/);
+    });
 
     $(document).ready(function () {
         $('#checkoutbuynow-form').validate({
             rules: {
                 firstname: {
                     required: true,
-                    alpha:true,
+                    alpha: true,
                 },
                 lastname: {
                     required: true,
-                     alpha: true,
+                    alpha: true,
                 },
                 housename: {
                     required: true,
@@ -230,11 +250,11 @@
                     required: true,
                 },
                 address2: {
-                     required: true,
+                    required: true,
                 },
                 city: {
                     required: true,
-                     alpha: true,
+                    alpha: true,
                 },
                 country: {
                     required: true,
@@ -244,26 +264,26 @@
                 },
                 pincode: {
                     required: true,
-                    digits:true,
+                    digits: true,
                     minlength: 6,
-                    maxlength : 6,
+                    maxlength: 6,
                 },
                 phone: {
                     required: true,
-                    digits:true,
+                    digits: true,
                     minlength: 10,
                     maxlength: 10,
                 },
                 second_mobile: {
                     minlength: 10,
-                    digits:true,
+                    digits: true,
                     maxlength: 10,
                 },
                 payment_method: {
                     required: true,
                 }
             },
-            messages:{
+            messages: {
                 firstname: {
                     alpha: "Please Enter alphabets only",
                 },
@@ -272,8 +292,13 @@
                 },
             },
             submitHandler: function () {
-                
-                if (document.getElementById('payementChoiceCod').checked == true || document.getElementById('payementChoiceOnline').checked == true) {
+
+                if (document.getElementById('payementChoiceCod').checked == true || document.getElementById('payementChoiceRazor').checked == true || document.getElementById('payementChoicePay').checked == true) {
+
+                    if (document.getElementById('payementChoicePay').checked == true) {
+                        document.getElementById('paypal-button').click();
+                    }
+
                     $.ajax({
                         url: '/checkoutbuynow',
                         method: 'post',
@@ -319,7 +344,7 @@
             success: ({ coupon }) => {
 
                 if (coupon.appliedCoupon) {
-                   
+
                     document.getElementById('discount').innerHTML = '0';
                     document.getElementById('orderTotal').innerHTML = actualPrice
                     document.getElementById('productprice').value = actualPrice
@@ -336,7 +361,7 @@
                 else if (coupon.couponDontExist) {
                     document.getElementById('discount').innerHTML = '0';
                     document.getElementById('orderTotal').innerHTML = actualPrice
-                    document.getElementById('productprice').value = actualPrice  
+                    document.getElementById('productprice').value = actualPrice
                     document.getElementById('couponEnterSuccess').style.display = 'block';
                     swal("Coupon Error", `Invalid Coupon entered`, "error");
                 } else {
@@ -344,7 +369,7 @@
                     document.getElementById('discount').innerHTML = '0';
                     document.getElementById('orderTotal').innerHTML = actualPrice
                     document.getElementById('productprice').value = actualPrice
-           
+
                 }
 
 
@@ -392,7 +417,7 @@
 
 <script>
 
-    function changeAddress(firstname, lastname, address1, address2, country, state, pincode, phone, second_mobile, housename, city,id) {
+    function changeAddress(firstname, lastname, address1, address2, country, state, pincode, phone, second_mobile, housename, city, id) {
 
         if (document.getElementById(id).checked === true) {
 
@@ -464,7 +489,6 @@
             method: 'post',
             success: (response) => {
                 if (response.status) {
-                    alert('redirecting to order success')
                     location.href = '/orderconfirmed'
                 } else {
                     alert('Payement failed')
@@ -474,6 +498,67 @@
     }
 </script>
 
+
+
+<script src="https://www.paypalobjects.com/api/checkout.js"></script>
+
+
+<script>
+
+    paypal.Button.render({
+        // Configure environment
+        env: 'sandbox',
+        client: {
+            sandbox: 'demo_sandbox_client_id',
+            production: 'demo_production_client_id'
+        },
+        // Customize button (optional)
+        locale: 'en_US',
+        style: {
+            size: 'small',
+            color: 'blue',
+            shape: 'rect',
+        },
+        // Enable Pay Now checkout flow (optional)
+        commit: true,
+        // Set up a payment
+        payment: function (data, actions) {
+            
+            $.ajax({
+                url: '/currencycoverter/' + document.getElementById('orderTotal').innerHTML,
+                method: 'post',
+                success: (total) => {
+                    document.getElementById('usdToInr').value = total
+                }
+            })
+            price = document.getElementById('usdToInr').value
+
+
+            return actions.payment.create({
+                transactions: [{
+                    amount: {
+                        total: parseFloat(price).toFixed(2),
+                        currency: 'USD',
+                    }
+                }]
+            });
+        },
+
+        // Execute the payment
+
+        onAuthorize: function (data, actions) {
+
+            return actions.payment.execute().then(function () {
+                // Show a confirmation message to the buyer
+                location.href = '/orderconfirmed'
+
+            });
+
+        }
+
+    }, '#paypal-button');
+
+</script>
 
 <style>
     .error {

@@ -9,63 +9,65 @@
                         <div class="personal-information-box">
                             <div class="row">
                                 {{!-- Tabs For Displaying --}}
-                                <div class="product-tabs">
-                                    <ul class="nav nav-tabs text-center" role="tablist">
-                                        <li role="presentation" class="active">
-                                            <a href="#placedBuynow" aria-controls="description" role="tab"
-                                                data-toggle="tab">Placed Orders</a>
-                                        </li>
-                                        <li role="presentation">
-                                            <a href="#shippedBuynow" aria-controls="details" role="tab"
-                                                data-toggle="tab">Shipped Orders</a>
-                                        </li>
-
-                                        <li role="presentation">
-                                            <a href="#deliveredBuynow" aria-controls="reviews" role="tab"
-                                                data-toggle="tab">Delivered Orders</a>
-                                        </li>
-
-                                        <li role="presentation">
-                                            <a href="#cancelBuynow" aria-controls="reviews" role="tab"
-                                                data-toggle="tab">Cancelled Orders</a>
-                                        </li>
-
-                                    </ul>
-                                    <div>
-
-                                        <div class="tab-content">
-                                            {{#if orders}}
-                                            <div role="tabpanel" class="tab-pane" id="pendingBuynow">
+                                <section style="padding-top: 0;">
+                                    <div class="tab-wrap" style="margin-top: -0.001%;">
+                                
+                                        <input type="radio" id="tab1" name="tabGroup1" class="tab" checked>
+                                        <label for="tab1" style="font-weight: bolder;">PLACED</label>
+                                
+                                        <input type="radio" id="tab2" name="tabGroup1" class="tab">
+                                        <label for="tab2" style="font-weight: bolder;">SHIPPED</label>
+                                
+                                        <input type="radio" id="tab3" name="tabGroup1" class="tab">
+                                        <label for="tab3" style="font-weight: bolder;">DELIVERED</label>
+                                
+                                        <input type="radio" id="tab4" name="tabGroup1" class="tab">
+                                        <label for="tab4" style="font-weight: bolder;">CANCELLED</label>
+                                
+                                        <div class="tab__content">
+                                            <div class="col-md-12">
+                                
                                                 {{#each orders}}
                                                 {{#eq this.mode 'buynow'}}
-                                                {{#eq this.status 'pending'}}
+                                                {{#eq this.status 'placed'}}
+                                
                                                 <div class="gallery" style="display: inline;">
                                                     <div class="content">
-                                                        <img src="/uploads/{{this.productId}}__1.jpg"
-                                                            style="width: 100%;" class="card-img-top" alt="...">
+                                                        <img src="/uploads/{{this.productId}}__1.jpg" style="width: 100%;" class="card-img-top"
+                                                            alt="...">
                                                         <a href="/productview/{{this.productId}}" class="productview">
                                                             <h5 class="card-title ">{{this.productName}}</h5>
                                                         </a>
                                                         <h3>₹ <span style="color: red;">{{this.productprice}}</span>
                                                         </h3>
-
-
+                                
                                                         <p>Order Date : <span style="color: red;">{{this.orderDate}}</span></p>
                                                         <button class="buy-1" style="color: white;margin-bottom: 5px;"
                                                             onclick="cancelOrderBuyNow('{{this._id}}','{{this.productId}}')">Cancel
                                                             Order</button>
-
                                                     </div>
                                                 </div>
+                                
+                                                {{!-- {{else}}
+                                                <div class="text-center " style="margin-top:2%;" >                                                      
+                                
+                                                    <div class="container">
+                                                        <img src="https://cdni.iconscout.com/illustration/premium/thumb/empty-cart-3613108-3020773.png"
+                                                            style="height:280px;width:290px">
+                                                    </div>
+                                                    <h1 class="h2">Currently there are no placed orders</h1>
+                                                    <br>
+                                
+                                                    <a class="btn btn-primary btn-wide" href="/">Start Shopping</a>
+                                                </div> --}}
                                                 {{/eq}}
+                                
                                                 {{else}}
-
                                                 {{#each this.products}}
-                                                {{#eq this.status 'pending'}}
+                                                {{#eq this.status 'placed'}}
                                                 <div class="gallery" style="display: inline;">
                                                     <div class="content">
-                                                        <img src="/uploads/{{this.item}}__1.jpg" style="width: 100%;"
-                                                            class="card-img-top" alt="...">
+                                                        <img src="/uploads/{{this.item}}__1.jpg" style="width: 100%;" class="card-img-top" alt="...">
                                                         <a href="/productview/{{this.item}}" class="productview">
                                                             <h5 class="card-title ">{{this.name}}</h5>
                                                         </a>
@@ -74,200 +76,223 @@
                                                         <button class="buy-1"
                                                             onclick="cancelCartOrder('{{this.item}}','{{../this._id}}','{{this.quantity}}')">Cancel
                                                             Order</button>
+                                
                                                     </div>
                                                 </div>
+                                
+                                                {{!-- {{else}}
+                                                <div class="text-center " style="margin-top:2%;">
+                                
+                                                    <div class="container">
+                                                        <img src="https://cdni.iconscout.com/illustration/premium/thumb/empty-cart-3613108-3020773.png"
+                                                            style="height:280px;width:290px">
+                                                    </div>
+                                                    <h1 class="h2">Currently there are no placed orders</h1>
+                                                    <br>
+                                
+                                                    <a class="btn btn-primary btn-wide" href="/">Start Shopping</a>
+                                                </div> --}}
                                                 {{/eq}}
                                                 {{/each}}
                                                 {{/eq}}
                                                 {{/each}}
-
+                                
                                             </div>
-
-
-                                            {{!-- Placed --}}
-                                            <div role="tabpanel" class="tab-pane" id="placedBuynow">
-                                                {{#each orders}}
+                                        </div>
+                                
+                                        <div class="tab__content">
+                                            <div class="col-md-12">
+                                
+                                                {{#each allOrders}}
                                                 {{#eq this.mode 'buynow'}}
-                                                {{#eq this.status 'placed'}}
+                                                {{#eq this.status 'shipped'}}
+                                
                                                 <div class="gallery" style="display: inline;">
                                                     <div class="content">
-                                                        <img src="/uploads/{{this.productId}}__1.jpg"
-                                                            style="width: 100%;" class="card-img-top" alt="...">
+                                                        <img src="/uploads/{{this.productId}}__1.jpg" style="width: 100%;" class="card-img-top"
+                                                            alt="...">
                                                         <a href="/productview/{{this.productId}}" class="productview">
                                                             <h5 class="card-title ">{{this.productName}}</h5>
                                                         </a>
                                                         <h3>₹ <span style="color: red;">{{this.productprice}}</span>
                                                         </h3>
-
+                                
                                                         <p>Order Date : <span style="color: red;">{{this.orderDate}}</span></p>
+                                                        </p>
                                                         <button class="buy-1" style="color: white;margin-bottom: 5px;"
                                                             onclick="cancelOrderBuyNow('{{this._id}}','{{this.productId}}')">Cancel
                                                             Order</button>
                                                     </div>
                                                 </div>
-                                                {{!-- Error image --}}
-                                                {{else}}
+                                
+                                                {{!-- {{else}}
+                                                <div class="text-center " style="margin-top:2%;">
+                                
+                                
+                                                    <img src="https://cdn3.iconfinder.com/data/icons/virancie-shopping-1/30/shopping_072-no_shipping-delivery-truck-vehicle-transport-512.png"
+                                                        style="height:250px;width:290px">
+                                
+                                                    <h1 class="h2">Currently there are no products under transist</h1>
+                                                    <br>
+                                
+                                                    <a class="btn btn-primary btn-wide" href="/">Start Shopping</a>
+                                                </div> --}}
                                                 {{/eq}}
-                                                <img src="" alt="">
+                                
                                                 {{else}}
                                                 {{#each this.products}}
-                                                {{#eq this.status 'placed'}}
+                                                {{#eq this.status 'shipped'}}
                                                 <div class="gallery" style="display: inline;">
                                                     <div class="content">
-                                                        <img src="/uploads/{{this.item}}__1.jpg" style="width: 100%;"
-                                                            class="card-img-top" alt="...">
+                                                        <img src="/uploads/{{this.item}}__1.jpg" style="width: 100%;" class="card-img-top" alt="...">
                                                         <a href="/productview/{{this.item}}" class="productview">
                                                             <h5 class="card-title ">{{this.name}}</h5>
                                                         </a>
                                                         <h3>₹ <span style="color: red;">{{this.price}}</span></h3>
-                                                    <p>Order Date : <span style="color: red;">{{this.orderDate}}</span></p>
+                                                        <p>Order Date : <span style="color: red;">{{this.orderDate}}</span></p>
                                                         <button class="buy-1"
                                                             onclick="cancelCartOrder('{{this.item}}','{{../this._id}}','{{this.quantity}}')">Cancel
                                                             Order</button>
-
+                                
                                                     </div>
                                                 </div>
-                                                {{else}}
-                                                {{!-- Error Image --}}
-                                                <img src="" alt="">
+                                
+                                                {{!-- {{else}}
+                                                <div class="text-center " style="margin-top:2%;">
+                                
+                                
+                                                    <img src="https://cdn3.iconfinder.com/data/icons/virancie-shopping-1/30/shopping_072-no_shipping-delivery-truck-vehicle-transport-512.png"
+                                                        style="height:250px;width:290px">
+                                
+                                                    <h1 class="h2">Currently there are no products under transist</h1>
+                                                    <br>
+                                
+                                                    <a class="btn btn-primary btn-wide" href="/">Start Shopping</a>
+                                                </div> --}}
                                                 {{/eq}}
-
                                                 {{/each}}
                                                 {{/eq}}
                                                 {{/each}}
+                                
                                             </div>
-
-
-                                            {{!--Shipped Orders --}}
-                                            <div role="tabpanel" class="tab-pane" id="shippedBuynow">
-                                                {{#each orders}}
-                                                {{#eq this.mode 'buynow'}}
-                                                {{#eq this.status 'shipped'}}
-                                                <div class="gallery" style="display: inline;">
-                                                    <div class="content">
-                                                        <img src="/uploads/{{this.productId}}__1.jpg"
-                                                            style="width: 100%;" class="card-img-top" alt="...">
-                                                        <a href="/productview/{{this.productId}}" class="productview">
-                                                            <h5 class="card-title ">{{this.productName}}</h5>
-                                                        </a>
-                                                        <h3>₹ <span style="color: red;">{{this.productprice}}</span>
-                                                        </h3>
-
-                                                        <p>Order Date : <span style="color: red;">{{this.orderDate}}</span></p>
-                                                        </p>
-                                                        <button class="buy-1" style="color: white;margin-bottom: 5px;"
-                                                            onclick="cancelOrderBuyNow('{{this._id}}','{{this.productId}}')">Cancel
-                                                            Order</button>
-                                                    </div>
-                                                </div>
-                                                {{else}}
-                                                {{!-- Error Image --}}
-                                                <img src="" alt="">
-                                                {{/eq}}
-                                                {{else}}
-                                                {{#each this.products}}
-                                                {{#eq this.status 'shipped'}}
-                                                <div class="gallery" style="display: inline;">
-                                                    <div class="content">
-                                                        <img src="/uploads/{{this.item}}__1.jpg" style="width: 100%;"
-                                                            class="card-img-top" alt="...">
-                                                        <a href="/productview/{{this.item}}" class="productview">
-                                                            <h5 class="card-title ">{{this.name}}</h5>
-                                                        </a>
-                                                        <h3>₹ <span style="color: red;">{{this.price}}</span></h3>
-                                                        <p>Order Date : <span style="color: red;">{{this.orderDate}}</span></p>
-                                                        <button class="buy-1" onclick="cancelCartOrder('{{this.item}}','{{../this._id}}','{{this.quantity}}')">Cancel Order</button>
-
-                                                    </div>
-                                                </div>
-                                                {{else}}
-                                                {{!-- Error Image --}}
-                                                <img src="" alt="">
-                                                {{/eq}}
-                                                {{/each}}
-                                                {{/eq}}
-                                                {{/each}}
-                                            </div>
-
-
-
-
-                                            <div role="tabpanel" class="tab-pane" id="deliveredBuynow">
+                                        </div>
+                                
+                                        <div class="tab__content">
+                                            <div class="col-md-12">
+                                
                                                 {{#each orders}}
                                                 {{#eq this.mode 'buynow'}}
                                                 {{#eq this.status 'delivered'}}
+                                
                                                 <div class="gallery" style="display: inline;">
                                                     <div class="content">
-                                                        <img src="/uploads/{{this.productId}}__1.jpg"
-                                                            style="width: 100%;" class="card-img-top" alt="...">
+                                                        <img src="/uploads/{{this.productId}}__1.jpg" style="width: 100%;" class="card-img-top"
+                                                            alt="...">
                                                         <a href="/productview/{{this.productId}}" class="productview">
                                                             <h5 class="card-title ">{{this.productName}}</h5>
                                                         </a>
                                                         <h3>₹ <span style="color: red;">{{this.productprice}}</span>
                                                         </h3>
                                                         </p>
-                                                        <button style="color: white;margin-bottom: 5px;" onclick="redirectToInvoice('{{this._id}}','{{this.productName}}','{{this.productId}}')"  class="buy-3" >View invoice</button>
+                                                        <button style="color: white;margin-bottom: 5px;"
+                                                            onclick="redirectToInvoice('{{this._id}}','{{this.productName}}','{{this.productId}}')"
+                                                            class="buy-3">View
+                                                            invoice</button>
                                                     </div>
                                                 </div>
-                                                {{else}}
-                                                {{!-- Error Image --}}
-                                                <img src="" alt="">
+                                
+                                                {{!-- {{else}}
+                                                <div class="text-center " style="margin-top:2%;">
+                                
+                                
+                                                    <img src="https://image.freepik.com/free-vector/courier-delivering-order-customer-door-man-getting-parcel-box-package-flat-vector-illustration-postman-shipping-service_74855-8309.jpg"
+                                                        style="height:270px;width:300px">
+                                
+                                                    <h1 class="h2">No products delivered yet...</h1>
+                                                    <br>
+                                
+                                                    <a class="btn btn-primary btn-wide" href="/">Start Shopping</a>
+                                                </div> --}}
                                                 {{/eq}}
+                                
                                                 {{else}}
                                                 {{#each this.products}}
                                                 {{#eq this.status 'delivered'}}
                                                 <div class="gallery" style="display: inline;">
                                                     <div class="content">
-                                                        <img src="/uploads/{{this.item}}__1.jpg" style="width: 100%;"
-                                                            class="card-img-top" alt="...">
+                                                        <img src="/uploads/{{this.item}}__1.jpg" style="width: 100%;" class="card-img-top" alt="...">
                                                         <a href="/productview/{{this.item}}" class="productview">
                                                             <h5 class="card-title ">{{this.name}}</h5>
                                                         </a>
                                                         <h3>₹ <span style="color: red;">{{this.price}}</span></h3>
-                                                        <button style="color: white;margin-bottom: 5px;" onclick="redirectToInvoice('{{../this._id}}','{{this.name}}','{{this.item}}')"
-                                                            class="buy-3">View invoice</button>
+                                                        <button style="color: white;margin-bottom: 5px;"
+                                                            onclick="redirectToInvoice('{{../this._id}}','{{this.name}}','{{this.item}}')"
+                                                            class="buy-3">View
+                                                            invoice</button>
                                                     </div>
                                                 </div>
-                                                {{else}}
-                                                {{!-- Error Image --}}
-                                                <img src="" alt="">
+                                
+                                                {{!-- {{else}}
+                                                <div class="text-center " style="margin-top:2%;">
+                                
+                                
+                                                    <img src="https://image.freepik.com/free-vector/courier-delivering-order-customer-door-man-getting-parcel-box-package-flat-vector-illustration-postman-shipping-service_74855-8309.jpg"
+                                                        style="height:270px;width:300px">
+                                
+                                                    <h1 class="h2">No products delivered yet...</h1>
+                                                    <br>
+                                
+                                                    <a class="btn btn-primary btn-wide" href="/">Start Shopping</a>
+                                                </div> --}}
                                                 {{/eq}}
                                                 {{/each}}
                                                 {{/eq}}
                                                 {{/each}}
+                                
                                             </div>
-
-
-                                            <div role="tabpanel" class="tab-pane" id="cancelBuynow">
+                                        </div>
+                                
+                                        <div class="tab__content">
+                                            <div class="col-md-12">
+                                
                                                 {{#each orders}}
                                                 {{#eq this.mode 'buynow'}}
                                                 {{#eq this.status 'cancel'}}
-
+                                
                                                 <div class="gallery" style="display: inline;">
                                                     <div class="content">
-                                                        <img src="/uploads/{{this.productId}}__1.jpg"
-                                                            style="width: 100%;" class="card-img-top" alt="...">
+                                                        <img src="/uploads/{{this.productId}}__1.jpg" style="width: 100%;" class="card-img-top"
+                                                            alt="...">
                                                         <a href="/productview/{{this.productId}}" class="productview">
                                                             <h5 class="card-title ">{{this.productName}}</h5>
                                                         </a>
                                                         <h3>₹ <span style="color: red;">{{this.productprice}}</span>
                                                         </h3>
-
+                                
                                                         <h5 style="color: red;">Cancelled</h5>
                                                     </div>
                                                 </div>
-                                                {{else}}
-                                                {{!-- Error Image --}}
-                                                <img src="" alt="">
+                                
+                                                {{!-- {{else}}
+                                                <div class="text-center " style="margin-top:2%;">
+                                
+                                
+                                                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRGZJlKf7XUaS63Bv5NyzHEEOsKe3adztaCaGMrBXtwsTXhuQpSzF0vuyib2esYg7U62vc&usqp=CAU"
+                                                        style="height:250px;width:300px">
+                                
+                                                    <h1 class="h2">No products are cancelled...</h1>
+                                                    <br>
+                                
+                                                    <a class="btn btn-primary btn-wide" href="/">Start Shopping</a>
+                                                </div> --}}
                                                 {{/eq}}
-
+                                
                                                 {{else}}
                                                 {{#each this.products}}
                                                 {{#eq this.status 'cancel'}}
                                                 <div class="gallery" style="display: inline;">
                                                     <div class="content">
-                                                        <img src="/uploads/{{this.item}}__1.jpg" style="width: 100%;"
-                                                            class="card-img-top" alt="...">
+                                                        <img src="/uploads/{{this.item}}__1.jpg" style="width: 100%;" class="card-img-top" alt="...">
                                                         <a href="/productview/{{this.item}}" class="productview">
                                                             <h5 class="card-title ">{{this.name}}</h5>
                                                         </a>
@@ -275,100 +300,39 @@
                                                         <h3 style="color: red;">Cancelled</h3>
                                                     </div>
                                                 </div>
-                                                {{else}}
-                                                {{!-- Error Image --}}
-                                                <img src="" alt="">
+                                
+                                                {{!-- {{else}}
+                                                <div class="text-center " style="margin-top:2%;">
+                                
+                                
+                                                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRGZJlKf7XUaS63Bv5NyzHEEOsKe3adztaCaGMrBXtwsTXhuQpSzF0vuyib2esYg7U62vc&usqp=CAU"
+                                                        style="height:250px;width:300px">
+                                
+                                                    <h1 class="h2">No products are cancelled...</h1>
+                                                    <br>
+                                
+                                                    <a class="btn btn-primary btn-wide" href="/">Start Shopping</a>
+                                                </div> --}}
                                                 {{/eq}}
                                                 {{/each}}
                                                 {{/eq}}
                                                 {{/each}}
+                                
                                             </div>
-
-                                            {{else}}
-                                            <center>
-                                                <h3 style="color: red;">Sorry Please make some orders !!</h3>
-                                                <img src="/images/No orders.svg" alt=""
-                                                    style="height: 240px; margin-top: 20px;">
-                                            </center>
-                                            {{/if}}
-
                                         </div>
+                                
                                     </div>
-
-
-                                    {{!-- Contents --}}
-
-                                    {{!-- Content End --}}
-                                </div>
+                                </section>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
 </section>
 
-<script>
-    function redirectToInvoice(ordId , proName , proId){
-        location.href = `/orderinvoice?orderId=${ordId}&proName=${proName}&proId=${proId}`
-    }
-</script>
 
-<script>
-    // user country code for selected option
-    let user_country_code = "IN";
-
-    (function () {
-        // script https://www.html-code-generator.com/html/drop-down/country-region
-
-        // Get the country name and state name from the imported script.
-        let country_list = country_and_states['country'];
-        let states_list = country_and_states['states'];
-
-        // creating country name drop-down
-        let option = '';
-        option += '<option>select country</option>';
-        for (let country_code in country_list) {
-            // set selected option user country
-            let selected = (country_code == user_country_code) ? ' selected' : '';
-            option += '<option value="' + country_code + '"' + selected + '>' + country_list[country_code] + '</option>';
-        }
-        document.getElementById('country').innerHTML = option;
-
-        // creating states name drop-down
-        let text_box = '<input type="text" class="input-text" id="state">';
-        let state_code_id = document.getElementById("state-code");
-
-        function create_states_dropdown() {
-            // get selected country code
-            let country_code = document.getElementById("country").value;
-            let states = states_list[country_code];
-            // invalid country code or no states add textbox
-            if (!states) {
-                state_code_id.innerHTML = text_box;
-                return;
-            }
-            let option = '';
-            if (states.length > 0) {
-                option = '<select id="state">\n';
-                for (let i = 0; i < states.length; i++) {
-                    option += '<option value="' + states[i].code + '">' + states[i].name + '</option>';
-                }
-                option += '</select>';
-            } else {
-                // create input textbox if no states 
-                option = text_box
-            }
-            state_code_id.innerHTML = option;
-        }
-
-        // country select change event
-        const country_select = document.getElementById("country");
-        country_select.addEventListener('change', create_states_dropdown);
-
-        create_states_dropdown();
-    })();
-</script>
 <style>
     .productview :hover {
         color: #4267B2;
@@ -599,5 +563,155 @@
         .content {
             width: 100%;
         }
+    }
+</style>
+<style>
+    .tab-wrap {
+        -webkit-transition: 0.3s box-shadow ease;
+        transition: 0.3s box-shadow ease;
+        border-radius: 6px;
+        max-width: 100%;
+        display: -webkit-box;
+        display: -webkit-flex;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-flex-wrap: wrap;
+        -ms-flex-wrap: wrap;
+        flex-wrap: wrap;
+        position: relative;
+        list-style: none;
+        background-color: #fff;
+        margin: 40px 0;
+
+    }
+
+
+
+    .tab {
+        display: none;
+    }
+
+    .tab__content {
+        padding: 10px 25px;
+        background-color: transparent;
+        position: absolute;
+        width: 100%;
+        z-index: -1;
+        opacity: 0;
+        left: 0;
+        -webkit-transform: translateY(-3px);
+        transform: translateY(-3px);
+        border-radius: 6px;
+    }
+
+    .tab:checked:nth-of-type(1)~.tab__content:nth-of-type(1) {
+        opacity: 1;
+        -webkit-transition: 0.5s opacity ease-in, 0.2s transform ease;
+        transition: 0.5s opacity ease-in, 0.2s transform ease;
+        position: relative;
+        top: 0;
+        z-index: 100;
+        -webkit-transform: translateY(0px);
+        transform: translateY(0px);
+        text-shadow: 0 0 0;
+    }
+
+    .tab:checked:nth-of-type(2)~.tab__content:nth-of-type(2) {
+        opacity: 1;
+        -webkit-transition: 0.5s opacity ease-in, 0.2s transform ease;
+        transition: 0.5s opacity ease-in, 0.2s transform ease;
+        position: relative;
+        top: 0;
+        z-index: 100;
+        -webkit-transform: translateY(0px);
+        transform: translateY(0px);
+        text-shadow: 0 0 0;
+    }
+
+    .tab:checked:nth-of-type(3)~.tab__content:nth-of-type(3) {
+        opacity: 1;
+        -webkit-transition: 0.5s opacity ease-in, 0.2s transform ease;
+        transition: 0.5s opacity ease-in, 0.2s transform ease;
+        position: relative;
+        top: 0;
+        z-index: 100;
+        -webkit-transform: translateY(0px);
+        transform: translateY(0px);
+        text-shadow: 0 0 0;
+    }
+
+    .tab:checked:nth-of-type(4)~.tab__content:nth-of-type(4) {
+        opacity: 1;
+        -webkit-transition: 0.5s opacity ease-in, 0.2s transform ease;
+        transition: 0.5s opacity ease-in, 0.2s transform ease;
+        position: relative;
+        top: 0;
+        z-index: 100;
+        -webkit-transform: translateY(0px);
+        transform: translateY(0px);
+        text-shadow: 0 0 0;
+    }
+
+    .tab:first-of-type:not(:last-of-type)+label {
+        border-top-right-radius: 0;
+        border-bottom-right-radius: 0;
+    }
+
+    .tab:not(:first-of-type):not(:last-of-type)+label {
+        border-radius: 0;
+    }
+
+    .tab:last-of-type:not(:first-of-type)+label {
+        border-top-left-radius: 0;
+        border-bottom-left-radius: 0;
+    }
+
+    .tab:checked+label {
+        background-color: #fcd5d5;
+        box-shadow: 0 -1px 0 #fcd5d5 inset;
+        cursor: default;
+    }
+
+    .tab:checked+label:hover {
+        box-shadow: 0 -1px 0 #fcd5d5 inset;
+        background-color: #b3a0a0;
+    }
+
+    .tab+label {
+        width: 100%;
+        box-shadow: 0 -1px 0 #eee inset;
+        border-radius: 6px 6px 0 0;
+        cursor: pointer;
+        display: block;
+        text-decoration: none;
+        color: #333;
+        -webkit-box-flex: 3;
+        -webkit-flex-grow: 3;
+        -ms-flex-positive: 3;
+        flex-grow: 3;
+        text-align: center;
+        background-color: #f8f9fa;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+        text-align: center;
+        -webkit-transition: 0.3s background-color ease, 0.3s box-shadow ease;
+        transition: 0.3s background-color ease, 0.3s box-shadow ease;
+        height: 50px;
+        box-sizing: border-box;
+        padding: 15px;
+    }
+
+    @media (min-width:768px) {
+
+        .tab+label {
+            width: auto;
+        }
+    }
+
+    .tab+label:hover {
+        background-color: #b3a0a0;
+        box-shadow: 0 1px 0 #b3a0a0 inset;
     }
 </style>

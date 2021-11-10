@@ -3,20 +3,22 @@ var db = require('../config/connection')
 var objectId = require('mongodb').ObjectId
 const { v4: uuidv4 } = require('uuid');
 
+
 module.exports = {
 
     findAllOrders: () => {
         return new Promise(async (resolve, reject) => {
             var response = {}
 
+            var allOrdersTotalCount = await db.get().collection(collection.orders).find().count()
             var allBuyNowPendingOrders = await db.get().collection(collection.orders).find({ mode: 'buynow', status: 'pending' }).count()
             var allBuyNowplacedOrders = await db.get().collection(collection.orders).find({ mode: 'buynow', status: 'placed' }).count()
             var allBuyNowshippedOrders = await db.get().collection(collection.orders).find({ mode: 'buynow', status: 'shipped' }).count()
             var allBuyNowdeliveredOrders = await db.get().collection(collection.orders).find({ mode: 'buynow', status: 'delivered' }).count()
             var allBuyNowcancelOrders = await db.get().collection(collection.orders).find({ mode: 'buynow', status: 'cancel' }).count()
             var date = new Date().toISOString().slice(0, 10)
-            var totalOrdersToday = await db.get().collection(collection.orders).find({ orderDate: date}).count()
-            
+            var totalOrdersToday = await db.get().collection(collection.orders).find({ orderDate: date }).count()
+
 
             var allCartpendingOrders = await db.get().collection(collection.orders).aggregate([
                 {
@@ -141,12 +143,85 @@ module.exports = {
             allDeliveredOrders = parseInt(allBuyNowdeliveredOrders + allCartdeliveredOrders)
             allCancelledOrders = parseInt(allCartcancelledOrders + allBuyNowcancelOrders)
 
-            allOrders = allPendingOrders + allPlacedOrders + allShippedOrders + allDeliveredOrders
+            var allOrders = allPendingOrders + allPlacedOrders + allShippedOrders + allDeliveredOrders
+            console.log("THE ORDERS : ",allOrders)
+            resolve({allPendingOrders, allPlacedOrders, allShippedOrders, allDeliveredOrders, allCancelledOrders, allOrders, totalOrdersToday, allOrdersTotalCount})
+        })
+    },
+    fetchDeliveredProductsOfTodayBuyNow: () => {
+        return new Promise(async (resolve, reject) => {
+            var deliveredBuyNow = await db.get().collection(collection.orders).find({ mode: 'buynow', status: 'delivered', orderDate: new Date().toISOString().slice(0, 10) }).count()
+            var ordersCart = await db.get().collection(collection.orders).aggregate([
+                {
+                    $match: { orderDate: new Date().toISOString().slice(0, 10) }
+                },
+                {
+                    $match: { mode: 'cartorder' }
+                }, {
+                    $unwind: '$products'
+                }, {
+                    $match: { 'products.status': 'delivered' }
+                }, {
+                    $count: 'deliveredCount'
+                }
+            ]).toArray()
+            // ordersCart[0].deliveredCount
+            if (ordersCart.length <= 0) {
+                ordersCart.push({ deliveredCount: 0 })
+            }
+            totalOrdersDeliveredToday = ordersCart[0].deliveredCount + deliveredBuyNow
 
+            var placedBuynow = await db.get().collection(collection.orders).find({ mode: 'buynow', status: 'placed', orderDate: new Date().toISOString().slice(0, 10) }).count()
+            var palacedCart = await db.get().collection(collection.orders).aggregate([
+                {
+                    $match: { orderDate: new Date().toISOString().slice(0, 10) }
+                },
+                {
+                    $match: { mode: 'cartorder' }
+                }, {
+                    $unwind: '$products'
+                }, {
+                    $match: { 'products.status': 'placed' }
+                }, {
+                    $count: 'deliveredCount'
+                }
+            ]).toArray()
+            if (palacedCart.length <= 0) {
+                palacedCart.push({ deliveredCount: 0 })
+            }
+            totalOrdersPlacedToday = palacedCart[0].deliveredCount + placedBuynow
 
-           
+            var cancelBuynow = await db.get().collection(collection.orders).find({ mode: 'buynow', status: 'cancel', orderDate: new Date().toISOString().slice(0, 10) }).count()
+            var cancelCart = await db.get().collection(collection.orders).aggregate([
+                {
+                    $match: { orderDate: new Date().toISOString().slice(0, 10) }
+                },
+                {
+                    $match: { mode: 'cartorder' }
+                }, {
+                    $unwind: '$products'
+                }, {
+                    $match: { 'products.status': 'cancel' }
+                }, {
+                    $count: 'cancelCount'
+                }
+            ]).toArray()
+            if (cancelCart.length <= 0) {
+                cancelCart.push({ cancelCount: 0 })
+            }
 
-            resolve({ allPendingOrders, allPlacedOrders, allShippedOrders, allDeliveredOrders, allCancelledOrders, allOrders, totalOrdersToday})
+            var totalProducts = await db.get().collection(collection.newproducts).find({ productquantity: { $gte: 1 } }).count()
+            var totalCancel = cancelBuynow + cancelCart[0].cancelCount
+            var totalCod = await db.get().collection(collection.orders).find({ orderDate: new Date().toISOString().slice(0, 10), payment_method: 'COD' }).count()
+
+            var activeUsers = await db.get().collection(collection.userDatabase).find({ block: 'false' }).count()
+
+            var itemsLowOnStock = await db.get().collection(collection.newproducts).find({ $and: [{ productquantity: { $gte: 1 } }, { productquantity : {$lte : 5}}]}).count()
+            var productsOnOffer = await db.get().collection(collection.newproducts).find({ offer: { $exists: true }}).count()
+            
+            var stockOverProducts = await db.get().collection(collection.newproducts).find({ productquantity : {$lte : 0}}).toArray()
+     
+            resolve([totalOrdersDeliveredToday, totalOrdersPlacedToday, totalCancel, totalCod, activeUsers, totalProducts, itemsLowOnStock, productsOnOffer, stockOverProducts])
         })
     },
     // TO add a product
@@ -296,7 +371,7 @@ module.exports = {
             var allCategories = await db.get().collection(collection.productCat).find().toArray()
 
             if (allCategories) {
-                console.log('💖💖🦈💖💖💖🦈💖💖💖 : ',allCategories)
+
                 resolve(allCategories)
             }
             else {
@@ -304,10 +379,10 @@ module.exports = {
             }
         })
     }, addSubCategory: (catData) => {
-        
+
         return new Promise(async (resolve, reject) => {
             var newId = uuidv4()
-            db.get().collection(collection.productCat).updateOne({ _id: objectId(catData.mainCatId) }, { $push: { SubCategory: {id : newId , subCat : catData.subCat} } }).then((id) => {
+            db.get().collection(collection.productCat).updateOne({ _id: objectId(catData.mainCatId) }, { $push: { SubCategory: { id: newId, subCat: catData.subCat } } }).then((id) => {
                 resolve(newId);
             })
         })
@@ -315,7 +390,7 @@ module.exports = {
     deleteSubcat: (index, id, subName) => {
         return new Promise((resolve, reject) => {
             SubCategory = `SubCategory. ${index}`
-            db.get().collection(collection.productCat).updateOne({ _id: objectId(id) }, { $pull: { SubCategory:{ id:subName }} }).then((response) => {
+            db.get().collection(collection.productCat).updateOne({ _id: objectId(id) }, { $pull: { SubCategory: { id: subName } } }).then((response) => {
 
                 resolve()
             })
@@ -363,14 +438,14 @@ module.exports = {
     }, addBikeModel: (models) => {
         return new Promise((resolve, reject) => {
             let newId = uuidv4();
-            db.get().collection(collection.bikeBrands).updateOne({ _id: objectId(models.bikeBrandId) }, { $push: { models: { bikemodels: models.bikemodel, id: newId}}},{multi : true}).then((result) => {
-                resolve([result,newId])
+            db.get().collection(collection.bikeBrands).updateOne({ _id: objectId(models.bikeBrandId) }, { $push: { models: { bikemodels: models.bikemodel, id: newId } } }, { multi: true }).then((result) => {
+                resolve([result, newId])
             })
         })
     }, deleteBikeModel: (index, iD, name) => {
 
         return new Promise((resolve, reject) => {
-            db.get().collection(collection.bikeBrands).updateOne({ _id: objectId(iD) }, { $pull: { models:{id : name}} }).then((result) => {
+            db.get().collection(collection.bikeBrands).updateOne({ _id: objectId(iD) }, { $pull: { models: { id: name } } }).then((result) => {
                 resolve()
             })
         })
@@ -419,4 +494,178 @@ module.exports = {
             })
         })
     },
+    checkOffer: (catName) => {
+        return new Promise(async (resolve, reject) => {
+            var offer = await db.get().collection(collection.categoryoffer).findOne({ category: catName })
+            if (offer) {
+                resolve(false)
+            } else {
+                resolve(true)
+            }
+        })
+    },
+    addNewCatOffer: (offerDetails) => {
+        return new Promise(async (resolve, reject) => {
+            var d = new Date().toISOString().slice(0, 10)
+            var day1 = new Date(d)
+            var day2 = new Date(offerDetails.offerexpiry)
+            var diff = day2.getTime() - day1.getTime()
+
+            var offerdiscount = parseInt(offerDetails.offerdiscount)
+
+            db.get().collection(collection.newproducts).update({ productcategory: offerDetails.category }, { $set: { offer: offerdiscount } })
+
+            db.get().collection(collection.categoryoffer).insertOne({
+                offerName: offerDetails.offername,
+                category: offerDetails.category,
+                offerexpiry: new Date(offerDetails.offerexpiry).getTime(),
+                offercreatedAt: new Date(),
+                offerdiscount: offerDetails.offerdiscount,
+            }).then(async (result) => {
+                // db.get().collection(collection.categoryoffer).createIndex({ "offerexpiry": 1 }, { expireAfterSeconds: diff }).then((result)=>{
+                //     console.log("the result is : ",result)
+                // })
+                var products = await db.get().collection(collection.newproducts).find({ productcategory: offerDetails.category }).toArray()
+                resolve(products)
+            })
+        })
+    }, getAllCatOffers: () => {
+        return new Promise(async (resolve, reject) => {
+            var offers = await db.get().collection(collection.categoryoffer).find().toArray()
+            resolve(offers)
+        })
+    }, updatePrice: (proDetails) => {
+        return new Promise((resolve, reject) => {
+            db.get().collection(collection.newproducts).updateOne({ _id: objectId(proDetails._id) }, { $set: { productofferprice: proDetails.productprice, productprice: proDetails.productprice - (proDetails.productprice * proDetails.offer / 100) } }).then((result) => {
+                resolve(result)
+            })
+        })
+    },
+    deleteoffer: (offerId, category) => {
+        return new Promise((resolve, reject) => {
+            db.get().collection(collection.categoryoffer).deleteOne({ _id: objectId(offerId) }).then(async (rsponse) => {
+                var products = await db.get().collection(collection.newproducts).find({ productcategory: category }).toArray()
+                resolve(products)
+            })
+        })
+    },
+    updateProductsWhenOfferDeleted: (proToUpdate) => {
+        return new Promise((resolve, reject) => {
+            db.get().collection(collection.newproducts).updateOne({ _id: objectId(proToUpdate._id) }, { $set: { productprice: proToUpdate.productofferprice } }, { $unset: { offer: proToUpdate.offer } }).then((result) => {
+                db.get().collection(collection.newproducts).updateOne({ _id: objectId(proToUpdate._id) }, { $unset: { offer: proToUpdate.offer } }).then((dltRslt) => {
+                    resolve(dltRslt)
+                })
+            })
+        })
+    },
+    checkOfferDate: () => {
+        return new Promise(async (resolve, reject) => {
+            var d = new Date().getTime()
+            var offer = await db.get().collection(collection.categoryoffer).find({ offerexpiry:{$lte : d} }).toArray()
+            resolve(offer)
+        })
+    },
+    getCatPro: (category) => {
+        return new Promise(async (resolve, reject) => {
+            productsUnderCategory = await db.get().collection(collection.newproducts).find({ productcategory: category.category }).toArray()
+            resolve(productsUnderCategory)
+        })
+    },
+    checkProductHaveOffer: (proId) => {
+        return new Promise(async (resolve, reject) => {
+            var product = await db.get().collection(collection.newproducts).findOne({ _id: objectId(proId) })
+
+            if ('offer' in product) {
+                resolve(true)
+            } else {
+                resolve(false)
+            }
+
+        })
+    },
+    addProOffer: (offerDetails) => {
+        return new Promise(async (resolve, reject) => {
+            var theProduct = await db.get().collection(collection.newproducts).findOne({ _id: objectId(offerDetails.product) })
+
+            db.get().collection(collection.productoffer).insertOne({
+                offername: offerDetails.offername,
+                product: offerDetails.product,
+                productName: theProduct.productname,
+                offerexpiry: offerDetails.offerexpiry,
+                offerdiscount: parseInt(offerDetails.offerdiscount),
+                offercreatedAt: new Date()
+            }).then((result) => {
+                console.log("The inserted result : ", result)
+            })
+            var discount = parseInt(offerDetails.offerdiscount)
+
+            db.get().collection(collection.newproducts).updateOne({ _id: objectId(offerDetails.product) }, { $set: { productofferprice: theProduct.productprice, productprice: theProduct.productofferprice - theProduct.productofferprice * (discount / 100), offer: discount } }).then((offerApplied) => {
+                console.log("The offer Applied : ", offerApplied);
+                resolve(offerApplied)
+            })
+        })
+    },
+    getAllProductOffer: () => {
+        return new Promise(async (resolve, reject) => {
+            var offers = await db.get().collection(collection.productoffer).find().toArray()
+            resolve(offers)
+        })
+    },
+    getOrderReportOnDate: (from, to) => {
+        return new Promise(async (resolve, reject) => {
+            var orders = await db.get().collection(collection.orders).find({
+                $and: [
+                    { orderDate: { $gte: from } }, { orderDate: { $lte: to } }
+                ]
+            }).toArray()
+            resolve(orders)
+
+        })
+    },
+    getSpecificOrder :(orderId)=>{
+        return new Promise(async(resolve,reject)=>{
+        var order = await db.get().collection(collection.orders).findOne({ _id: objectId(orderId) })
+            resolve(order)
+        })
+    },
+    getDeliveredOrders : ()=>{
+        return new Promise(async(resolve,reject)=>{
+            var buyNowDelivered =await db.get().collection(collection.orders).find({mode : 'buynow', status : 'delivered'}).toArray()
+            var deliveredCArtOrders =await db.get().collection(collection.orders).aggregate([
+                {
+                    $match: { mode: 'cartorder'}
+                },{
+                    $unwind: '$products'
+                },{
+                    $match: {'products.status' : 'delivered'}
+                }
+            ]).toArray()
+
+            resolve([buyNowDelivered, deliveredCArtOrders])
+        })
+    },
+    getDeliveryOnDate : (from ,to)=>{
+        return new Promise(async(resolve,reject)=>{
+           var buyNowOrders = await db.get().collection(collection.orders).find({ mode: 'buynow', status: 'delivered' , $and :[{orderDate:{$gte : from}},{orderDate : {$lte : to}}]}).toArray()
+           cartOrders = await db.get().collection(collection.orders).aggregate([
+               {
+                   $match: { mode: 'cartorder'}
+               },{
+                   $match:{
+                       $and: [
+                           { orderDate: { $gte: from } }, { orderDate: { $lte: to } }
+                       ]
+                   }
+               },{
+                   $unwind : '$products'
+               },{
+                   $match: { 'products.status': 'delivered' }
+               }
+           ]).toArray()
+
+            console.log("🦈🦈🦈🦈🦈 : ", cartOrders)
+            resolve([buyNowOrders, cartOrders])
+        })
+    }
+
 }

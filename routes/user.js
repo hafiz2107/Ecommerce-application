@@ -19,6 +19,16 @@ var theUser
 /* GET home page. */
 router.get('/', async function (req, res, next) {
 
+  adminHelper.checkOfferDate().then((offersToExpire)=>{
+    offersToExpire.map((category)=>{
+      adminHelper.deleteoffer(category._id, category.category).then((productsUnderCategory)=>{
+        productsUnderCategory.map((products) => {
+          adminHelper.updateProductsWhenOfferDeleted(products)
+        })
+      })
+    })
+  })
+
   if (req.session.LoggedIn && req.session.unblock) {
 
     currentUser = req.session.user
@@ -390,6 +400,7 @@ router.get('/cart', async (req, res) => {
     if (products) {
       totalValue = await userHelpers.getTotalAmount(req.session.userDetails)
       let UserId = req.session.userDetails
+      
       res.render('user/user-cart', { title: 'Cart', products, user: true, typeOfPersonUser: true, currentUser: req.session.user, UserId, totalValue, allProducts })
     }
     else {
@@ -476,21 +487,24 @@ router.post('/checkoutbuynow', async (req, res) => {
       req.session.currentOrderId = orderId
       // Checking Whether the payement method is COD or online
       if (req.body.payment_method == 'COD') {
-
         userHelpers.decreaseProductQuantity(req.body.proId).then((result) => {
           res.json({ codSuccess: true })
         })
       }
       else {
-        userHelpers.generateRazorpay(orderId, productprice).then((response) => {
-          userHelpers.decreaseProductQuantity(req.body.proId).then((result) => {
-
-            res.json(response)
+        // Razor Pay
+        if (req.body.payment_method == 'razorpay'){
+          userHelpers.generateRazorpay(orderId, productprice).then((response) => {
+            userHelpers.decreaseProductQuantity(req.body.proId).then((result) => {
+              res.json(response)
+            })
+          }).catch((err) => {
+            res.redirect('/404')
           })
-        }).catch((err) => {
-          res.redirect('/404')
-        })
+        }
+        
       }
+
     })
   } else {
     res.redirect('/login')
@@ -524,10 +538,11 @@ router.post('/checkout', async (req, res) => {
           res.json({ codSuccess: true })
         })
       } else {
+        console.log("The payemetn 🦈🦈🦈🦈🦈: ", orderId, productprice);
         userHelpers.generateRazorpay(orderId, parseInt(productprice)).then((response) => {
           userHelpers.decreseQuantityOncartOrder(products).then(() => {
             // Response get after payement
-            // userHelpers.deleteCartProductsAfterOrder(req.body)
+            userHelpers.deleteCartProductsAfterOrder(req.body)
             res.json(response)
           })
         }).catch((err) => {
@@ -737,9 +752,73 @@ router.get('/test',(req,res)=>{
 })
 
 router.get('/bikemodel/:brandId',(req,res)=>{
-  console.log('💩💩💖💖 : ',req.params.brandId)
+
   userHelpers.findBikeModels(req.params.brandId).then((models)=>{
     res.render('user/user-bikemodel', { title: 'Wishlist', user: true, currentUser: req.session.user, typeOfPersonUser: true ,models})
+  })
+})
+
+router.post('/currencycoverter/:amount',(req,res)=>{
+  userHelpers.convertAmount(req.params.amount).then((total)=>{
+    res.json(total)
+  })
+})
+
+router.get('/shop',(req,res)=>{
+  if(req.session.LoggedIn){
+    userHelpers.getAllProducts().then((products) => {
+      adminHelper.fetchAllMainCategories().then((allCategories) => {
+        adminHelper.getAllbikebrands().then((allBikeBrands) => {
+          res.render('user/user-shop', { title: 'Shop', user: true, logStatus: req.session.LoggedIn, currentUser: req.session.user, typeOfPersonUser: true, products, allCategories, allBikeBrands, catPro: req.session.catPro, priceFilter: req.session.priceFilter, brandPro: req.session.brandPro})
+        })
+      })
+    })
+  }else{
+    res.redirect('/login')
+  }
+})
+
+router.get('/shopcat/',(req,res)=>{
+  if(req.session.LoggedIn){
+    console.log('Querty : ',req.query.catName)
+    if (req.query.catName){
+      userHelpers.applyCatFilter(req.query.catName).then((catProducts) => {
+        req.session.catPro = catProducts
+        req.session.priceFilter = false
+        req.session.brandPro = false
+        res.json(catProducts)
+      })
+    }else{
+      req.session.catPro = false
+      req.session.priceFilter = false
+      req.session.brandPro = false
+      res.redirect('/shop')
+    }
+    
+  }else{
+    res.redirect('/login')
+  }
+})
+
+router.get('/shopprice/:min/:max',(req,res)=>{
+  
+  userHelpers.getProductsByPriceFilter(req.params.min , req.params.max).then((products)=>{
+    req.session.allProducts = false
+    req.session.catPro = false
+    req.session.brandPro = false
+    req.session.priceFilter = products
+    res.json(products)
+  })
+})
+
+router.get('/shopbrand/:brandName',(req,res)=>{
+  userHelpers.findProductsInBrand(req.params.brandName).then((products)=>{
+    console.log("The brands are: ",products);
+    req.session.allProducts = false
+    req.session.catPro = false
+    req.session.priceFilter = false
+    req.session.brandPro = products;
+    res.json(products)
   })
 })
 // Logout

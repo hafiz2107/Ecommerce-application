@@ -116,8 +116,8 @@ Handlebars.registerHelper('quantityCheckInCart', (allProducts, cartProId, cartPr
 
 // Function to display all wishlist items
 Handlebars.registerHelper('checkItemExistOnWishlist', (wishlistItems, proId) => {
+  var inp
   for (key in wishlistItems) {
-    var inp
     if (wishlistItems[key].item.toString() == proId.toString()) {
       inp = true
       break;

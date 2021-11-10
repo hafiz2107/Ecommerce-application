@@ -7,13 +7,13 @@ function deleteswal(proId) {
         buttons: true,
         dangerMode: true,
     }).then((willDelete) => {
-            if (willDelete) {
-                location.href = '/admin/remove-product/' + proId
-            } 
-        });
+        if (willDelete) {
+            location.href = '/admin/remove-product/' + proId
+        }
+    });
 }
 
-function deleteCartProduct(cartId , proId){
+function deleteCartProduct(cartId, proId) {
     swal({
         title: "Are you sure you want to delete the product?",
         icon: "error",
@@ -21,12 +21,12 @@ function deleteCartProduct(cartId , proId){
         dangerMode: true,
     }).then((willDelete) => {
         if (willDelete) {
-            deleteCartItem(cartId , proId)
+            deleteCartItem(cartId, proId)
         }
     });
 }
 
-function limitReachedInCart(quantity){
+function limitReachedInCart(quantity) {
     swal({
         title: "Limit Reached !",
         text: `You can only add ${quantity} units of this product in your cart`,
@@ -35,7 +35,7 @@ function limitReachedInCart(quantity){
     });
 }
 
-function limitOneInCart(){
+function limitOneInCart() {
     swal({
         title: "OOPS !",
         text: `You Cannot decrease anymore quantity of the item`,
@@ -44,7 +44,7 @@ function limitOneInCart(){
     });
 }
 
-function cancelOrderBuyNow(orderId , proId) {
+function cancelOrderBuyNow(orderId, proId) {
     swal({
         title: "Are you sure you want to cancel the order?",
         text: "Once deleted, you will not be able to undo !",
@@ -53,15 +53,15 @@ function cancelOrderBuyNow(orderId , proId) {
         dangerMode: true,
     }).then((willDelete) => {
         if (willDelete) {
-            location.href = '/cancelbuynoworder/'+orderId+'/'+proId
-        } 
+            location.href = '/cancelbuynoworder/' + orderId + '/' + proId
+        }
     });
 }
 
-function confirmCheckOut(totalAmount){
-     swal({
+function confirmCheckOut(totalAmount) {
+    swal({
         title: "Are you sure?",
-        text: "Are you sure to proceed to checkout for the amount of ₹ " +totalAmount,
+        text: "Are you sure to proceed to checkout for the amount of ₹ " + totalAmount,
         icon: "info",
         button: "Proceed",
         dangerMode: false,
@@ -70,22 +70,47 @@ function confirmCheckOut(totalAmount){
             if (willDelete) {
                 location.reload(true)
                 location.assign("/checkout")
-            } 
+            }
         });
 }
 
-function cancelCartOrder(proId,orderId,proQty){
+function cancelCartOrder(proId, orderId, proQty) {
 
-swal({
-    title: "Are you sure?",
-    text: "Are You sure you want to cancel the order ?",
-    icon: "warning",
-    buttons: true,
-    dangerMode: true,
-})
-    .then((willDelete) => {
-        if (willDelete) {
-            location.href = '/cancelcartorder/'+proId+'/'+orderId+'/'+proQty
-        } 
-    });
+    swal({
+        title: "Are you sure?",
+        text: "Are You sure you want to cancel the order ?",
+        icon: "warning",
+        buttons: true,
+        dangerMode: true,
+    })
+        .then((willDelete) => {
+            if (willDelete) {
+                location.href = '/cancelcartorder/' + proId + '/' + orderId + '/' + proQty
+            }
+        });
+}
+
+function deleteOffer(offerId, category) {
+    swal({
+        title: "Are you sure?",
+        text: "Once deleted, you will not be able to recover !",
+        icon: "warning",
+        buttons: true,
+        dangerMode: true,
+    })
+        .then((willDelete) => {
+            if (willDelete) {
+
+                $.ajax({
+                    url: '/admin/deleteoffer/?offerId=' + offerId + '&category=' + category,
+                    method: 'get',
+                    success: (response) => {
+                        location.reload() 
+                    }
+                })
+
+            } else {
+                swal("Your imaginary file is safe!");
+            }
+        });
 }

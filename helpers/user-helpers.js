@@ -4,14 +4,23 @@ var bcrypt = require('bcrypt')
 var objectId = require('mongodb').ObjectId
 const { response } = require('express')
 const Razorpay = require('razorpay');
-const { resolve } = require('path')
+const { resolve, parse } = require('path')
 const { DayContext } = require('twilio/lib/rest/bulkexports/v1/export/day')
 const { v4: uuidv4 } = require('uuid');
 const { wishlist } = require('../config/collection')
+var paypal = require('paypal-rest-sdk');
+
+const axios = require('axios')
+const ACCESS_KEY = 'ee0367e92bd60f64cb2889e3139e2452'
 
 var instance = new Razorpay({
     key_id: 'rzp_test_6unoyhPHG9D97d',
     key_secret: 'cN0l9zD6cn9mh8DdO2hvfdad',
+});
+paypal.configure({
+    'mode': 'sandbox', //sandbox or live
+    'client_id': 'AZJmkWDqUJSC1e1abjeQfccbsnD5ge6CIRRcKTfMU4Y4U70An9wayPT5wzgQAu-ZDBAaAsQ90V0ypfA9',
+    'client_secret': 'EDjHlLanOgz8Vr4vv0JWZkJYkRMOLb5zxL0FTLacM0PYDZoUY5OUPqxtDI7OXGxs2SYGYw8SVafPweV-'
 });
 
 
@@ -110,8 +119,8 @@ module.exports = {
     singleProduct: (productId) => {
         return new Promise(async (resolve, reject) => {
             var product = await db.get().collection(collection.newproducts).findOne({ _id: objectId(productId) })
-
-            var relatedProduct = await db.get().collection(collection.newproducts).find({ category: product.category }).limit(4).toArray()
+            console.log("The products : ",product)
+            var relatedProduct = await db.get().collection(collection.newproducts).find({ category: product.productsubcategory }).limit(4).toArray()
             resolve([product, relatedProduct])
         })
     },
@@ -197,7 +206,7 @@ module.exports = {
     },
 
     // Function to get the the products in the cart when cart is opened
-    getCartProducts: (userId) => {
+     getCartProducts: (userId) => {
         return new Promise(async (resolve, reject) => {
 
             // Doing aggregation
@@ -231,12 +240,15 @@ module.exports = {
                         product: { $arrayElemAt: ['$product', 0] }
                     }
                 }
-
-
-
             ]).toArray()
 
+            console.log("The cart Items: ",cartItems)
             if (cartItems[0]) {
+                for (key in cartItems){
+                    product = await db.get().collection(collection.newproducts).findOne({ _id: objectId(cartItems[key].item)})
+                    db.get().collection(collection.cartItems).updateOne({ products: { $elemMatch: { item: product._id } } }, { $set: { 'products.$.price': product.productprice, 'products.$.totalprice': cartItems[key].quantity * product.productprice}}).then((response)=>{
+                    })
+                }
                 resolve(cartItems)
             } else {
                 resolve(false)
@@ -450,6 +462,8 @@ module.exports = {
 
     // Function to generate the razor pay
     generateRazorpay: (orderId, totalPrice) => {
+
+        console.log("The payemetn : ",orderId , totalPrice);
         return new Promise((resolve, reject) => {
             var options = {
                 amount: totalPrice * 100,  // amount in the smallest currency unit
@@ -846,8 +860,7 @@ module.exports = {
     },
     findSearch :(key)=>{
         return new Promise(async(resolve,reject)=>{
-            db.get().collection(collection.newproducts).createIndex({ productname : "text"})
-            var result = await db.get().collection(collection.newproducts).find({ $text: { $search: `/${key}/i`, "$caseSensitive": false }}).toArray()
+            var result = await db.get().collection(collection.newproducts).find({ productname: { $regex: key, $options: "$i" } }).toArray()
             resolve(result)
         })
     },
@@ -857,6 +870,82 @@ module.exports = {
             
             resolve(models)
         })
-    }
+    },
+
+    generatePaypal : (orderId , totalPrice)=>{
+        return new Promise(async(resolve,reject)=>{
+            var create_payment_json = {
+                "intent": "sale",
+                "payer": {
+                    "payment_method": "paypal"
+                },
+                "redirect_urls": {
+                    "return_url": 'http://localhost:8000/test',
+                    "cancel_url": "http://cancel.url"
+                },
+                "transactions": [{
+                    "item_list": {
+                        "items": [{
+                            "name": orderId,
+                            "sku": "item",
+                            "price": totalPrice,
+                            "currency": "USD",
+                            "quantity": 1
+                        }]
+                    },
+                    "amount": {
+                        "currency": "USD",
+                        "total": totalPrice,
+                    },
+                    "description": "This is the payment description."
+                }]
+            };
+            paypal.payment.create(create_payment_json, function (error, payment) {
+                if (error) {
+                    console.log('🦈🦈🦈🦈🦈 The error in payement : ',error.response.details)
+                    reject(error);
+                } else {
+                    console.log("Create Payment Response");
+                    console.log('🦠🦠🦠🦠🦠🦠🦠 : ', payment.transactions[0].item_list.items[0]);
+                    resolve(payment)
+                }
+            });
+        })
+    },
+    convertAmount : (amount)=>{
+        return new Promise(async(resolve,reject)=>{
+            amount = parseInt(amount)
+            axios.get(`http://apilayer.net/api/live?access_key=${ACCESS_KEY}&currencies=INR`).then(response => {
+                amount = amount/response.data.quotes.USDINR
+                resolve(amount)
+            })
+        })  
+    },
+    applyCatFilter : (catName) =>{
+        return new Promise(async(resolve,reject)=>{
+            var pro = await db.get().collection(collection.newproducts).find({ productcategory : catName}).toArray()
+            resolve(pro)
+        })
+    },
+    getProductsByPriceFilter : (minAmount , maxAmount)=>{
+        return new Promise(async(resolve,reject)=>{
+            var pro = await db.get().collection(collection.newproducts).find({
+                $and : [
+                    {
+                        productprice : {$gt : parseInt(minAmount)} 
+                    },{
+                        productprice : {$lt : parseInt(maxAmount)}
+                    }
+                ]
+            }).toArray()
+            resolve(pro)
+        })
+    },
+    findProductsInBrand : (brandName)=>{
+        return new Promise(async(resolve , reject )=>{
+            var pro = await db.get().collection(collection.newproducts).find({ suitablebikebrand : brandName}).toArray()
+            resolve(pro);
+        })
+    },
 
 }
