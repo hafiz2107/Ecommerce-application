@@ -3,7 +3,7 @@
 
 
     <form style="width: 70%;" method="POST" action="/admin/add-product" enctype="multipart/form-data">
- 
+
       <div class="form-row">
         <div class="form-group col-md-6">
           <label for="">Product Name</label>
@@ -17,26 +17,27 @@
           <input type="text" class="form-control" id="productcode" name="productcode" placeholder="">
         </div>
       </div>
-        
-          <div class="mb-3 form-row mt-3">
 
-            <select name="productcategory" id="mainCategory" class="btn btn-primary text-light custom-select" >
-              <option value="" class="dropdown-item text-dark bg-" disabled>Product Category </option>
-              {{#each allCategories}}
-              <option value="{{this.mainCategory}}" class="dropdown-item">{{this.mainCategory}}</option>
-              {{/each}}
-            </select>
-          </div>
+      <div class="mb-3 form-row mt-3">
+
+        <select name="productcategory" id="mainCategory" class="btn btn-primary text-light custom-select">
+          <option value="" class="dropdown-item text-dark bg-" disabled>Product Category </option>
+          {{#each allCategories}}
+          <option value="{{this.mainCategory}}" onclick="showSubCats()" class="dropdown-item">{{this.mainCategory}}
+          </option>
+          {{/each}}
+        </select>
+      </div>
 
 
       <div class="mb-3 form-row mt-3">
-        <select name="productsubcategory" id="" class="btn btn-primary text-light custom-select">
+        <select name="productsubcategory" id="subcat" class="btn btn-primary text-light custom-select">
           <option value="" class="dropdown-item text-dark bg-" disabled>Product sub Category </option>
-          {{#each allCategories}}
-            {{#each this.SubCategory}}
-              <option value="{{this.id}}" class="dropdown-item">{{this.subCat}}</option>
-            {{/each}}
+          {{!-- {{#each allCategories}}
+          {{#each this.SubCategory}}
+          <option value="{{this.id}}" class="dropdown-item">{{this.subCat}}</option>
           {{/each}}
+          {{/each}} --}}
 
         </select>
       </div>
@@ -59,9 +60,8 @@
         <select name="suitablebikebrand" id="bikebrand" class="btn btn-primary text-light custom-select">
           <option value="" name="" class="dropdown-item text-dark bg-light">Suitable bike Brand </option>
           {{#each allBikeBrands}}
-
-          <option value="{{this.bikeBrand}}" class="dropdown-item">{{this.bikeBrand}}</option>
-
+          <option value="{{this.bikeBrand}}" onclick="showBikeModels()" class="dropdown-item">{{this.bikeBrand}}
+          </option>
           {{/each}}
 
         </select>
@@ -71,9 +71,9 @@
         <select name="suitablebikemodel" id="bikebrand1" class="btn btn-primary text-light custom-select">
           <option value="" name="" class="dropdown-item text-dark bg-light">Suitable bike Model </option>
           {{#each allBikeBrands}}
-            {{#each this.models}}
-              <option value="{{this.id}}" class="dropdown-item">{{this.bikemodels}}</option>
-            {{/each}}
+          {{#each this.models}}
+          <option value="{{this.id}}" class="dropdown-item">{{this.bikemodels}}</option>
+          {{/each}}
           {{/each}}
 
         </select>
@@ -86,12 +86,14 @@
           <input type="text" class="form-control" name="productprice" id="productprice" placeholder="">
         </div>
       </div>
-      <div class="form-row mt-2">
+
+      <div class="form-row mt-2" style="display: none;">
         <div class="form-group col-md-6">
           <label for="">Offer Price</label>
           <input type="text" class="form-control" name="productofferprice" id="productofferprice" placeholder="">
         </div>
       </div>
+
       <div class="form-row mt-2">
         <div class="form-group col-md-6">
           <label for="">Quantity</label>
@@ -145,7 +147,8 @@
 
           {{!-- Image 1 --}}
 
-          <label data-toggle="modal" data-target="#exampleModal" for="file1" class="btn btn-primary" type="button" class="btn btn-primary">Image 1</label>
+          <label data-toggle="modal" data-target="#exampleModal" for="file1" class="btn btn-primary" type="button"
+            class="btn btn-primary">Image 1</label>
           <img src="" alt="" style="width: 100px; height:auto;display: inherit;" id="imgview1">
           <div id="errMess1"></div>
           <input type="file" name="image1" id="file1" class="form-control" onchange="return fileValidation1()">
@@ -186,6 +189,71 @@
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.11/cropper.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.11/cropper.js"></script>
+
+
+<script>
+  //Function to show all sub cats
+  function showSubCats() {
+    var val = document.getElementById('mainCategory').value
+    $.ajax({
+      url: '/admin/getthesubcat/' + val,
+      method: 'post',
+      success: (subCat) => {
+        if (subCat.length > 0) {
+          document.getElementById('subcat').innerHTML = ''
+          var result = []
+
+          for (i = 0; i < subCat.length; i++) {
+            result[i] = { subcat: subCat[i].SubCategory.subCat, id: subCat[i].SubCategory.id }
+          }
+
+
+          var option = []
+          for (i = 0; i < result.length; i++) {
+            option[i] = document.createElement('option')
+            option[i].setAttribute('class', "dropdown-item");
+            option[i].innerHTML = result[i].subcat
+            option[i].value = result[i].id
+            console.log("The optuon : ", option[i])
+            $("#subcat").append(option[i]);
+          }
+        }
+
+      }
+    })
+  }
+
+  //Function to show all bike models
+  function showBikeModels() {
+
+    var brand = document.getElementById('bikebrand').value
+    $.ajax({
+      url: '/admin/getbikemodels/' + brand,
+      method: 'post',
+      success: (models) => {
+        console.log("the mdels are : ",models)
+        if (models.length > 0) {
+          document.getElementById('bikebrand1').innerHTML = '';
+          result = [];
+          for (i = 0; i < models.length; i++) {
+            result[i] = { model: models[i].models.bikemodels, id: models[i].models.id }
+          }
+
+          var option = []
+          for(i=0;i<result.length;i++){
+            option[i] = document.createElement('option')
+            option[i].setAttribute('class', "dropdown-item");
+            option[i].innerHTML = result[i].model
+            option[i].value = result[i].id
+            console.log("The optuon : ", option[i])
+            $("#bikebrand1").append(option[i]);
+          }
+
+        }
+      }
+    })
+  }
+</script>
 
 <script>
   function buttonChange() {
@@ -351,27 +419,6 @@
     }
   }
 
-
-  $(document).ready(function () {
-    $("#bikebrand").change(function () {
-      var val = $(this).val();
-      if (val == "ktm") {
-        $("#bikemodel").html("<option value='duke200'>Duke 200</option><option value='duke390'>Duke 390</option><option value='duke250'>Duke 250</option><option value='duke125'>Duke 125</option><option value='rc390'>RC 390</option>");
-      } else if (val == "Honda") {
-        $("#bikemodel").html("<option value='cbr250'>CBR 250</option><option value='cb300'>CB 300</option><option value='hnesscb350'>H'ness CB 350</option>");
-      } else if (val == "Hero") {
-        $("#bikemodel").html("<option value='xpulse'>Xpulse</option><option value='impulse'>Impulse</option>");
-      } else if (val == "BMW") {
-        $("#bikemodel").html("<option value='g310gs'>G 310 GS</option><option value='g310r'>G 310 R</option>");
-      } else if (val == "bajaj") {
-        $("#bikemodel").html("<option value='dominar400'>Dominar 400</option><option value='rs200'>RS 200</option><option value='ns200'>NS 200</option>");
-      } else if (val == "yamaha") {
-        $("#bikemodel").html("<option value='r15v3'>R 15V3</option><option value='r3'>R 3</option><option value='mt15'>MT 15</option>");
-      } else if (val == "others") {
-        $("#bikemodel").html("<option value='jawa'>Jawa</option><option value='ninja300'>Ninja 300</option>");
-      }
-    });
-  });
 </script>
 
 {{!--

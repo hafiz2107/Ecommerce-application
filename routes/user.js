@@ -20,6 +20,7 @@ var theUser
 router.get('/', async function (req, res, next) {
 
   adminHelper.checkOfferDate().then((offersToExpire)=>{
+   
     offersToExpire.map((category)=>{
       adminHelper.deleteoffer(category._id, category.category).then((productsUnderCategory)=>{
         productsUnderCategory.map((products) => {
@@ -28,6 +29,8 @@ router.get('/', async function (req, res, next) {
       })
     })
   })
+
+  var ads = await userHelpers.getAllAdsForOffer()
 
   if (req.session.LoggedIn && req.session.unblock) {
 
@@ -44,7 +47,7 @@ router.get('/', async function (req, res, next) {
         adminHelper.findAllProductBrands().then((allProductBrands) => {
           adminHelper.getAllbikebrands().then((allBikeBrands) => {
             
-            res.render('user/user-home', { title: 'Home', user: true, Cartproducts, currentUser, typeOfPersonUser: true, products, logStatus: req.session.LoggedIn, cartCount, items: cartProductsTodisplay, allCategories, allProductBrands, allBikeBrands });
+            res.render('user/user-home', { title: 'Home', user: true, Cartproducts, currentUser, typeOfPersonUser: true, products, logStatus: req.session.LoggedIn, cartCount, items: cartProductsTodisplay, allCategories, allProductBrands, allBikeBrands, ads});
           })
         })
       })
@@ -57,7 +60,7 @@ router.get('/', async function (req, res, next) {
       adminHelper.fetchAllMainCategories().then((allCategories) => {
         adminHelper.findAllProductBrands().then((allProductBrands) => {
           adminHelper.getAllbikebrands().then((allBikeBrands) => {
-            res.render('user/user-home', { title: 'Home', user: true, currentUser: req.session.user, typeOfPersonUser: true, products, cartCount, allCategories, allProductBrands, allBikeBrands });
+            res.render('user/user-home', { title: 'Home', user: true, currentUser: req.session.user, typeOfPersonUser: true, products, cartCount, allCategories, allProductBrands, allBikeBrands, ads });
           })
         })
       })
@@ -69,7 +72,7 @@ router.get('/', async function (req, res, next) {
       adminHelper.fetchAllMainCategories().then((allCategories) => {
         adminHelper.findAllProductBrands().then((allProductBrands) => {
           adminHelper.getAllbikebrands().then((allBikeBrands) => {
-            res.render('user/user-home', { title: 'Home', user: true, currentUser: false, typeOfPersonUser: true, products, allCategories, allProductBrands, allBikeBrands });
+            res.render('user/user-home', { title: 'Home', user: true, currentUser: false, typeOfPersonUser: true, products, allCategories, allProductBrands, allBikeBrands, ads});
           })
         })
       })
@@ -186,6 +189,9 @@ router.post('/signup', (req, res) => {
 
 // Verifying the OTP send when entering the OTP
 router.post('/mobileConfirmation', (req, res) => {
+
+  console.log("🦠🦠 : ",req.body)
+
   req.session.mobileDetails = req.body.phone
   req.session.code = req.body.otp
   client.verify
@@ -196,13 +202,13 @@ router.post('/mobileConfirmation', (req, res) => {
       if (verification_check.status == 'approved') {
         userHelpers.insertNewUserToDB(req.session.newUser).then((data) => {
           if (data) {
-            res.redirect('/login');
-          }
+          res.redirect('/login');
+        }
         })
       } else {
         mobile = req.body.phone
         otpError = true
-        res.render('user/user-mobileconfirmation', { title: 'Mobile Confirmation', loginAndSignup: true, typeOfPersonUser: true, mobile: req.session.mobileDetails, otpError })
+        res.render('user/user-mobileconfirmation', { title: 'Mobile Confirmation', loginAndSignup: true, typeOfPersonUser: true, mobile: req.session.mobileDetails , otpError })
         otpError = false
       }
     }).catch((err) => {
@@ -216,24 +222,27 @@ router.get('/signinotp', (req, res) => {
 })
 
 // Sign in using OTP
-router.post('/signinotp', (req, res) => {
+router.post('/signinotp', async(req, res) => {
+  console.log("the req.body is : 🐬🐬🐬",req.body)
   var mobile = req.body.countryCode + req.body.mobileno;
+  
   mobile = parseInt(mobile);
   userHelpers.checkMobNo(req.body).then((user) => {
     userToresetPass = user;
     if (user) {
+     
       // If response is true sending the OTP Message
       client.verify.services(keys.serviceid)
         .verifications
-        .create({ to: '+' + mobile, channel: 'sms' }).then((data) => {
+        .create({ to: '+' + mobile, channel: 'sms' }).then((data) => {    
           // Data will  be recieved with The send status adn all
-          res.render('user/user-signinconfirmation', { title: 'Enter OTP', loginAndSignup: true, typeOfPersonUser: true, mobile })
-
+          res.render('user/user-signinconfirmation', { title: 'Enter OTP', loginAndSignup: true, typeOfPersonUser: true, mobile, countryCode : req.body.countryCode })
         }).catch((err) => {
+           console.log("the sign in otp error : ",err)
           // If there is any error THe actch block will catch it
           res.redirect('/404')
         })
-    } else {
+    }else {
       // Mobile number entered is wrong
       mobileError = true
       res.render('user/user-signinotp', { title: 'Forgot Password', loginAndSignup: true, typeOfPersonUser: true, mobileError })
@@ -244,13 +253,14 @@ router.post('/signinotp', (req, res) => {
 
 // Post sign in using OTP
 router.post('/signinconfirmation', (req, res) => {
+  
   client.verify
     .services(keys.serviceid)
-    .verificationChecks.create({ to: '+' + req.body.phone, code: req.body.otp })
+    .verificationChecks.create({ to: '+' + req.body.phone[0], code: req.body.otp })
     .then((verification_check) => {
 
       if (verification_check.status == 'approved') {
-        phoneNo = req.body.phone.slice(2)
+        phoneNo = req.body.phone[0].slice(2)
 
         userHelpers.findUser(phoneNo).then((user) => {
           if (user) {
@@ -263,21 +273,22 @@ router.post('/signinconfirmation', (req, res) => {
             res.redirect('/')
           } else {
             userNotExist = true
-            res.render('user-signinconfirmation', { title: 'OTP', loginAndSignup: true, typeOfPersonUser: true, userNotExist })
+            res.render('user/user-signinconfirmation', { title: 'OTP', loginAndSignup: true, typeOfPersonUser: true, userNotExist })
             userNotExist = false
           }
-
         })
-
       } else {
-        mobile = req.body.phone
+        mobile = req.body.phone[0]
+        countryCode = req.body.phone[1]
+
+       
         otpError = true
-        res.render('user/user-mobileconfirmation', { title: 'Mobile Confirmation', loginAndSignup: true, typeOfPersonUser: true, mobile, otpError })
+        res.render('user/user-signinconfirmation', { title: 'Mobile Confirmation', loginAndSignup: true, typeOfPersonUser: true, mobile, otpError, countryCode})
         otpError = false
       }
     }).catch((err) => {
+      console.log("The Error :",err);
       res.redirect('/404')
-      console.log(err);
     })
 })
 
@@ -289,9 +300,11 @@ router.get('/forgotpassword', (req, res) => {
 
 // Posting Forgot password PAge and checking the user exist or not 
 router.post('/forgotpassword', (req, res) => {
-  mobileError = false
-  mobile = parseInt('' + req.body.countryCode + req.body.mobileno)
 
+  console.log("HYYYYY 🦗🦗🦗🦗🦗🦗🦗 : ",req.body)
+  mobileError = false
+  mobile = parseInt(req.body.countryCode + req.body.mobileno)
+  console.log(" 🦗🦗🦗🦗🦗🦗🦗 : ", mobile)
   userHelpers.checkMobNo(req.body).then((user) => {
     userToresetPass = user;
     if (user) {
@@ -300,7 +313,7 @@ router.post('/forgotpassword', (req, res) => {
         .verifications
         .create({ to: '+' + mobile, channel: 'sms' }).then((data) => {
           // Data will  be recieved with The send status adn all
-          res.render('user/user-otp', { title: 'Forgot Password', loginAndSignup: true, typeOfPersonUser: true, mobile })
+          res.render('user/user-otp', { title: 'Forgot Password', loginAndSignup: true, typeOfPersonUser: true, countryCode: req.body.countryCode, mobileno: req.body.mobileno})
 
         }).catch((err) => {
           // If there is any error THe actch block will catch it
@@ -319,20 +332,24 @@ router.post('/forgotpassword', (req, res) => {
 
 // Posting The verified OTP adn redirecting to home page
 router.post('/otpverify', (req, res) => {
+  console.log("The phone is : 💩💩💩💩 : ", req.body)
   var user = req.body
+  var phone = req.body.countryCode + req.body.phone
+  phone = parseInt(phone)
   // userHelpers.checkMobNo(req.body)
   // Checking whether the Entered OTP Is wrong
   client.verify
     .services(keys.serviceid)
-    .verificationChecks.create({ to: '+' + req.body.phone, code: req.body.otp })
+    .verificationChecks.create({ to: '+' + phone, code: req.body.otp })
     .then((verification_check) => {
       // If the OTP is wright It will give status as Approved else it will give status as Pending
       if (verification_check.status == 'approved') {
         res.render('user/user-resetpassword', { title: 'Verify OTP', loginAndSignup: true, typeOfPersonUser: true })
       } else {
+       
         mobile = req.body.phone
         otpError = true
-        res.render('user/user-otp', { title: 'Forgot Password', loginAndSignup: true, typeOfPersonUser: true, mobile, otpError })
+        res.render('user/user-otp', { title: 'Forgot Password', loginAndSignup: true, typeOfPersonUser: true, mobile, otpError, countryCode: req.body.countryCode, mobileno: req.body.phone})
         otpError = false
       }
     }).catch((err) => {
@@ -379,8 +396,9 @@ router.get('/productview/:id', async (req, res) => {
     }else{
         reviewCount = review.proReview.length
     } 
+    var userComment = await userHelpers.findUserComment(proId, req.session.userDetails)
     userHelpers.singleProduct(proId).then(([singleProduct, relatedProduct]) => {
-      res.render('user/user-singleproduct', { title: 'Product', user: true, typeOfPersonUser: true, singleProduct, relatedProduct, cartCount, theUser, logStatus, items: cartProductsTodisplay, wishlist, review, reviewCount, checkUserPurchasedItem : checkUserPurchasedItem.order})
+      res.render('user/user-singleproduct', { title: 'Product', user: true, typeOfPersonUser: true, singleProduct, relatedProduct, cartCount, theUser, logStatus, items: cartProductsTodisplay, wishlist, review, reviewCount, checkUserPurchasedItem, userComment})
     })
   } else {
     res.redirect('/login')
@@ -465,12 +483,14 @@ router.get('/checkoutbuynow/:id', async (req, res) => {
       res.render('user/user-buynowcheckout', { title: 'Checkout', theUser, user: true, userId, currentUser: req.session.user, typeOfPersonUser: true, logStatus, productToBuy, addresses })
     })
   } else {
+    
     res.redirect('/login')
   }
 })
 
 // Posting Checkout form fro buy now
 router.post('/checkoutbuynow', async (req, res) => {
+  
   if (req.session.LoggedIn) {
 
     if (req.body.saveaddress == 'on') {
@@ -482,7 +502,8 @@ router.post('/checkoutbuynow', async (req, res) => {
     } else {
       productprice = product.productprice
     }
-    userHelpers.placeOrder(req.body, product, productprice).then((orderId) => {
+    
+    userHelpers.placeOrder(req.body, product, productprice).then((orderId) => { 
       // Decreasing Product stock when buying product        
       req.session.currentOrderId = orderId
       // Checking Whether the payement method is COD or online
@@ -499,6 +520,16 @@ router.post('/checkoutbuynow', async (req, res) => {
               res.json(response)
             })
           }).catch((err) => {
+            res.redirect('/404')
+          })
+        }
+        // Paypal
+        else{
+          userHelpers.generatePaypal(orderId, productprice).then((paySuccess)=>{
+            userHelpers.decreaseProductQuantity(req.body.proId).then((rslt) => {
+              res.json(paySuccess)
+            })
+          }).catch((err)=>{
             res.redirect('/404')
           })
         }
@@ -821,6 +852,26 @@ router.get('/shopbrand/:brandName',(req,res)=>{
     res.json(products)
   })
 })
+
+router.get('/maincategoryproductsdisplay/:catName',(req,res)=>{
+  userHelpers.getProductOnMainCategory(req.params.catName).then((pro)=>{
+    res.render('user/user-categorydisplay', { title: 'Category', user: true, logStatus: req.session.LoggedIn, currentUser: req.session.user, typeOfPersonUser: true, pro })
+  })
+})
+
+router.post('/editreview',(req,res)=>{
+  userHelpers.editReview(req.body).then((response)=>{
+    res.json(response)
+  })
+})
+
+router.get('/deletereview/:userId/:proId',(req,res)=>{
+  userHelpers.deleteReview(req.params.userId,req.params.proId).then((response)=>{
+    res.json(response)
+  })
+})
+  
+
 // Logout
 router.get('/logout', (req, res) => {
   req.session.LoggedIn = false

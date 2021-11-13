@@ -26,7 +26,7 @@
 
                                     <label for="offername">Offer Name</label>
                                     <input id="offername" class="form-control" name="offername" type="text"
-                                        placeholder="Enter The offer Name" style="display: block;">
+                                        placeholder="Enter The offer Name" style="display: block;" >
 
                                     <div id="errMess">
 
@@ -44,7 +44,7 @@
 
                                     <label for="expiry" class="mt-4">Expiry Date</label>
                                     <input id="expiry" class="form-control " name="offerexpiry" type="date"
-                                        style="display: block;">
+                                        style="display: block;" oninput="setExpToMin()">
 
                                     <label for="offerdiscount" class="mt-4">Offer Discount</label>
                                     <input id="offerdiscount" class="form-control " name="offerdiscount" type="text"
@@ -125,6 +125,26 @@
                 }
             }
         })
+    }
+</script>
+
+<script>
+    function setExpToMin() {
+
+        var today = new Date();
+        var dd = today.getDate();
+        var mm = today.getMonth() + 1;
+        var yyyy = today.getFullYear();
+        if (dd < 10) {
+            dd = '0' + dd
+        }
+        if (mm < 10) {
+            mm = '0' + mm
+        }
+
+        today = yyyy + '-' + mm + '-' + dd;
+
+        document.getElementById("expiry").setAttribute("min", today);
     }
 </script>
 

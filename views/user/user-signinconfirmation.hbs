@@ -1,51 +1,104 @@
 {{!-- User Login page --}}
 <center>
-    <section id="signIn" class="sign ">
-      <div class="container">
-        <div class="row">
-          <div class="col-xs-12  col-sm-12  col-md-12 mysign" style="background-color: rgba(255, 0, 0, 0);">
-                  <div class="modal-body" style="background-color: rgba(0, 0, 255, 0);">
-                    
-                    {{!-- <p>Welcome Back</p> --}}
-                    <img src="/images/logo.png" alt="" class="myImg1">
-                    <h6 style="margin-top: 25px;">Enter the OTP</h6>
-                    <div class="sign-form" style="width: 50%;">
-                        {{#if otpError}}
-                            <p>The OTP Is invalid</p>
-                        {{/if}}
-                        {{#if userNotExist}}
-                            <p>The user doesn't exist</p>
-                        {{/if}}
-                        {{!-- Signin Form --}}
-                      <form class="mb-0 myLoginForm" action="/signinconfirmation" method="POST" id="loginform">
-                        <div class="form-group">
-                          <input type="text" class="form-control " id="username" name="otp" placeholder="OTP Recieved in your mobile number">
-                          <input type="hidden" value="{{mobile}}" name="phone" >
-                        </div>
-                        <button type="submit" class="btn btn-primary btn-block">Submit</button>
-                      </form>
-                    </div>
-                  </div>
-         </div>
+  <section id="signIn" class="sign ">
+    <div class="container">
+      <div class="row">
+        <div class="col-xs-12  col-sm-12  col-md-12 mysign" style="background-color: rgba(255, 0, 0, 0);">
+          <div class="modal-body" style="background-color: rgba(0, 0, 255, 0);">
+
+            {{!-- <p>Welcome Back</p> --}}
+            <img src="/images/logo.png" alt="" class="myImg1">
+            <h6 style="margin-top: 25px;">Enter the OTP</h6>
+            <div class="sign-form" style="width: 50%;">
+              {{#if otpError}}
+              <p>The OTP Is invalid</p>
+              {{/if}}
+
+              {{#if userNotExist}}
+              <p>The user doesn't exist</p>
+              {{/if}}
+              
+              {{!-- Signin Form --}}
+              <form class="mb-0 myLoginForm" action="/signinconfirmation" method="POST" id="loginform">
+                <div class="form-group">
+                  <input type="text" class="form-control " id="username" name="otp" placeholder="OTP Recieved in your mobile number">
+                  <input type="hidden" value="{{mobile}}" name="phone">
+                  <input type="hidden" value="{{countryCode}}" name="phone">
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">Submit</button>
+              </form>
+              <div>
+                <div id="counter"></div>
+
+                <button class="btn btn-info" class="disabled" id="resendButton"
+                  onclick="resendotp('{{mobile}}','{{countryCode}}')" disabled>Resend OTP</button>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
-    </section>
-    </center>
+    </div>
+  </section>
+</center>
 
-  <script>
-    $(document).ready(function(){
-      $('#loginform').validate({
-        rules:{
-          username : {
-            required : true,
-            minlenght : 5,
-          },
-          pwd : {
-            required : true,
-            minlength : 6,
-          } 
-        }
-      })
+<style>
+  .disabled {
+    pointer-events: none;
+    cursor: default;
+  }
+</style>
+
+<script>
+
+  var count = 30
+  function counter() {
+    document.getElementById("counter").innerHTML = `<span>You are able to resend OTP in : ${count}s</span>`
+    count = count - 1;
+    if(count >= 0){
+    setTimeout(counter, 1000)
+    }
+  }
+
+  window.onload = counter();
+
+  window.onload = function () {
+    window.setTimeout(setDisabled, 30000);
+  }
+
+  //How remove the disalbed attribute to a button
+  function setDisabled() {
+    document.getElementById('resendButton').disabled = false
+  }
+
+
+  function resendotp(mobile, countryCode) {
+    console.log("the mobile : ",mobile,countryCode)
+
+    $.ajax({
+      url: '/signinotp',
+      data: {
+        countryCode: countryCode,
+        mobileno: mobile,
+      },
+      method: 'post',
+      success: () => {
+        location.reload()
+      }
     })
-  </script>
+  }
 
+  $(document).ready(function () {
+    $('#loginform').validate({
+      rules: {
+        username: {
+          required: true,
+          minlenght: 5,
+        },
+        pwd: {
+          required: true,
+          minlength: 6,
+        }
+      }
+    })
+  })
+</script>

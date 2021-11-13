@@ -55,7 +55,7 @@ router.get('/home', function (req, res, next) {
       var orders = []
       adminHelper.fetchDeliveredProductsOfTodayBuyNow().then(([delivered, placed, totalCancel, totalcod, activeUsers, totalProducts, itemsLowOnStock, productsOnOffer, stockOverProducts]) => {
         orders = [orderCount.allOrders, orderCount.allPendingOrders, orderCount.allPlacedOrders, orderCount.allShippedOrders, orderCount.allDeliveredOrders, orderCount.allCancelledOrders]
-        res.render('admin/admin-home', { typeOfPersonAdmin: true, adminHeader: true, adminNav: true, date, weatherDet, orders, totalOrdersToday: orderCount.totalOrdersToday, delivered, placed, totalCancel, totalcod, activeUsers, totalProducts, itemsLowOnStock, productsOnOffer, stockOverProducts})
+        res.render('admin/admin-home', { typeOfPersonAdmin: true, adminHeader: true, adminNav: true, date, weatherDet, orders, totalOrdersToday: orderCount.totalOrdersToday, delivered, placed, totalCancel, totalcod, activeUsers, totalProducts, itemsLowOnStock, productsOnOffer, stockOverProducts })
       })
     })
 
@@ -413,7 +413,7 @@ router.get('/productoffers', async (req, res) => {
     adminHelpers.getAllproducts().then((products) => {
       res.render('admin/admin-productoffers', { typeOfPersonAdmin: true, adminHeader: true, adminNav: true, weatherDet, products, offers })
     })
-  }else{
+  } else {
     res.redirect('/admin/login')
   }
 })
@@ -455,11 +455,69 @@ router.get('/deliverygetreportondate/:from/:to', (req, res) => {
   })
 })
 
-router.get('/admanagement',(req,res)=>{
+router.get('/admanagement', (req, res) => {
+  if (req.session.adminLoggedIn) {
+    adminHelper.getAllCatOffers().then((offers)=>{
+      adminHelper.getAllproducts().then((products)=>{
+        res.render('admin/admin-admanagement', { typeOfPersonAdmin: true, adminHeader: true, adminNav: true, weatherDet, offers,products })
+      })
+    })
+  } else {
+    res.redirect('/admin/login')
+  }
+})
+
+router.post('/topad1', (req, res) => {
+  adminHelper.addAds(req.body).then((id) => {
+    let image1 = req.files.topimage1
+    image1.mv('./public/ads/' + id + '__1.jpg')
+    res.redirect('/admin/admanagement')
+  })
+})
+
+router.post('/topad2', (req, res) => {
+  console.log('HE  : ',req.body)
+  adminHelper.addProAds(req.body).then((id) => {
+    let image2 = req.files.topimage2
+    image2.mv('./public/ads/' + id + '__1.jpg')
+    res.redirect('/admin/admanagement')
+  })
+})
+
+router.post('/topad3', (req, res) => {
+  adminHelper.addAds(req.body).then((id) => {
+    let image3 = req.files.topimage3
+    image3.mv('./public/ads/' + id + '__1.jpg')
+    res.redirect('/admin/admanagement')
+  })
+})
+
+router.get('/viewads',async(req,res)=>{
   if(req.session.adminLoggedIn){
-    res.render('admin/admin-admanagement', { typeOfPersonAdmin: true, adminHeader: true, adminNav: true, weatherDet})
+    var ads = await userHelpers.getAllAdsForOffer()
+    res.render('admin/admin-viewads', { typeOfPersonAdmin: true, adminHeader: true, adminNav: true, weatherDet, ads })
   }else{
     res.redirect('/admin/login')
   }
+})
+
+router.get('/deletead/:adId',(req,res)=>{
+ 
+  adminHelper.deleteAd(req.params.adId).then((response)=>{
+    res.json(response)
+  })
+})
+
+router.post('/getthesubcat/:maincat',(req,res)=>{
+  adminHelper.getTheSubCatOfMainCat(req.params.maincat).then((subcats)=>{
+    res.json(subcats)
+  })
+})
+
+router.post('/getbikemodels/:bikebrand',(req,res)=>{
+  adminHelper.getAllBikeModels(req.params.bikebrand).then((models)=>{
+    console.log("The models are  : ",models)
+    res.json(models)
+  })
 })
 module.exports = router;

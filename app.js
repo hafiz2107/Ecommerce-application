@@ -139,9 +139,12 @@ Handlebars.registerHelper('printStar', (starCount) => {
   var star = []
   for (i = 0; i < starCount; i++) {
     star[i] = '<i class="fa fa-star"></i>'
+   
   }
   return star;
 })
+
+
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

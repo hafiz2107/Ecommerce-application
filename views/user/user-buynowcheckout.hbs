@@ -173,12 +173,10 @@
                             <label style="margin-left: 10px;color: #000000;font-size: 14px;font-weight: 400;">Razor
                                 Pay</label><br>
 
-                            <input type="radio" name="payment_method" id="payementChoicePay" value="paypal"
-                                onclick="hideError()">
-                            <label
-                                style="margin-left: 10px;color: #000000;font-size: 14px;font-weight: 400;">PayPal</label>
+                            <input type="radio" name="payment_method" id="payementChoicePay" value="paypal" onclick="hideError()">
+                            <label style="margin-left: 10px;color: #000000;font-size: 14px;font-weight: 400;">PayPal</label>
 
-                            <div id="paypal-button"></div>
+                            {{!-- <div id="paypal-button" ></div> --}}
 
 
                             {{!-- <label for="paypal-button">Paypal</label>
@@ -187,11 +185,15 @@
                             <div id="showPayError"></div>
                         </div>
 
-                        <div class="create-account-checkout-method">
+                        {{!-- Other Checkouts --}}
+                        <div class="create-account-checkout-method" id="otherCheckOuts">
                             <div class="place-order">
-                                <button type="submit" class="checkout-page-button hvr-bs">Place order</button>
+                                <button type="submit" class="checkout-page-button hvr-bs" id="paypal-button"> Place order</button>
                             </div>
                         </div>
+
+                        {{!-- Paypal checkout --}}
+                
 
                         <input type="hidden" value="{{productToBuy._id}}" name="proId">
                         <input type="hidden" id="user_id" value="{{userId}}" name="userId">
@@ -214,12 +216,13 @@
     //For Hiding the error shown when no payement selected
     function hideError() {
         document.getElementById('showPayError').style.display = 'none';
+        
     }
 
     //For displaying registered phoen number when clicking the checkbox
     function useRegPhone() {
         if (document.getElementById('useRegPh').checked == true) {
-            document.getElementById('phone').value = {{ theUser.mobile }}
+            document.getElementById('phone').value = {{theUser.mobile}}
     }
     else {
         document.getElementById('phone').value = ''
@@ -291,32 +294,96 @@
                     alpha: "Please Enter alphabets only",
                 },
             },
-            submitHandler: function () {
+            submitHandler : function () {
 
                 if (document.getElementById('payementChoiceCod').checked == true || document.getElementById('payementChoiceRazor').checked == true || document.getElementById('payementChoicePay').checked == true) {
-
                     if (document.getElementById('payementChoicePay').checked == true) {
-                        document.getElementById('paypal-button').click();
-                    }
 
-                    $.ajax({
-                        url: '/checkoutbuynow',
-                        method: 'post',
-                        data: $('#checkoutbuynow-form').serialize(),
-                        success: (response) => {
+                        paypal.Button.render({
+                            // Configure environment
+                            env: 'sandbox',
+                            client: {
+                                sandbox: 'demo_sandbox_client_id',
+                                production: 'demo_production_client_id'
+                            },
+                            // Customize button (optional)
+                            locale: 'en_US',
+                            style: {
+                                size: 'small',
+                                color: 'blue',
+                                shape: 'rect',
+                            },
+                            // Enable Pay Now checkout flow (optional)
+                            commit: true,
+                            // Set up a payment
+                            payment: function (data, actions) {
+                                console.log("the datas are : ", actions)
+                                $.ajax({
+                                    url: '/currencycoverter/' + document.getElementById('orderTotal').innerHTML,
+                                    method: 'post',
+                                    success: (total) => {
+                                        document.getElementById('usdToInr').value = total
+                                    }
+                                })
+                                price = document.getElementById('usdToInr').value
 
-                            if (response.codSuccess) {
-                                location.href = '/orderconfirmed';
-                            } else {
-                                razorpayPayment(response)
+
+                                return actions.payment.create({
+                                    transactions: [{
+                                        amount: {
+                                            total: parseFloat(price).toFixed(2),
+                                            currency: 'USD',
+                                        }
+                                    }]
+                                });
+                            },
+
+                            // Execute the payment
+
+                            onAuthorize: function (data, actions) {
+
+                                console.log("The orders : ", actions.payment)
+                                return actions.payment.execute().then(function () {
+
+
+                                    $.ajax({
+                                        url: '/checkoutbuynow',
+                                        method: 'post',
+                                        data: $('#checkoutbuynow-form').serialize(),
+                                        success: (response) => {
+                                            if (response) {
+                                                location.href = '/orderconfirmed';
+                                            } else {
+                                                location.href = '/404';
+                                            }
+                                        }
+                                    })
+
+                                });
+
                             }
-                        }
-                    })
-                } else {
+
+                        },'#paypal-button');
+                    } else {
+
+                        $.ajax({
+                            url: '/checkoutbuynow',
+                            method: 'post',
+                            data: $('#checkoutbuynow-form').serialize(),
+                            success: (response) => {
+
+                                if (response.codSuccess) {
+                                    location.href = '/orderconfirmed';
+                                } else {
+                                    razorpayPayment(response)
+                                }
+                            }
+                        })
+                    } 
+            } else {
                     document.getElementById('showPayError').innerHTML = '<span style="color: red;">Please choose a payement method</span>'
                 }
-            }
-
+        }
         })
 
 
@@ -505,58 +572,7 @@
 
 <script>
 
-    paypal.Button.render({
-        // Configure environment
-        env: 'sandbox',
-        client: {
-            sandbox: 'demo_sandbox_client_id',
-            production: 'demo_production_client_id'
-        },
-        // Customize button (optional)
-        locale: 'en_US',
-        style: {
-            size: 'small',
-            color: 'blue',
-            shape: 'rect',
-        },
-        // Enable Pay Now checkout flow (optional)
-        commit: true,
-        // Set up a payment
-        payment: function (data, actions) {
-            
-            $.ajax({
-                url: '/currencycoverter/' + document.getElementById('orderTotal').innerHTML,
-                method: 'post',
-                success: (total) => {
-                    document.getElementById('usdToInr').value = total
-                }
-            })
-            price = document.getElementById('usdToInr').value
 
-
-            return actions.payment.create({
-                transactions: [{
-                    amount: {
-                        total: parseFloat(price).toFixed(2),
-                        currency: 'USD',
-                    }
-                }]
-            });
-        },
-
-        // Execute the payment
-
-        onAuthorize: function (data, actions) {
-
-            return actions.payment.execute().then(function () {
-                // Show a confirmation message to the buyer
-                location.href = '/orderconfirmed'
-
-            });
-
-        }
-
-    }, '#paypal-button');
 
 </script>
 

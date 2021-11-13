@@ -41,17 +41,18 @@
 
                                     <label for="expiry" class="mt-4">Expiry Date</label>
                                     <input id="expiry" class="form-control " name="offerexpiry" type="date"
-                                        style="display: block;">
+                                        style="display: block;" oninput="setExpToMin()">
 
                                     <label for="offerdiscount" class="mt-4">Offer Discount</label>
                                     <input id="offerdiscount" class="form-control " name="offerdiscount" type="text"
                                         placeholder="Enter The offer discount" style="display: block;">
 
-                                    
+
                                     <button type="submit" class="btn btn-success mt-5"> Add Offer</button>
 
-                                    <button type="button" class="btn btn-secondary mt-5"    data-dismiss="modal">Close</button>
-                                    
+                                    <button type="button" class="btn btn-secondary mt-5"
+                                        data-dismiss="modal">Close</button>
+
                                 </form>
                             </div>
                         </div>
@@ -86,11 +87,13 @@
                         {{!-- Delete offer --}}
                         <td class="text-center">
                             <a class="btn btn-success" style="color: white;">Edit</a>
-                            {{!-- <a href="/admin/deleteoffer/{{this._id}}/{{this.category}}" class="btn btn-danger">Delete</a> --}}
-                            <a onclick="deleteOffer('{{this._id}}','{{this.category}}')" class="btn btn-danger" style="color: white;">Delete</a>
+                            {{!-- <a href="/admin/deleteoffer/{{this._id}}/{{this.category}}"
+                                class="btn btn-danger">Delete</a> --}}
+                            <a onclick="deleteOffer('{{this._id}}','{{this.category}}')" class="btn btn-danger"
+                                style="color: white;">Delete</a>
                         </td>
                     </tr>
-                    
+
                     {{/each}}
 
                 </tbody>
@@ -115,6 +118,26 @@
                 }
             }
         })
+    }
+</script>
+
+<script>
+    function setExpToMin() {
+     
+        var today = new Date();
+        var dd = today.getDate();
+        var mm = today.getMonth() + 1; 
+        var yyyy = today.getFullYear();
+        if (dd < 10) {
+            dd = '0' + dd
+        }
+        if (mm < 10) {
+            mm = '0' + mm
+        }
+
+        today = yyyy + '-' + mm + '-' + dd;
+
+        document.getElementById("expiry").setAttribute("min", today);
     }
 </script>
 

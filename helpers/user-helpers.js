@@ -64,6 +64,7 @@ module.exports = {
 
     // Inserting new user to DB after verifying the mobile
     insertNewUserToDB: (userData) => {
+        console.log("💖💖💖 : ",userData)
         return new Promise(async (resolve, reject) => {
             userData.pwd = await bcrypt.hash(userData.pwd, 10)
             userData.pwdc = await bcrypt.hash(userData.pwdc, 10)
@@ -119,7 +120,6 @@ module.exports = {
     singleProduct: (productId) => {
         return new Promise(async (resolve, reject) => {
             var product = await db.get().collection(collection.newproducts).findOne({ _id: objectId(productId) })
-            console.log("The products : ",product)
             var relatedProduct = await db.get().collection(collection.newproducts).find({ category: product.productsubcategory }).limit(4).toArray()
             resolve([product, relatedProduct])
         })
@@ -206,7 +206,7 @@ module.exports = {
     },
 
     // Function to get the the products in the cart when cart is opened
-     getCartProducts: (userId) => {
+    getCartProducts: (userId) => {
         return new Promise(async (resolve, reject) => {
 
             // Doing aggregation
@@ -242,11 +242,11 @@ module.exports = {
                 }
             ]).toArray()
 
-            console.log("The cart Items: ",cartItems)
+
             if (cartItems[0]) {
-                for (key in cartItems){
-                    product = await db.get().collection(collection.newproducts).findOne({ _id: objectId(cartItems[key].item)})
-                    db.get().collection(collection.cartItems).updateOne({ products: { $elemMatch: { item: product._id } } }, { $set: { 'products.$.price': product.productprice, 'products.$.totalprice': cartItems[key].quantity * product.productprice}}).then((response)=>{
+                for (key in cartItems) {
+                    product = await db.get().collection(collection.newproducts).findOne({ _id: objectId(cartItems[key].item) })
+                    db.get().collection(collection.cartItems).updateOne({ products: { $elemMatch: { item: product._id } } }, { $set: { 'products.$.price': product.productprice, 'products.$.totalprice': cartItems[key].quantity * product.productprice } }).then((response) => {
                     })
                 }
                 resolve(cartItems)
@@ -463,7 +463,7 @@ module.exports = {
     // Function to generate the razor pay
     generateRazorpay: (orderId, totalPrice) => {
 
-        console.log("The payemetn : ",orderId , totalPrice);
+        console.log("The payemetn : ", orderId, totalPrice);
         return new Promise((resolve, reject) => {
             var options = {
                 amount: totalPrice * 100,  // amount in the smallest currency unit
@@ -562,22 +562,22 @@ module.exports = {
             resolve(orders)
         })
     },
-    getTheCurrentOrder: (orderId,proId) => {
+    getTheCurrentOrder: (orderId, proId) => {
         return new Promise(async (resolve, reject) => {
             var order = await db.get().collection(collection.orders).findOne({ _id: objectId(orderId) })
-            if (order.mode == 'cartorder'){
+            if (order.mode == 'cartorder') {
                 order = await db.get().collection(collection.orders).aggregate([
                     {
-                        $match:{_id : objectId(orderId)}
-                    },{
-                        $unwind : '$products'
-                    },{
-                        $match: {'products.item' : objectId(proId)}
+                        $match: { _id: objectId(orderId) }
+                    }, {
+                        $unwind: '$products'
+                    }, {
+                        $match: { 'products.item': objectId(proId) }
                     }
                 ]).toArray()
-                console.log("order : 🐬🐬🐬 : ",order[0])
+                console.log("order : 🐬🐬🐬 : ", order[0])
                 resolve(order[0])
-            }else{
+            } else {
                 resolve(order)
             }
         })
@@ -795,7 +795,7 @@ module.exports = {
             username: details.userName,
             rating: details.rating,
             review: details.review,
-            reviewDate: new Date(),
+            reviewDate: new Date().toLocaleString('en-US').slice(0, 10),
         }
         return new Promise(async (resolve, reject) => {
             var proReview = await db.get().collection(collection.userreviews).findOne({ proId: objectId(details.proId) })
@@ -828,52 +828,54 @@ module.exports = {
     },
     checkUserPurchasedItem: (userId, proId) => {
         return new Promise(async (resolve, reject) => {
-            let buyNowOrder = await db.get().collection(collection.orders).findOne({ mode: 'buynow', status:'delivered',userId: objectId(userId), productId: objectId(proId)})
-            if(buyNowOrder){
-                console.log('🐸🐸 buy : ',buyNowOrder)
-            }else{
+            let buyNowOrder = await db.get().collection(collection.orders).findOne({ mode: 'buynow', status: 'delivered', userId: objectId(userId), productId: objectId(proId) })
+            if (buyNowOrder) {
+
+            } else {
                 buyNowOrder = 0
             }
+
             let cartOrder = await db.get().collection(collection.orders).aggregate([
                 {
-                    $match: { userId : objectId(userId)}
-                },{
-                    $unwind : '$products'
-                },{
-                    $match: { 'products.item' : objectId(proId)}
-                },{
-                    $match: { 'products.status': 'delivered'}
+                    $match: { userId: objectId(userId) }
+                }, {
+                    $unwind: '$products'
+                }, {
+                    $match: { 'products.item': objectId(proId) }
+                }, {
+                    $match: { 'products.status': 'delivered' }
                 }
             ]).toArray()
 
-            if (cartOrder.length > 0){
-                console.log('🐸🐸 cart : ', cartOrder)
-            }else{
+            if (cartOrder.length > 0) {
+                console.log('🐸🐸 cart : ')
+            } else {
                 cartOrder = 0
             }
-            if (buyNowOrder != 0 || cartOrder != 0){
-                resolve({order : true})
-            }else{
-                resolve({ order: false })
+            if (buyNowOrder != 0 || cartOrder != 0) {
+                resolve(true)
+            } else {
+                resolve(false)
             }
         })
     },
-    findSearch :(key)=>{
-        return new Promise(async(resolve,reject)=>{
+    findSearch: (key) => {
+        return new Promise(async (resolve, reject) => {
             var result = await db.get().collection(collection.newproducts).find({ productname: { $regex: key, $options: "$i" } }).toArray()
             resolve(result)
         })
     },
-    findBikeModels : (brandId)=>{
-        return new Promise(async(resolve,reject)=>{
+    findBikeModels: (brandId) => {
+        return new Promise(async (resolve, reject) => {
             var models = await db.get().collection(collection.bikeBrands).findOne({ _id: objectId(brandId) })
-            
+
             resolve(models)
         })
     },
 
-    generatePaypal : (orderId , totalPrice)=>{
-        return new Promise(async(resolve,reject)=>{
+    generatePaypal: (orderId, totalPrice) => {
+        totalPrice = parseFloat(totalPrice).toFixed(2)
+        return new Promise(async (resolve, reject) => {
             var create_payment_json = {
                 "intent": "sale",
                 "payer": {
@@ -897,55 +899,109 @@ module.exports = {
                         "currency": "USD",
                         "total": totalPrice,
                     },
-                    "description": "This is the payment description."
+                    "description": "The Payement success"
                 }]
             };
             paypal.payment.create(create_payment_json, function (error, payment) {
                 if (error) {
-                    console.log('🦈🦈🦈🦈🦈 The error in payement : ',error.response.details)
-                    reject(error);
+                    console.log('🦈🦈🦈🦈🦈 The error in payement : ', error.response.details)
+                    reject(false);
                 } else {
-                    console.log("Create Payment Response");
                     console.log('🦠🦠🦠🦠🦠🦠🦠 : ', payment.transactions[0].item_list.items[0]);
-                    resolve(payment)
+                    resolve(true)
                 }
             });
         })
     },
-    convertAmount : (amount)=>{
-        return new Promise(async(resolve,reject)=>{
+    convertAmount: (amount) => {
+        return new Promise(async (resolve, reject) => {
             amount = parseInt(amount)
             axios.get(`http://apilayer.net/api/live?access_key=${ACCESS_KEY}&currencies=INR`).then(response => {
-                amount = amount/response.data.quotes.USDINR
+                amount = amount / response.data.quotes.USDINR
                 resolve(amount)
             })
-        })  
+        })
     },
-    applyCatFilter : (catName) =>{
-        return new Promise(async(resolve,reject)=>{
-            var pro = await db.get().collection(collection.newproducts).find({ productcategory : catName}).toArray()
+    applyCatFilter: (catName) => {
+        return new Promise(async (resolve, reject) => {
+            var pro = await db.get().collection(collection.newproducts).find({ productcategory: catName }).toArray()
             resolve(pro)
         })
     },
-    getProductsByPriceFilter : (minAmount , maxAmount)=>{
-        return new Promise(async(resolve,reject)=>{
+    getProductsByPriceFilter: (minAmount, maxAmount) => {
+        return new Promise(async (resolve, reject) => {
             var pro = await db.get().collection(collection.newproducts).find({
-                $and : [
+                $and: [
                     {
-                        productprice : {$gt : parseInt(minAmount)} 
-                    },{
-                        productprice : {$lt : parseInt(maxAmount)}
+                        productprice: { $gt: parseInt(minAmount) }
+                    }, {
+                        productprice: { $lt: parseInt(maxAmount) }
                     }
                 ]
             }).toArray()
             resolve(pro)
         })
     },
-    findProductsInBrand : (brandName)=>{
-        return new Promise(async(resolve , reject )=>{
-            var pro = await db.get().collection(collection.newproducts).find({ suitablebikebrand : brandName}).toArray()
+    findProductsInBrand: (brandName) => {
+        return new Promise(async (resolve, reject) => {
+            var pro = await db.get().collection(collection.newproducts).find({ suitablebikebrand: brandName }).toArray()
             resolve(pro);
         })
     },
+
+    getAllAdsForOffer: () => {
+        return new Promise(async (resolve, reject) => {
+            var ads = await db.get().collection(collection.ads).find().toArray()
+            resolve(ads)
+        })
+    },
+    getProductOnMainCategory: (cat) => {
+        return new Promise(async (resolve, reject) => {
+            var prod = await db.get().collection(collection.newproducts).find({ productcategory: cat }).toArray()
+            resolve(prod)
+        })
+    },
+    findUserComment: (proId, userId) => {
+        return new Promise(async (resolve, reject) => {
+            var comment = await db.get().collection(collection.userreviews).aggregate([
+                {
+                    $match: { proId: objectId(proId) }
+                }, {
+                    $unwind: '$proReview'
+                }, {
+                    $match: { 'proReview.user': objectId(userId) }
+                }
+            ]).toArray()
+            if (comment.length > 0) {
+                resolve(comment[0].proReview)
+            } else {
+                resolve(false)
+            }
+
+        })
+    },
+    editReview: (reviewDetails) => {
+
+        return new Promise((resolve, reject) => {
+            db.get().collection(collection.userreviews).updateOne({ proId: objectId(reviewDetails.proId), proReview: { $elemMatch: { user: objectId(reviewDetails.user) } } }, {
+                $set:
+                {
+                    'proReview.$.rating': reviewDetails.rating,
+                    'proReview.$.review': reviewDetails.review,
+                    'proReview.$.reviewDate': new Date().toLocaleString('en-US').slice(0, 10)
+                }
+            }).then((response) => {
+                resolve(response)
+            })
+        })
+    },
+    deleteReview: (userId, proId) => {
+        return new Promise((resolve, reject) => {
+            db.get().collection(collection.userreviews).updateOne({ proId: objectId(proId) }, { $pull: { proReview: { user: objectId(userId) } } }).then((response) => {
+                console.log("the deleted result : ", response)
+                resolve(response)
+            })
+        })
+    }
 
 }

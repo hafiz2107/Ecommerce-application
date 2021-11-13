@@ -1,4 +1,8 @@
 <section id="shopgrid" class="shop shop-single">
+
+
+
+
   <div class="container shop-content">
     {{!-- Product Main single image --}}
     <div class="row" id="topDiv">
@@ -27,10 +31,10 @@
         <div class="product-title text-center-xs">
           <h3>{{singleProduct.productname}}
             <div class="wishBack" style="display: inline;margin-left: 10px;">
-              
+
               {{#checkItemExistOnWishlist wishlist singleProduct._id}}
               {{/checkItemExistOnWishlist}}
-        
+
             </div>
           </h3>
           {{#lte singleProduct.productquantity '0'}}
@@ -103,11 +107,11 @@
               <li role="presentation">
                 <a href="#details" aria-controls="details" role="tab" data-toggle="tab">details</a>
               </li>
-              
+
               <li role="presentation">
                 <a href="#reviews" aria-controls="reviews" role="tab" data-toggle="tab">reviews ({{reviewCount}})</a>
               </li>
-              
+
             </ul>
 
             <div class="tab-content">
@@ -153,40 +157,120 @@
 
               {{!-- Review Section --}}
               <div role="tabpanel" class="tab-pane reviews" id="reviews">
+
                 {{#if review}}
-                {{#if checkUserPurchasedItem}}
-                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal"
-                  style="margin-bottom: 3em;">
-                  Add Review
-                </button>
-                {{/if}}
-                <center>
-                  <ul class="product-review list-unstyled" style="overflow-y: scroll;height: 30em;">
-                    {{#each review.proReview}}
-                    <li class="review-comment">
+                {{!-- Displaying user own comment --}}
+                <ul class="product-review list-unstyled text-left" style="overflow-y: scroll;height: 30em;">
+                  {{#if userComment}}
+                  <h3 class="text-center">Your review</h3>
+                  <li class="review-comment">
 
-                      <h6>{{this.username}}</h6>
+                    <h6>{{userComment.username}}
+                      <a style="margin-left: 5px;"
+                        onclick="editComment('{{userComment.review}}','{{userComment.rating}}')" data-toggle="modal"
+                        id="editBtn"><i class="bi bi-pen"></i></a>
 
-                      <p class="review-date">{{this.reviewDate}}</p>
-                      <div class="product-rating">
-                        {{#printStar this.rating}}
-                        {{/printStar}}
+                      <a style="margin-left: 5px;"
+                        onclick="deleteComment('{{userComment.user}}','{{singleProduct._id}}')"><i
+                          class="bi bi-trash"></i></a>
+                    </h6>
+
+
+
+
+
+                    {{!-- Modal for edit review --}}
+                    <div class="modal fade" id="editModal" tabindex="-1" role="dialog"
+                      aria-labelledby="exampleModalLabel" aria-hidden="true">
+                      <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                              <span aria-hidden="true">&times;</span>
+                            </button>
+                          </div>
+                          <div class="modal-body text-center">
+
+                            <form id="reviewform">
+                              {{!-- Star Rating --}}
+                              <label>Rating</label><br>
+                              <span class="star-rating">
+                                <input type="radio" id="1" name="rating1" value="1"><i></i>
+                                <input type="radio" id="2" name="rating1" value="2"><i></i>
+                                <input type="radio" id="3" name="rating1" value="3"><i></i>
+                                <input type="radio" id="4" name="rating1" value="4"><i></i>
+                                <input type="radio" id="5" name="rating1" value="5"><i></i>
+                              </span>
+                              {{!-- Start Rating --}}
+
+                              <textarea class="form-control" id="review" rows="2" placeholder="Review"></textarea>
+                              <button
+                                onclick="postEditedReviewForm('{{singleProduct._id}}','{{singleProduct.productname}}','{{theUser._id}}','{{theUser.username}}')"
+                                class="btn btn-primary btn-black btn-block">Edit review</button>
+                            </form>
+
+                          </div>
+
+                        </div>
                       </div>
+                    </div>
+                    {{!-- Modal ends --}}
 
-                      <div class="product-comment">
-                        <p>{{this.review}}</p>
-                      </div>
-                    </li>
-                    {{/each}}
+                    <p class="review-date">{{userComment.reviewDate}}</p>
 
-                  </ul>
-                </center>
+
+                    <div class="product-rating">
+                      {{#printStar userComment.rating}}
+                      {{/printStar}}
+                    </div>
+
+                    <div class="product-comment">
+                      <p style="color: black;">{{userComment.review}}</p>
+                    </div>
+                  </li>
+
+                  {{else}}
+                  <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#reviewModal"
+                    style="margin-bottom: 3em;">
+                    Add Review
+                  </button>
+                  {{/if}}
+                  {{!-- User own Comment ends --}}
+
+                  {{!-- Evry review --}}
+                  <h3 class="text-center">Review</h3>
+                  {{#each review.proReview}}
+
+
+                  <li class="review-comment">
+
+                    <h6>{{this.username}}</h6>
+
+                    <p class="review-date">{{this.reviewDate}}</p>
+
+
+                    <div class="product-rating">
+                      {{#printStar this.rating}}
+                      {{/printStar}}
+                    </div>
+
+                    <div class="product-comment">
+                      <p style="color: black;">{{this.review}}</p>
+                    </div>
+                  </li>
+
+                  {{/each}}
+                </ul>
+                {{!-- every review ends --}}
+
                 <hr>
                 {{else}}
                 <h3 style="color: rgb(122, 122, 122);">No reviews Yet !</h3><br>
                 <img src="/images/No review.svg" alt="" height="300px">
+
                 {{#if checkUserPurchasedItem}}
-                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal"
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#reviewModal"
                   style="margin-bottom: 3em;">
                   Add Review
                 </button>
@@ -194,8 +278,8 @@
                 {{/if}}
 
                 {{!-- Modal --}}
-                <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog"
-                  aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal fade" id="reviewModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+                  aria-hidden="true">
                   <div class="modal-dialog" role="document">
                     <div class="modal-content">
                       <div class="modal-header">
@@ -207,6 +291,7 @@
                       <div class="modal-body">
                         <center>
                           <div class="form-review">
+
                             <form id="reviewform">
                               {{!-- Star Rating --}}
                               <label>Rating</label><br>
@@ -223,6 +308,7 @@
                                 onclick="postReviewForm('{{singleProduct._id}}','{{singleProduct.productname}}','{{theUser._id}}','{{theUser.username}}')"
                                 class="btn btn-primary btn-black btn-block">Post Your review</button>
                             </form>
+
                           </div>
                         </center>
                       </div>
@@ -231,7 +317,7 @@
                   </div>
                 </div>
                 {{!-- Modal Ends --}}
-               
+
               </div>
               {{!-- Review section Ends --}}
             </div>
@@ -330,15 +416,35 @@
       }
     })
   }
-  
+
+  function postEditedReviewForm(proId, proName, userId, userName) {
+    ratingCheck = document.querySelector('input[name="rating1"]:checked')
+    var rating = ratingCheck ? parseInt(ratingCheck.value) : 0;
+    var review = document.getElementById('review').value
+    alert(review)
+    $.ajax({
+      url: '/editreview',
+      data: {
+        proId: proId,
+        proName: proName,
+        user: userId,
+        userName: userName,
+        rating: rating,
+        review: review,
+      },
+      method: 'post',
+
+      success: (response1) => {
+
+      }
+    })
+  }
+
   function postReviewForm(proId, proName, userId, userName) {
     //var rating = document.getElementById('reviewform').value
     ratingCheck = document.querySelector('input[name="rating1"]:checked')
-    var rating = ratingCheck ? parseInt(ratingCheck.value) : '';
+    var rating = ratingCheck ? parseInt(ratingCheck.value) : 0;
 
-    if (rating == '') {
-      rating = 0;
-    }
     var review = document.getElementById('review').value
 
     $.ajax({
@@ -381,6 +487,7 @@
     overflow: hidden;
     position: relative;
     background: url('data:image/svg+xml;base64,PHN2ZyB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHg9IjBweCIgeT0iMHB4IiB3aWR0aD0iMjBweCIgaGVpZ2h0PSIyMHB4IiB2aWV3Qm94PSIwIDAgMjAgMjAiIGVuYWJsZS1iYWNrZ3JvdW5kPSJuZXcgMCAwIDIwIDIwIiB4bWw6c3BhY2U9InByZXNlcnZlIj48cG9seWdvbiBmaWxsPSIjREREREREIiBwb2ludHM9IjEwLDAgMTMuMDksNi41ODMgMjAsNy42MzkgMTUsMTIuNzY0IDE2LjE4LDIwIDEwLDE2LjU4MyAzLjgyLDIwIDUsMTIuNzY0IDAsNy42MzkgNi45MSw2LjU4MyAiLz48L3N2Zz4=');
+
     background-size: contain;
   }
 
@@ -518,3 +625,13 @@
     })
   }
 </script>
+
+{{!-- Edit review --}}
+<script>
+  function editComment(review, rating) {
+    document.getElementById('editBtn').dataset.target = '#editModal'
+    document.getElementById('review').value = review
+    document.getElementById(rating).checked = true
+  }
+</script>
+{{!-- Edit review Ends --}}

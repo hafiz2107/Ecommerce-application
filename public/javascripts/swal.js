@@ -105,12 +105,55 @@ function deleteOffer(offerId, category) {
                     url: '/admin/deleteoffer/?offerId=' + offerId + '&category=' + category,
                     method: 'get',
                     success: (response) => {
-                        location.reload() 
+                        location.reload()
+                    }
+                })
+            }
+        });
+}
+
+function deleteAdSwal(id) {
+    swal({
+        title: "Are you sure?",
+        text: "Once deleted, you will not be able to recover !",
+        icon: "warning",
+        buttons: true,
+        dangerMode: true,
+    })
+        .then((willDelete) => {
+            if (willDelete) {
+                $.ajax({
+                    url: '/admin/deletead/' + id,
+                    method: 'get',
+                    success: () => {
+                        location.reload()
                     }
                 })
 
-            } else {
-                swal("Your imaginary file is safe!");
             }
         });
+}
+
+
+function deleteComment(userId, proId) {
+    swal({
+        title: "Are you sure?",
+        text: "Once deleted, you will not be able to recover !",
+        icon: "warning",
+        buttons: true,
+        dangerMode: true,
+    })
+        .then((willDelete) => {
+            if (willDelete) {
+                $.ajax({
+                    url: '/deletereview/' + userId + '/' + proId,
+                    method: 'get',
+                    success: () => {
+                        location.reload()
+                    }
+                })
+
+            }
+        });
+
 }

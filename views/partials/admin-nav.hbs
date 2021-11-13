@@ -83,11 +83,18 @@
 
 
 
-        <li class="nav-item ">
-          <a class="nav-link" href="/admin/admanagement">
-            <i class="material-icons">bubble_chart</i>
-            <p>Advertisement Management</p>
-          </a>
+        <li class="" id="productManagement">
+          <a data-toggle="dropdown" class="dropdown-toggle nav-link"><i class="material-icons">percentage</i>Advertisement Management</a>
+        
+          <ul class="dropdown-menu dropdown" id="navContent">
+            <li>
+              <a href="/admin/viewads" class="text-center"><i class="bi bi-diagram-3"></i>View ADS</a>
+            </li>
+            <li>
+              <a href="/admin/admanagement" class="text-center"><i class="bi bi-bicycle"></i>Add ADS</a>
+            </li>
+        
+          </ul>
         </li>
         {{!-- <li class="nav-item ">
           <a class="nav-link" href="#">

@@ -11,5 +11,7 @@ module.exports = {
     wishlist : 'wishlist_collection',
     userreviews : 'user_reviews',
     categoryoffer : 'category_offers',
-    productoffer : 'product_offers'
+    productoffer : 'product_offers',
+    ads : 'product_ads',
+   
 }

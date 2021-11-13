@@ -144,8 +144,8 @@ module.exports = {
             allCancelledOrders = parseInt(allCartcancelledOrders + allBuyNowcancelOrders)
 
             var allOrders = allPendingOrders + allPlacedOrders + allShippedOrders + allDeliveredOrders
-            console.log("THE ORDERS : ",allOrders)
-            resolve({allPendingOrders, allPlacedOrders, allShippedOrders, allDeliveredOrders, allCancelledOrders, allOrders, totalOrdersToday, allOrdersTotalCount})
+            console.log("THE ORDERS : ", allOrders)
+            resolve({ allPendingOrders, allPlacedOrders, allShippedOrders, allDeliveredOrders, allCancelledOrders, allOrders, totalOrdersToday, allOrdersTotalCount })
         })
     },
     fetchDeliveredProductsOfTodayBuyNow: () => {
@@ -216,11 +216,11 @@ module.exports = {
 
             var activeUsers = await db.get().collection(collection.userDatabase).find({ block: 'false' }).count()
 
-            var itemsLowOnStock = await db.get().collection(collection.newproducts).find({ $and: [{ productquantity: { $gte: 1 } }, { productquantity : {$lte : 5}}]}).count()
-            var productsOnOffer = await db.get().collection(collection.newproducts).find({ offer: { $exists: true }}).count()
-            
-            var stockOverProducts = await db.get().collection(collection.newproducts).find({ productquantity : {$lte : 0}}).toArray()
-     
+            var itemsLowOnStock = await db.get().collection(collection.newproducts).find({ $and: [{ productquantity: { $gte: 1 } }, { productquantity: { $lte: 5 } }] }).count()
+            var productsOnOffer = await db.get().collection(collection.newproducts).find({ offer: { $exists: true } }).count()
+
+            var stockOverProducts = await db.get().collection(collection.newproducts).find({ productquantity: { $lte: 0 } }).toArray()
+
             resolve([totalOrdersDeliveredToday, totalOrdersPlacedToday, totalCancel, totalCod, activeUsers, totalProducts, itemsLowOnStock, productsOnOffer, stockOverProducts])
         })
     },
@@ -544,8 +544,11 @@ module.exports = {
     deleteoffer: (offerId, category) => {
         return new Promise((resolve, reject) => {
             db.get().collection(collection.categoryoffer).deleteOne({ _id: objectId(offerId) }).then(async (rsponse) => {
-                var products = await db.get().collection(collection.newproducts).find({ productcategory: category }).toArray()
-                resolve(products)
+                db.get().collection(collection.ads).deleteOne({ adForOfferCat: category }).then(async () => {
+                    var products = await db.get().collection(collection.newproducts).find({ productcategory: category }).toArray()
+                    resolve(products)
+                })
+
             })
         })
     },
@@ -561,7 +564,7 @@ module.exports = {
     checkOfferDate: () => {
         return new Promise(async (resolve, reject) => {
             var d = new Date().getTime()
-            var offer = await db.get().collection(collection.categoryoffer).find({ offerexpiry:{$lte : d} }).toArray()
+            var offer = await db.get().collection(collection.categoryoffer).find({ offerexpiry: { $lte: d } }).toArray()
             resolve(offer)
         })
     },
@@ -571,6 +574,7 @@ module.exports = {
             resolve(productsUnderCategory)
         })
     },
+
     checkProductHaveOffer: (proId) => {
         return new Promise(async (resolve, reject) => {
             var product = await db.get().collection(collection.newproducts).findOne({ _id: objectId(proId) })
@@ -622,50 +626,107 @@ module.exports = {
 
         })
     },
-    getSpecificOrder :(orderId)=>{
-        return new Promise(async(resolve,reject)=>{
-        var order = await db.get().collection(collection.orders).findOne({ _id: objectId(orderId) })
+    getSpecificOrder: (orderId) => {
+        return new Promise(async (resolve, reject) => {
+            var order = await db.get().collection(collection.orders).findOne({ _id: objectId(orderId) })
             resolve(order)
         })
     },
-    getDeliveredOrders : ()=>{
-        return new Promise(async(resolve,reject)=>{
-            var buyNowDelivered =await db.get().collection(collection.orders).find({mode : 'buynow', status : 'delivered'}).toArray()
-            var deliveredCArtOrders =await db.get().collection(collection.orders).aggregate([
+    getDeliveredOrders: () => {
+        return new Promise(async (resolve, reject) => {
+            var buyNowDelivered = await db.get().collection(collection.orders).find({ mode: 'buynow', status: 'delivered' }).toArray()
+            var deliveredCArtOrders = await db.get().collection(collection.orders).aggregate([
                 {
-                    $match: { mode: 'cartorder'}
-                },{
+                    $match: { mode: 'cartorder' }
+                }, {
                     $unwind: '$products'
-                },{
-                    $match: {'products.status' : 'delivered'}
+                }, {
+                    $match: { 'products.status': 'delivered' }
                 }
             ]).toArray()
 
             resolve([buyNowDelivered, deliveredCArtOrders])
         })
     },
-    getDeliveryOnDate : (from ,to)=>{
-        return new Promise(async(resolve,reject)=>{
-           var buyNowOrders = await db.get().collection(collection.orders).find({ mode: 'buynow', status: 'delivered' , $and :[{orderDate:{$gte : from}},{orderDate : {$lte : to}}]}).toArray()
-           cartOrders = await db.get().collection(collection.orders).aggregate([
-               {
-                   $match: { mode: 'cartorder'}
-               },{
-                   $match:{
-                       $and: [
-                           { orderDate: { $gte: from } }, { orderDate: { $lte: to } }
-                       ]
-                   }
-               },{
-                   $unwind : '$products'
-               },{
-                   $match: { 'products.status': 'delivered' }
-               }
-           ]).toArray()
+    getDeliveryOnDate: (from, to) => {
+        return new Promise(async (resolve, reject) => {
+            var buyNowOrders = await db.get().collection(collection.orders).find({ mode: 'buynow', status: 'delivered', $and: [{ orderDate: { $gte: from } }, { orderDate: { $lte: to } }] }).toArray()
+            cartOrders = await db.get().collection(collection.orders).aggregate([
+                {
+                    $match: { mode: 'cartorder' }
+                }, {
+                    $match: {
+                        $and: [
+                            { orderDate: { $gte: from } }, { orderDate: { $lte: to } }
+                        ]
+                    }
+                }, {
+                    $unwind: '$products'
+                }, {
+                    $match: { 'products.status': 'delivered' }
+                }
+            ]).toArray()
 
-            console.log("🦈🦈🦈🦈🦈 : ", cartOrders)
+
             resolve([buyNowOrders, cartOrders])
+        })
+    },
+    addAds: (adDetails) => {
+        return new Promise((resolve, reject) => {
+            db.get().collection(collection.ads).insertOne({ adFor: 'category', adForOfferCat: adDetails.offerCat }).then((response) => {
+                resolve(response.insertedId)
+            })
+        })
+    },
+    deleteAd: (adId) => {
+        return new Promise((resolve, reject) => {
+            db.get().collection(collection.ads).deleteOne({ _id: objectId(adId) }).then((response) => {
+                resolve(response)
+            })
+        })
+    },
+    addProAds: (proAdDetails) => {
+        return new Promise((resolve, reject) => {
+            db.get().collection(collection.ads).insertOne({ adFor: 'product', adForProduct: proAdDetails.productAd }).then((response) => {
+                resolve(response.insertedId)
+            })
+        })
+    },
+    getTheSubCatOfMainCat : (mainCat)=>{
+        return new Promise(async(resolve,reject)=>{
+            var subCats = await db.get().collection(collection.productCat).aggregate([
+                {
+                    $match: { mainCategory : mainCat}
+                },{
+                    $unwind: '$SubCategory'
+                },{
+                    $project : {
+                        'SubCategory' : 1,
+                    }
+                }
+            ]).toArray()
+
+            console.log("The sub cats are : ",subCats)
+            resolve(subCats)
+        })
+    },
+    getAllBikeModels : (brand)=>{
+        return new Promise(async(resolve,reject)=>{
+            var models = await db.get().collection(collection.bikeBrands).aggregate([
+                {
+                    $match: { bikeBrand : brand}
+                },{
+                    $unwind: '$models'
+                },{
+                    $project:{
+                        'models' : 1
+                    }
+                }
+            ]).toArray()
+
+            console.log("The models are : ", models)
+            resolve(models)
         })
     }
 
-}
+}   

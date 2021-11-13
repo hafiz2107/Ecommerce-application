@@ -26,7 +26,7 @@
         <select name="productcategory" id="mainCategory" class="btn btn-primary text-light custom-select">
           <option value="" class="dropdown-item text-dark bg-" disabled>Product Category </option>
           {{#each allCategories}}
-          <option value="{{this.mainCategory}}" class="dropdown-item">{{this.mainCategory}}</option>
+          <option value="{{this.mainCategory}}" onclick="showSubCats()" class="dropdown-item">{{this.mainCategory}}</option>
           {{/each}}
         </select>
       </div>
@@ -35,14 +35,9 @@
 
        
         <div class="mb-3 form-row mt-3">
-          <select name="productsubcategory" id="" class="btn btn-primary text-light custom-select">
+          <select name="productsubcategory" id="subcat"  class="btn btn-primary text-light custom-select">
             <option value="" class="dropdown-item text-dark bg-" disabled>Product sub Category </option>
-            {{#each allCategories}}
-            {{#each this.SubCategory}}
-            <option value="{{this}}" class="dropdown-item">{{this}}</option>
-            {{/each}}
-            {{/each}}
-        
+            
           </select>
         </div>
 
@@ -64,7 +59,7 @@
             <option value="" name="" class="dropdown-item text-dark bg-light">Suitable bike Brand </option>
             {{#each allBikeBrands}}
         
-            <option value="{{this.bikeBrand}}" class="dropdown-item">{{this.bikeBrand}}</option>
+            <option value="{{this.bikeBrand}}"  onclick="showBikeModels()"  class="dropdown-item">{{this.bikeBrand}}</option>
         
             {{/each}}
         
@@ -74,11 +69,7 @@
         <div class="mb-3 form-row mt-3">
           <select name="suitablebikemodel" id="bikebrand1" class="btn btn-primary text-light custom-select">
             <option value="" name="" class="dropdown-item text-dark bg-light">Suitable bike Model </option>
-            {{#each allBikeBrands}}
-            {{#each this.models}}
-            <option value="{{this}}" class="dropdown-item">{{this}}</option>
-            {{/each}}
-            {{/each}}
+     
         
           </select>
         </div>
@@ -91,13 +82,13 @@
             value="{{{productDetails.productprice}}}">
         </div>
       </div>
-      <div class="form-row mt-2">
+      {{!-- <div class="form-row mt-2">
         <div class="form-group col-md-6">
           <label for="">Offer Price</label>
           <input type="text" class="form-control" name="productofferprice" id="productofferprice" placeholder=""
             value="{{{productDetails.productofferprice}}}">
         </div>
-      </div>
+      </div> --}}
 
       <div class="form-row mt-2">
         <div class="form-group col-md-6">
@@ -220,6 +211,69 @@
 </center>
 
 <script>
+
+  function showSubCats() {
+   alert('OOOOO')
+    var val = document.getElementById('mainCategory').value
+    $.ajax({
+      url: '/admin/getthesubcat/' + val,
+      method: 'post',
+      success: (subCat) => {
+        
+        if (subCat.length > 0) {
+          document.getElementById('subcat').innerHTML = ''
+          var result = []
+
+          for (i = 0; i < subCat.length; i++) {
+            result[i] = { subcat: subCat[i].SubCategory.subCat, id: subCat[i].SubCategory.id }
+          }
+
+
+          var option = []
+          for (i = 0; i < result.length; i++) {
+            option[i] = document.createElement('option')
+            option[i].setAttribute('class', "dropdown-item");
+            option[i].innerHTML = result[i].subcat
+            option[i].value = result[i].id
+            console.log("The optuon : ", option[i])
+            $("#subcat").append(option[i]);
+          }
+        }
+
+      }
+    })
+  }
+
+   function showBikeModels() {
+     alert('OOOOO')
+      var brand = document.getElementById('bikebrand').value
+      $.ajax({
+        url: '/admin/getbikemodels/' + brand,
+        method: 'post',
+        success: (models) => {
+          console.log("the mdels are : ", models)
+          if (models.length > 0) {
+            document.getElementById('bikebrand1').innerHTML = '';
+            result = [];
+            for (i = 0; i < models.length; i++) {
+              result[i] = { model: models[i].models.bikemodels, id: models[i].models.id }
+            }
+
+            var option = []
+            for (i = 0; i < result.length; i++) {
+              option[i] = document.createElement('option')
+              option[i].setAttribute('class', "dropdown-item");
+              option[i].innerHTML = result[i].model
+              option[i].value = result[i].id
+              console.log("The optuon : ", option[i])
+              $("#bikebrand1").append(option[i]);
+            }
+
+          }
+        }
+      })
+    }
+
 function buttonDisplay(){
   document.getElementById('editCrop').style.display = 'none'
 }

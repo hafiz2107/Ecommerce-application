@@ -1,55 +1,43 @@
 {{! ADvertisesment Top Starts }}
 <section id="hero" class="hero">
-  <a href="#">
-    <div id="hero-slider" class="hero-slider">
-      <div class="slide">
-        <div class="bg-section">
-          <img src="assets/images/sliders/7.jpg" alt="Background" />
-        </div>
-      </div>
 
-      <div class="slide">
-        <div class="bg-section">
-          <img src="assets/images/sliders/4.jpg" alt="Background" />
-        </div>
-      </div>
+  <div id="hero-slider" class="hero-slider">
 
+    {{#each ads}}
+    {{#eq this.adFor 'product'}}
+    {{else}}
+    <a href="/maincategoryproductsdisplay/{{this.adForOfferCat}}">
       <div class="slide">
         <div class="bg-section">
-          <img src="assets/images/sliders/1.jpg" alt="Background" />
+          <img src="/ads/{{this._id}}__1.jpg" alt="Background" />
         </div>
       </div>
-    </div>
-  </a>
+    </a>
+    {{/eq}}
+    {{/each}}
+
+  </div>
+
 </section>
 {{! ADvertisesment Top Ends }}
 <section style="padding-top: 100px; padding-bottom: 0; margin-bottom: -40px; overflow: hidden;">
   <div class="container">
     <div class="row product-boxes">
-      <div class="col-xs-12 col-sm-4 col-md-4 product-box">
-        <a href="#">
-          <div class="product-img" style="border-radius: 20px;">
-            <img src="/images/ADS/JB racing Back Carrier.jpg" alt="Product" style="height: 150px;" />
 
+
+      {{#each ads}}
+      {{#eq this.adFor 'product'}}
+      <div class="col-xs-12 col-sm-4 col-md-4 product-box">
+        <a href="/productview/{{this.adForProduct}}">
+          <div class="product-img" style="border-radius: 20px;">
+            <img src="/ads/{{this._id}}__1.jpg" alt="Product"  style="height: 200px;margin-top: 5px;" />
           </div>
         </a>
       </div>
+      {{/eq}}
+      {{/each}}
 
-      <div class="col-xs-12 col-sm-4 col-md-4 product-box">
-        <a href="#">
-          <div class="product-img" style="border-radius: 20px;">
-            <img src="/images/ADS/For lamp with Switch Combo Offer.jpg" alt="Product" style="height: 150px;" />
-          </div>
-        </a>
-      </div>
 
-      <div class="col-xs-12 col-sm-4 col-md-4 product-box">
-        <a href="#">
-          <div class="product-img" style="border-radius: 20px;">
-            <img src="/images/ADS/MT 15 Ad.gif" alt="Product" style="height: 150px;" />
-          </div>
-        </a>
-      </div>
     </div>
   </div>
 </section>
@@ -74,39 +62,39 @@
 
         <div class="product-img">
 
-{{!-- To display Sold out on the product if the quatity is 0 --}}
+          {{!-- To display Sold out on the product if the quatity is 0 --}}
           {{#lte this.productquantity '0'}}
-                <img id="" src="/uploads/{{this._id}}__1.jpg" alt="Product" style="height: 430px;" />
-                <img src="/images/Sold Out.png" alt="" style="display: inline; top: -440px; margin-bottom: -270px;">
-                  <input type="text" hidden class="product-id" value="{{this._id}}">
-              {{else}}
-                <img src="/uploads/{{this._id}}__1.jpg" alt="Product" style="height: 430px;" />
-                  <input type="text" hidden class="product-id" value="{{this._id}}">
+          <img id="" src="/uploads/{{this._id}}__1.jpg" alt="Product" style="height: 430px;" />
+          <img src="/images/Sold Out.png" alt="" style="display: inline; top: -440px; margin-bottom: -270px;">
+          <input type="text" hidden class="product-id" value="{{this._id}}">
+          {{else}}
+          <img src="/uploads/{{this._id}}__1.jpg" alt="Product" style="height: 430px;" />
+          <input type="text" hidden class="product-id" value="{{this._id}}">
           {{/lte}}
 
-        <div class="product-hover " style="cursor: pointer;">
+          <div class="product-hover " style="cursor: pointer;">
             <div class="product-action">
               {{!-- To hide and display the add to cart and buy now related to the quantity --}}
-            {{#gt this.productquantity '0'}}
+              {{#gt this.productquantity '0'}}
               {{#if ../logStatus}}
-                <a id="" class="btn btn-primary payment">Buy Now</a>
+              <a id="" class="btn btn-primary payment">Buy Now</a>
               {{else}}
-                <a href="/login" class="btn btn-primary payment">Buy Now</a>
+              <a href="/login" class="btn btn-primary payment">Buy Now</a>
               {{/if}}
               {{else}}
-                <a id="" class="btn btn-primary payment" style="display: none;">Buy Now</a>
-            {{/gt}}
+              <a id="" class="btn btn-primary payment" style="display: none;">Buy Now</a>
+              {{/gt}}
               {{#gt this.productquantity '0'}}
-                {{#if ../logStatus}}
-                  {{#hello ../items this._id this.productprice this.productname}}
-                      {{/hello}}
-                {{else}}
-                    <a href="/login" class="btn btn-primary add-to-cart">Add To Cart</a>
+              {{#if ../logStatus}}
+              {{#hello ../items this._id this.productprice this.productname}}
+              {{/hello}}
+              {{else}}
+              <a href="/login" class="btn btn-primary add-to-cart">Add To Cart</a>
               {{/if}}
 
               {{/gt}}
             </div>
-        </div>
+          </div>
 
         </div>
 
@@ -124,11 +112,11 @@
           <div class="product-price">
 
             <span class="symbole">₹ </span><span>{{this.productprice}}</span>
-            
+
           </div>
           {{#if this.offer}}
-          <span>MRP : ₹<s>{{this.productofferprice}}</s><span style="color: green;">    {{this.offer}} % OFF</span></span>
-          
+          <span>MRP : ₹<s>{{this.productofferprice}}</s><span style="color: green;"> {{this.offer}} % OFF</span></span>
+
           {{/if}}
         </div>
       </div>
@@ -148,7 +136,7 @@
     var product_id = document.getElementsByClassName('product-id')
 
 
-      
+
     for (var i = 0; i < hover.length; i++) {
 
       if (event.target === payment[i]) {
@@ -156,7 +144,7 @@
         break;
       } else if (event.target === addToCart[i]) {
         break;
-      } 
+      }
       else if (event.target === hover[i]) {
         location.href = "/productview/" + product_id[i].value
         break;
@@ -185,10 +173,10 @@
           <span class="caret"></span>
         </button>
         <ul class="dropdown-menu myScroll" aria-labelledby="dropdownMenu1">
-          
+
           {{#each allBikeBrands}}
           {{#each this.models}}
-            <li><a href="#">{{this}}</a></li>
+          <li><a href="#">{{this}}</a></li>
           {{/each}}
           {{/each}}
 
@@ -202,7 +190,7 @@
         </button>
         <ul class="dropdown-menu myScroll" aria-labelledby="dropdownMenu1">
           {{#each allBikeBrands}}
-            <li><a href="#">{{this.bikeBrand}}</a></li>
+          <li><a href="#">{{this.bikeBrand}}</a></li>
           {{/each}}
         </ul>
       </div>
@@ -220,8 +208,8 @@
             {{#each allBikeBrands}}
             <div class="client">
               <a href="/bikemodel/{{this._id}}">
-              <img src="/bike brand logos/{{this._id}}__1.jpg" alt="client" style="height: 100px;" />
-              <H6 style="justify-content: last baseline;margin-top: 8px;">{{this.bikeBrand}}</H6>
+                <img src="/bike brand logos/{{this._id}}__1.jpg" alt="client" style="height: 100px;" />
+                <H6 style="justify-content: last baseline;margin-top: 8px;">{{this.bikeBrand}}</H6>
               </a>
             </div>
             {{/each}}
@@ -254,7 +242,10 @@
       </li>
       {{/each}}
     </ul>
+
+<script>
  
+</script>
     <div class="tab-content">
       {{#each allCategories}}
       <div class="tab-pane" id="{{this._id}}">
@@ -266,8 +257,7 @@
             <a href="#">
 
               <div class="product-img" style="display:flex; justify-content:center;">
-                <img src="subCat Logo/{{this.id}}__1.jpg" style="height:150px;width:230px"
-                  alt="Product" />
+                <img src="subCat Logo/{{this.id}}__1.jpg" style="height:150px;width:230px" alt="Product" />
               </div>
 
               <div class="text-center" style="margin-top:12px;">
@@ -500,8 +490,9 @@
   </div>
 </section>
 
+
 <style>
-  #catNav{
-border: 0px solid #ddd !important;
+  #catNav {
+    border: 0px solid #ddd !important;
   }
 </style>
