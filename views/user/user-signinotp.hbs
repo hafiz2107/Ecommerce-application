@@ -256,18 +256,18 @@
       </div>
     </section>
     </center>
-
+<script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/jquery.validate.js"></script>
   <script>
     $(document).ready(function(){
       $('#loginform').validate({
         rules:{
-          username : {
+          countryCode : {
             required : true,
-            minlenght : 5,
           },
-          pwd : {
+          mobileno : {
             required : true,
-            minlength : 6,
+            minlength : 10,
+			maxlength : 10,
           } 
         }
       })

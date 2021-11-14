@@ -7,7 +7,7 @@ const Razorpay = require('razorpay');
 const { resolve, parse } = require('path')
 const { DayContext } = require('twilio/lib/rest/bulkexports/v1/export/day')
 const { v4: uuidv4 } = require('uuid');
-const { wishlist } = require('../config/collection')
+const { wishlist, bikeBrands, proBrands } = require('../config/collection')
 var paypal = require('paypal-rest-sdk');
 
 const axios = require('axios')
@@ -1001,6 +1001,44 @@ module.exports = {
                 console.log("the deleted result : ", response)
                 resolve(response)
             })
+        })
+    },
+    findProductsOnModels : (modelName)=>{
+        return new Promise(async(resolve,reject)=>{
+            var pro = await db.get().collection(collection.newproducts).find({ suitablebikemodel : modelName}).toArray()
+            resolve(pro)
+        })
+    },
+    findProductsOnSubCategory : (subCat)=>{
+        return new Promise(async(resolve,reject)=>{
+            var pro = await db.get().collection(collection.newproducts).find({ productsubcategory : subCat}).toArray()
+            resolve(pro)
+        })
+    },
+    findProductsOnBikeBrand : (bikeBrand)=>{
+        return new Promise(async(resolve,reject)=>{
+            var pro = await db.get().collection(collection.newproducts).find({ suitablebikebrand : bikeBrand}).toArray()
+            console.log("The pro ise : ", pro)
+            resolve(pro)
+        })
+    },
+    getNewArrivals : ()=>{
+        return new Promise(async(resolve,reject)=>{
+           
+            var date = new Date()
+            d = new Date().getTime()
+            var sevenDaysDiff = date.setDate(new Date().getDate() - 10)
+            console.log('Seven dayd : ',d-sevenDaysDiff)
+
+            var newArrivals = await db.get().collection(collection.newproducts).find({ $and: [{ productdate: { $gte: sevenDaysDiff } }, { productdate : {$lte : d}}]}).limit(6).toArray()
+           
+            resolve(newArrivals)
+        })
+    },
+    findProductsInProBrand : (proBrand)=>{
+        return new Promise(async(resolve,reject)=>{
+            var pro = await db.get().collection(collection.newproducts).find({ productbrand : proBrand}).toArray()
+            resolve(pro)
         })
     }
 

@@ -6,7 +6,8 @@
                     <div class="personal-information">
                         <h4 class="my-account-title">Add Address</h4>
                         <div class="personal-information-box">
-                            <form action="/editaddress" method="POST">
+
+                            <form action="/editaddress" method="POST" id="editAddress">
                                 <div class="row">
                                     <div class="col-md-6 col-xs-12">
                                         <input type="hidden" name="addressId" value="{{address._id}}" id="">
@@ -117,6 +118,69 @@
     </div>
 </section>
 
+<script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/jquery.validate.js"></script>
+<script>
+
+    $.validator.addMethod("alpha", function (value, element) {
+        return this.optional(element) || value == value.match(/^[a-zA-Z\s]+$/);
+    });
+
+    $(document).ready(function(){
+        $('#editAddress').validate({
+            rules:{
+                firstname : {
+                    alpha  :true,
+                    required : true,
+                },
+                address1 :{
+                    required : true,
+                },
+                city : {
+                    required :true,
+                },
+                country :{
+                    required : true,
+                },
+                state  :{
+                    required : true,
+                },
+                pincode :{
+                    required : true,
+                    digits  :true,
+                    maxlength : 6,
+                    minlength : 6,
+                },
+                lastname : {
+                    alpha : true,
+                    required : true
+                },
+                phone : {
+                    required : true,
+                    maxlength :10,
+                    minlength :10,
+                    digits : true,
+                },
+                address2  :{
+                    required : true
+                },
+                second_mobile : {
+                    digits : true,
+                    minlength : 10,
+                    maxlength : 10,
+                },
+            },
+            messages :{
+                firstname :{
+                     alpha: "Please Enter alphabets only",
+                },
+                lastname :{
+                     alpha: "Please Enter alphabets only",
+                }
+            }
+        })
+    })
+</script>
+
 <script>
     // user country code for selected option
     let user_country_code = "IN";
@@ -173,6 +237,16 @@
     })();
 </script>
 
+<style>
+    .error{
+        color: red !important;
+    }
+
+    input{
+        color: black !important;
+        font-weight: 500 !important;
+    }
+</style>
 
 
 <style>

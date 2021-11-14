@@ -3,17 +3,15 @@ const { DeactivationsList } = require("twilio/lib/rest/messaging/v1/deactivation
 
 function addToCart(proId, proPrice, proName) {
     $.ajax({
-        url: ' /add-to-cart/' + proId + '/' + proPrice + '/' + proName,
+        url: ' /add-to-cart/'+proId+'/'+proPrice+'/'+proName,
         method: 'get',
         success: (response) => {
             if (response.status) {
-
                 let count = $('#cartCount').html()
                 count = parseInt(count) + 1
                 $('#cartCount').html(count)
             }
             location.reload();
-
         }
     })
 }

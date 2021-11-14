@@ -7,7 +7,7 @@
                         <h4 class="my-account-title">Add Address</h4>
                         <div class="personal-information-box">
 
-                        <form action="/addaddress" method="POST">
+                        <form action="/addaddress" method="POST" id="addAddress">
                             <div class="row">
 
 
@@ -85,7 +85,7 @@
 
                                         <div class="pib-item pib-item-date">
                                             <label>Secondary Phone</label>
-                                            <input type="text" name="second_mobile" placeholder="Enter your phone number...">
+                                            <input type="text" name="second_mobile" placeholder="Enter your alternate phone number...">
                                         </div>
                                     </div>
 
@@ -115,6 +115,80 @@
         </div>
     </div>
 </section>
+
+<script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/jquery.validate.js"></script>
+
+
+
+<script>
+
+      $.validator.addMethod("alpha", function (value, element) {
+            return this.optional(element) || value == value.match(/^[a-zA-Z\s]+$/);
+        });
+    $(document).ready(function () {
+       
+            $('#addAddress').validate({
+                rules: {
+                    firstname: {
+                        required: true,
+                        alpha: true,
+                    },
+                    housename: {
+                        required: true,
+                        alpha: true,
+                    },
+                    city: {
+                        required: true,
+                    },
+                    country: {
+                        required: true,
+                    },
+                    state: {
+                        required: true,
+                    },
+                    pincode: {
+                        required: true,
+                        digits: true,
+                    },
+                    lastname: {
+                        required: true,
+                        alpha: true,
+                    },
+                    phone: {
+                        required: true,
+                        digits: true,
+                        minlength: 10,
+                        maxlength: 10,
+                    },
+                    address1: {
+                        required: true,
+                      
+                    },
+                    address2: {
+                        required: true,
+                        
+                    },
+                    second_mobile: {
+                        minlength: 10,
+                        digits: true,
+                        maxlength: 10,
+                    },
+                    
+                    payment_method: {
+                        required: true,
+                    }
+                },
+                messages: {
+                    firstname: {
+                        alpha: "Please Enter alphabets only",
+                    },
+                    lastname: {
+                        alpha: "Please Enter alphabets only",
+                    },
+                }
+            })
+            })
+</script>
 
     <script>
         // user country code for selected option
@@ -172,7 +246,15 @@
         })();
     </script>
 
-
+<style>
+    .error{
+        color: red !important;
+    }
+    input{
+        color: black !important;
+        font-weight: 500 !important;
+    }
+</style>
 
     <style>
         input[type="file"] {

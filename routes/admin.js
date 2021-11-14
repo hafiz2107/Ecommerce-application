@@ -199,11 +199,14 @@ router.post('/updateorderstatusofbuynow', (req, res) => {
 
 router.get('/viewoderlist/:orderId/:userId', (req, res) => {
   adminHelper.getUserCartOrders(req.params.orderId, req.params.userId).then((cartOrders) => {
-    res.render('admin/admin-veiwcartorders', { typeOfPersonAdmin: true, adminHeader: true, adminNav: true, cartOrders, weatherDet })
+    userDet = cartOrders[0]
+    console.log("the cart order : ", cartOrders[0])
+    res.render('admin/admin-veiwcartorders', { typeOfPersonAdmin: true, adminHeader: true, adminNav: true, cartOrders, weatherDet,userDet })
   })
 })
 router.get('/viewoderlistofBuyNow/:orderId/:userId', (req, res) => {
   adminHelper.getBuyNowOrders(req.params.userId, req.params.orderId).then((buynowOrders) => {
+    console.log("the buynow : ",buynowOrders)
     res.render('admin/admin-veiwbuynoworders', { typeOfPersonAdmin: true, adminHeader: true, adminNav: true, buynowOrders, weatherDet })
   })
 

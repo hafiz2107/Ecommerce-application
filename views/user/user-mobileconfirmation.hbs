@@ -21,17 +21,17 @@
                     placeholder="OTP Recieved in your mobile number">
                   <input type="hidden" value="{{mobile}}" name="phone">
                   <input type="hidden" value="{{otp}}" name="phone">
-                  
+
                 </div>
                 <button type="submit" class="btn btn-primary btn-block">Submit</button>
               </form>
 
-                            <div>
-                              <div id="counter"></div>
-                            
-                              <button class="btn btn-info" class="disabled" id="resendButton" onclick="resendotp('{{mobile}}','{{countryCode}}')"
-                                disabled>Resend OTP</button>
-                            </div>
+              <div>
+                <div id="counter"></div>
+
+                <button class="btn btn-info" class="disabled" id="resendButton"
+                  onclick="resendotp('{{mobile}}','{{countryCode}}')" disabled>Resend OTP</button>
+              </div>
 
             </div>
           </div>
@@ -80,7 +80,7 @@
   }
 
 </script>
-
+<script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/jquery.validate.js"></script>
 <script>
   $(document).ready(function () {
     $('#loginform').validate({

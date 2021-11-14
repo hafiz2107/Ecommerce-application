@@ -237,7 +237,7 @@ module.exports = {
             productprice: parseInt(productData.productprice),
             productofferprice: parseInt(productData.productofferprice),
             productquantity: parseInt(productData.productquantity),
-            productdate: new Date(),
+            productdate: new Date().getTime(),
             productdes: productData.productdes,
             status: productData.status,
         }
@@ -356,7 +356,7 @@ module.exports = {
     getBuyNowOrders: (userId, orderId) => {
         return new Promise(async (resolve, reject) => {
             var orders = await db.get().collection(collection.orders).find({ _id: objectId(orderId) }).toArray()
-            resolve(orders)
+            resolve(orders[0])
         })
     },
     addNewMainCat: (catDetails) => {

@@ -47,7 +47,7 @@
     cursor: default;
   }
 </style>
-
+<script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/jquery.validate.js"></script>
 <script>
 
   var count = 30
@@ -60,7 +60,8 @@
   }
 
   window.onload = counter();
-
+  window.onload = document.getElementById('resendButton').disabled = true
+    
   window.onload = function () {
     window.setTimeout(setDisabled, 30000);
   }
@@ -90,14 +91,11 @@
   $(document).ready(function () {
     $('#loginform').validate({
       rules: {
-        username: {
+        otp: {
           required: true,
-          minlenght: 5,
+          minlenght: 4,
         },
-        pwd: {
-          required: true,
-          minlength: 6,
-        }
+        
       }
     })
   })

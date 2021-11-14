@@ -1,6 +1,8 @@
 <header id="navbar-spy" class="header header-1">
+
   <nav id="primary-menu" class="navbar navbar-fixed-top">
     <div class="container">
+
       <div class="navbar-header">
         <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
           data-target="#header-navbar-collapse-1" aria-expanded="false">
@@ -16,81 +18,43 @@
 
       <div class="collapse navbar-collapse pull-right" id="header-navbar-collapse-1">
         <ul class="nav navbar-nav navbar-left">
-          <li class="has-dropdown ">
+          <li class="active">
             <a href="/">Home</a>
-            {{!-- <a href="/" data-toggle="dropdown" class="dropdown-toggle">Home</a> --}}
-            {{!-- <ul class="dropdown-menu">
-              <li>
-                <a href="#">New Arrivals</a>
-              </li>
-              <li>
-                <a href="#">Shop by Bike</a>
-              </li>
-              <li>
-                <a href="#">Trending Now</a>
-              </li>
-            </ul> --}}
           </li>
 
-          <li class="has-dropdown ">
-            <a href="/shop">Shop</a>
-            {{!-- <a href="/shop" data-toggle="dropdown" class="dropdown-toggle">shop</a> --}}
-            {{!-- <ul class="dropdown-menu">
-              <li class="dropdown-submenu">
-                <a href="#" data-toggle="dropdown" class="dropdown-toggle">Bike accessories</a>
-                <ul class="dropdown-menu">
-                  <li>
-                    <a href="shop-product-grid-right-sidebar.html">shop grid right sidebar</a>
-                  </li>
-                  <li>
-                    <a href="shop-product-grid-left-sidebar.html">shop grid left sidebar</a>
-                  </li>
-                </ul>
-              </li>
+          <li class="">
+            <a href="/shop" >shop</a>
 
-              <li class="dropdown-submenu">
-                <a href="#" data-toggle="dropdown" class="dropdown-toggle">Touring Accessory</a>
-                <ul class="dropdown-menu">
-                  <li>
-                    <a href="shop-category-right-sidebar.html">shop right sidebar</a>
-                  </li>
-                  <li>
-                    <a href="shop-category-left-sidebar.html">shop left sidebar</a>
-                  </li>
-                </ul>
-              </li>
-            </ul> --}}
           </li>
 
           <li>
             <a href="about.html">about</a>
           </li>
-          {{!-- Contact If needed --}}
-          {{!-- <li class="has-dropdown pull-left">
-            <a href="#" data-toggle="dropdown" class="dropdown-toggle">contact</a>
-            <ul class="dropdown-menu">
-              <li>
-                <a href="contact-1.html">contact 1</a>
-              </li>
-              <li>
-                <a href="contact-2.html">contact 2</a>
-              </li>
-            </ul>
-          </li> --}}
-        </ul>
 
+          <li>
+            <a href="/wishlist"><i class="bi bi-heart-fill" style="color: red;"></i></a>
+          </li>
 
-
-        <div class="module module-search pull-left">
-          <div class="search-icon" data-toggle="modal" data-target="#exampleModal">
-            <i class="fa fa-search"></i>
-            <span class="title">search</span>
+          <div class="module module-cart pull-left">
+            <div class="cart-icon">
+              <a href="/cart" style="color: #404040;"><i class="fa fa-shopping-cart"></i></a>
+              <span class="title">shop cart</span>
+                {{#gte cartCount '0'}}
+                <span class="cart-label" id="cartCount">{{cartCount}}</span>
+                {{/gte}}
+            </div>
           </div>
-          <div class="">
 
-            {{!-- Search form --}}
+
+
+
+          <div class="module module-search pull-left">
+            <div class="search-icon" data-toggle="modal" data-target="#searchModal">
+              <i class="fa fa-search"></i>
+              <span class="title">search</span>
+            </div>
             <!-- Modal -->
-            <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+            <div class="modal fade" id="searchModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
               aria-hidden="true">
               <div class="modal-dialog" role="document">
                 <div class="modal-content">
@@ -104,44 +68,47 @@
 
 
                     <div class="">
-                    <form class="search-form">
-                      <div class="input-group">
-                        <div class="row">
-                         
+                      <form class="search-form">
+                        <div class="input-group">
+                          <div class="row">
+
 
                             <div class="input-group">
-                              <input type="text" class="form-control" id="searchKey" placeholder="Type Your Search Words" style="display: inline;" />
+                              <input type="text" class="form-control" id="searchKey"
+                                placeholder="Type Your Search Words" style="display: inline;" />
                               <span class="input-group-btn">
-                                <label for="searchKey" class="btn" onclick="search()"><i  class="fa fa-search"
+                                <label for="searchKey" class="btn" onclick="search()"><i class="fa fa-search"
                                     style="display: inline;color: black;"></i></label>
                               </span>
                             </div>
 
-                        {{!-- <input type="text" class="form-control" id="searchKey" placeholder="Type Your Search Words" style="display: inline;"/>
-                        <label for="searchKey" class="btn btn-success" onclick="search()"><i class="fa fa-search" style="display: inline;"></i></label> --}}
-                       
-                        </div>
-                      </div>
+                            {{!-- <input type="text" class="form-control" id="searchKey"
+                              placeholder="Type Your Search Words" style="display: inline;" />
+                            <label for="searchKey" class="btn btn-success" onclick="search()"><i class="fa fa-search"
+                                style="display: inline;"></i></label> --}}
 
-                      {{!-- Search Result --}}
-                      <div>
-                        <div id="list">
-
+                          </div>
                         </div>
-                        <div id="searchRsltErr">
 
+                        {{!-- Search Result --}}
+                        <div>
+                          <div id="list">
+
+                          </div>
+                          <div id="searchRsltErr">
+
+                          </div>
                         </div>
-                      </div>
-                      {{!-- Search Result ends --}}
-                    </form>
+                        {{!-- Search Result ends --}}
+                      </form>
                     </div>
-           
+
                     {{!-- Script For searching --}}
                     <script>
                       function search() {
-                          var searchKey = document.getElementById('searchKey').value
-                        
-                          if(searchKey != ''){
+                        var searchKey = document.getElementById('searchKey').value
+
+                        if (searchKey != '') {
                           document.getElementById('list').innerHTML = ''
 
                           $.ajax({
@@ -151,7 +118,7 @@
                             },
                             method: 'post',
                             success: (response) => {
-                          
+
                               document.getElementById('searchRsltErr').style.display = 'none'
 
                               if (response.length > 0) {
@@ -161,19 +128,19 @@
                                 }
 
 
-                                
+
                                 var atag = []
                                 for (i = 0; i < result.length; i++) {
-                                  
-                                    atag[i] = document.createElement('a')
-                                    atag[i].setAttribute('id', `${result[i].id}`);
-                                    atag[i].innerHTML = `<img src="/uploads/${result[i].id}__1.jpg"  style="height: 50px;float:left;border-radius:80px" alt="">${result[i].name}`
-                                    atag[i].setAttribute('style','margin-left: 25px')
-                                    atag[i].href = `/productview/${result[i].id}`
 
-                                    $("#list").append(atag[i]);
-                                    $("#list").append(`<hr>`)
-                                    $("#list").append(`<br>`)
+                                  atag[i] = document.createElement('a')
+                                  atag[i].setAttribute('id', `${result[i].id}`);
+                                  atag[i].innerHTML = `<img src="/uploads/${result[i].id}__1.jpg"  style="height: 50px;float:left;border-radius:80px" alt="">${result[i].name}`
+                                  atag[i].setAttribute('style', 'margin-left: 25px')
+                                  atag[i].href = `/productview/${result[i].id}`
+
+                                  $("#list").append(atag[i]);
+                                  $("#list").append(`<hr>`)
+                                  $("#list").append(`<br>`)
                                 }
                               } else {
                                 document.getElementById('list').innerHTML = ''
@@ -182,14 +149,14 @@
                               }
                             }
                           })
-                          }else{
-                              document.getElementById('list').innerHTML = ''
-                              document.getElementById('searchRsltErr').style.display = 'block'
-                              document.getElementById('searchRsltErr').innerHTML = '<span style="color:red">Please enter any key to search</span>'
-                          }
+                        } else {
+                          document.getElementById('list').innerHTML = ''
+                          document.getElementById('searchRsltErr').style.display = 'block'
+                          document.getElementById('searchRsltErr').innerHTML = '<span style="color:red">Please enter any key to search</span>'
                         }
+                      }
                     </script>
-                  {{!-- Script For searching ends --}}
+                    {{!-- Script For searching ends --}}
 
                   </div>
                   <div class="modal-footer">
@@ -198,164 +165,47 @@
                 </div>
               </div>
             </div>
-
-            {{!-- Search form ends --}}
-
-
-
           </div>
 
-        </div>
 
-        {{#if logStatus}}
-        <div class="module module-cart pull-left">
-          <div class="cart-icon">
-            <a href="/cart" style="color: #404040;"><i class="fa fa-shopping-cart"></i></a>
-            <span class="title">shop cart</span>
-            {{#gte cartCount '0'}}
-            <span class="cart-label" id="cartCount">{{cartCount}}</span>
-            {{/gte}}
-
-          </div>
-
-          <div class="cart-box">
-            <div class="cart-overview">
-              <ul class="list-unstyled">
-                {{#if Cartproducts}}
-
-                {{#each Cartproducts}}
-                <li>
-                  <img class="img-responsive" src="/uploads/{{this.item}}__1.jpg" alt="product" />
-                  <div class="product-meta">
-                    <h5 class="product-title">{{this.product.productname}}</h5>
-                    <p class="product-price" style="color: brown;">₹ {{this.price}}</p>
-                    {{!-- <p class="product-quantity">Quantity: 2</p> --}}
-                  </div>
-                  <a class="cancel" onclick="deleteCartItem('{{this._id}}','{{this.product._id}}')">cancel</a>
-                </li>
-                {{/each}}
-
-                {{else}}
-                <h6 style="color: red;">The cart is empty</h6>
-                {{/if}}
-              </ul>
-            </div>
-            <div class="cart-total">
-              <div class="total-desc">
-                <h5></h5>
-              </div>
-              <div class="total-price">
-                <h5>{{products.price}}</h5>
-              </div>
-            </div>
-            <div class="clearfix"></div>
-            <div class="cart-control">
-              <a class="btn btn-primary btn-block" href="/cart">view cart</a>
-              {{!-- <a class="btn btn-secondary btn-block" href="/checkout">check out</a> --}}
-            </div>
-          </div>
-        </div>
-
-        {{else}}
-
-
-        <div class="module module-cart pull-left">
-          <div class="cart-icon">
-            <a href="/login" style="color: #404040;"><i class="fa fa-shopping-cart"></i></a>
-            <span class="title">shop cart</span>
-            {{!-- <span class="cart-label"></span> --}}
-          </div>
-        </div>
-        {{/if}}
-
-        {{#if logStatus}}
-        <div class="module module-search pull-left">
-          <div class="search-icon">
-            <a href="/wishlist" class=""><i class="fa fa-heart"></i></a>
-            <span class="title">Wishlist</span>
-          </div>
-        </div>
-        {{else}}
-        <div class="module module-search pull-left">
-          <div class="search-icon">
-            <a href="/login" class=""><i class="fa fa-heart"></i></a>
-            <span class="title">Wishlist</span>
-          </div>
-        </div>
-        {{/if}}
-
-
-        <div class="module module-search pull-left">
-          <div class="search-icon">
-            <div class="dropdown">
-              <button class="dropbtn"><i class="fa fa-user"></i></button><span class="title">Profile</span>
-              <div class="dropdown-content">
-                {{#if currentUser}}
-                <a href="/userprofile" class="text-center">{{currentUser.username}}</a>
-                <a href="/userprofile" class="text-center">Your Profile</a>
-                <a href="/logout" class="text-center">Logout</a>
-                {{else}}
-                <a href="/login" class="text-center">Login</a>
-                <a href="/signup" class="text-center">Sign Up</a>
-                {{/if}}
-
-              </div>
-            </div>
-
-          </div>
-        </div>
-
-
-
-
-        {{!-- Wishllsit --}}
-        {{!-- <ul class="nav  navbar-left">
-          <li class="has-dropdown myWishlist">
-            <a href="#" data-toggle="dropdown" class="dropdown-toggle"
-              style="margin-left: 5px; line-height: 86px; font-size: 17px; color: rgb(255, 0, 0); display: inline;"><i
-                class="bi bi-heart-fill"></i></a>
+          <li class="has-dropdown pull-left">
+            
+            {{#if currentUser}}
+            <a href="#" data-toggle="dropdown" class="dropdown-toggle">Hi, {{currentUser.username}}<img style="border-radius: 40px;height: 37px;margin-left: 30px;width: 37px;" src="/profileImages/{{currentUser.userId}}1.jpg" alt=""></a>
+                <ul class="dropdown-menu">
+                  <li>
+                    <a href="/userprofile">Profile</a>
+                  </li>
+                  <li>
+                    <a href="/yourorders">Orders</a>
+                  </li>
+                  <li>
+                    <a href="/logout">Logout</a>
+                  </li>
+                </ul>
+            {{else}}
+            <a href="#" data-toggle="dropdown" class="dropdown-toggle"><i class="fa fa-user"></i></a>
+            <ul class="dropdown-menu">
+              <li>
+                <a href="/login">Login</a>
+              </li>
+              <li>
+                <a href="/signup">Sign Up</a>
+              </li>
+            </ul>
+            {{/if}}
+            
+           
           </li>
-        </ul> --}}
-        {{!-- Wishllsit End --}}
-        {{!-- pROFILE --}}
-        {{!-- <ul class="nav  navbar-left">
-          <li class="has-dropdown myProfile">
-            <a href="#" data-toggle="dropdown" class="dropdown-toggle" style="color: black; "><i
-                class="bi bi-person"></i></a>
-            <ul class="dropdown-menu">
-              <li>
-                <a href="#" class="text-center" data-toggle="modal" data-target=".login">Login</a>
-              </li>
-              <li>
-                <a href="#" class="text-center" data-toggle="modal" data-target=".signup">SignUp</a>
-              </li>
+        </ul>
 
-            </ul>
-          </li> --}}
-          {{!--Profile End --}}
 
-          {{!-- <div class="module module-profile pull-left">
-            <div class="profile-icon">
-              <a href="" data-toggle="dropdown" class="dropdown-toggle"> <i class="bi bi-person"></i></a>
-              <span class="title">Profile</span>
-            </div>
-            <ul class="dropdown-menu">
-              <li>
-                <a href="#">New Arrivals</a>
-              </li>
-              <li>
-                <a href="#">Shop by Bike</a>
-              </li>
-              <li>
-                <a href="#">Trending Now</a>
-              </li>
-            </ul>
-          </div> --}}
 
-          {{!--
+
+
       </div>
+
     </div>
-  </nav> --}}
 
-
+  </nav>
 </header>

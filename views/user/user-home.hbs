@@ -57,7 +57,7 @@
   <div class="container">
     <div class="row">
 
-      {{#each products}}
+      {{#each newArrivals}}
       <div class="col-xs-12 col-sm-6 col-md-4 product">
 
         <div class="product-img">
@@ -76,21 +76,18 @@
             <div class="product-action">
               {{!-- To hide and display the add to cart and buy now related to the quantity --}}
               {{#gt this.productquantity '0'}}
-              {{#if ../logStatus}}
+           
               <a id="" class="btn btn-primary payment">Buy Now</a>
-              {{else}}
-              <a href="/login" class="btn btn-primary payment">Buy Now</a>
-              {{/if}}
+           
               {{else}}
               <a id="" class="btn btn-primary payment" style="display: none;">Buy Now</a>
               {{/gt}}
               {{#gt this.productquantity '0'}}
-              {{#if ../logStatus}}
+
+             
               {{#hello ../items this._id this.productprice this.productname}}
               {{/hello}}
-              {{else}}
-              <a href="/login" class="btn btn-primary add-to-cart">Add To Cart</a>
-              {{/if}}
+                
 
               {{/gt}}
             </div>
@@ -100,7 +97,7 @@
 
         <div class="product-bio">
           <div class="prodcut-cat">
-            <a href="/productview/{{this._id}}">{{this.productbrand}}</a>
+            <a href="/getproductsonprobrand/{{this.productbrand}}">{{this.productbrand}}</a>
           </div>
 
           <div class="prodcut-title">
@@ -116,7 +113,6 @@
           </div>
           {{#if this.offer}}
           <span>MRP : ₹<s>{{this.productofferprice}}</s><span style="color: green;"> {{this.offer}} % OFF</span></span>
-
           {{/if}}
         </div>
       </div>
@@ -176,7 +172,7 @@
 
           {{#each allBikeBrands}}
           {{#each this.models}}
-          <li><a href="#">{{this}}</a></li>
+          <li><a href="/getproductsonbikemodel/{{this.bikemodels}}">{{this.bikemodels}}</a></li>
           {{/each}}
           {{/each}}
 
@@ -190,7 +186,7 @@
         </button>
         <ul class="dropdown-menu myScroll" aria-labelledby="dropdownMenu1">
           {{#each allBikeBrands}}
-          <li><a href="#">{{this.bikeBrand}}</a></li>
+          <li><a href="/getproductsonbikebrand/{{this.bikeBrand}}">{{this.bikeBrand}}</a></li>
           {{/each}}
         </ul>
       </div>
@@ -254,7 +250,7 @@
           {{#each this.SubCategory}}
           <div class="col-md-3 product-box" style="margin-top: 15px;">
 
-            <a href="#">
+            <a href="/getallproductsofsubcategory/{{this.subCat}}">
 
               <div class="product-img" style="display:flex; justify-content:center;">
                 <img src="subCat Logo/{{this.id}}__1.jpg" style="height:150px;width:230px" alt="Product" />

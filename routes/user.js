@@ -19,6 +19,7 @@ var theUser
 /* GET home page. */
 router.get('/', async function (req, res, next) {
 
+
   adminHelper.checkOfferDate().then((offersToExpire)=>{
    
     offersToExpire.map((category)=>{
@@ -30,6 +31,7 @@ router.get('/', async function (req, res, next) {
     })
   })
 
+  var newArrivals = await userHelpers.getNewArrivals()
   var ads = await userHelpers.getAllAdsForOffer()
 
   if (req.session.LoggedIn && req.session.unblock) {
@@ -37,6 +39,7 @@ router.get('/', async function (req, res, next) {
     currentUser = req.session.user
     logStatus = req.session.LoggedIn
     userId = req.session.userDetails
+    currentUser.userId = userId
     // Calling function to get the cart count
     cartCount = await userHelpers.getCartCount(req.session.userDetails)
     cartProductsTodisplay = await userHelpers.getCartProducts(req.session.userDetails)
@@ -46,8 +49,9 @@ router.get('/', async function (req, res, next) {
       adminHelper.fetchAllMainCategories().then((allCategories) => {
         adminHelper.findAllProductBrands().then((allProductBrands) => {
           adminHelper.getAllbikebrands().then((allBikeBrands) => {
-            
-            res.render('user/user-home', { title: 'Home', user: true, Cartproducts, currentUser, typeOfPersonUser: true, products, logStatus: req.session.LoggedIn, cartCount, items: cartProductsTodisplay, allCategories, allProductBrands, allBikeBrands, ads});
+            console.log("Current : ", currentUser)
+
+            res.render('user/user-home', { title: 'Home', user: true, Cartproducts, currentUser ,typeOfPersonUser: true, products, logStatus: req.session.LoggedIn, cartCount, items: cartProductsTodisplay, allCategories, allProductBrands, allBikeBrands, ads, newArrivals});
           })
         })
       })
@@ -60,7 +64,7 @@ router.get('/', async function (req, res, next) {
       adminHelper.fetchAllMainCategories().then((allCategories) => {
         adminHelper.findAllProductBrands().then((allProductBrands) => {
           adminHelper.getAllbikebrands().then((allBikeBrands) => {
-            res.render('user/user-home', { title: 'Home', user: true, currentUser: req.session.user, typeOfPersonUser: true, products, cartCount, allCategories, allProductBrands, allBikeBrands, ads });
+            res.render('user/user-home', { title: 'Home', user: true, currentUser: req.session.user, typeOfPersonUser: true, products, cartCount, allCategories, allProductBrands, allBikeBrands, ads, newArrivals });
           })
         })
       })
@@ -72,7 +76,7 @@ router.get('/', async function (req, res, next) {
       adminHelper.fetchAllMainCategories().then((allCategories) => {
         adminHelper.findAllProductBrands().then((allProductBrands) => {
           adminHelper.getAllbikebrands().then((allBikeBrands) => {
-            res.render('user/user-home', { title: 'Home', user: true, currentUser: false, typeOfPersonUser: true, products, allCategories, allProductBrands, allBikeBrands, ads});
+            res.render('user/user-home', { title: 'Home', user: true, currentUser: false, typeOfPersonUser: true, products, allCategories, allProductBrands, allBikeBrands, ads, newArrivals});
           })
         })
       })
@@ -106,6 +110,7 @@ router.post('/login', (req, res) => {
       theUser = response.user
       req.session.block = response.user.block
 
+
       if (req.session.block == 'true') {
         req.session.block = true
       } else {
@@ -123,7 +128,20 @@ router.post('/login', (req, res) => {
         req.session.user = req.body;
         var userSession = req.session.user;
         req.session.LoggedIn = true
-        res.redirect('/')
+        if(req.session.shop){
+          res.redirect('/shop')
+        }
+        else if(req.session.redirectToCart){
+          res.redirect('/cart')
+        }
+        else if (req.session.addToCart){
+          res.redirect('/add-to-cart/'+req.session.addToCart.id+'/'+req.session.addToCart.proPrice+'/'+req.session.proName)
+        } else if (req.session.buyNowCheck){
+          res.redirect('/checkoutbuynow/' + req.session.buyNowCheck)
+        }
+        else{
+          res.redirect('/')
+        }
       }
     }
     else if (response.passError) {
@@ -189,9 +207,6 @@ router.post('/signup', (req, res) => {
 
 // Verifying the OTP send when entering the OTP
 router.post('/mobileConfirmation', (req, res) => {
-
-  console.log("🦠🦠 : ",req.body)
-
   req.session.mobileDetails = req.body.phone
   req.session.code = req.body.otp
   client.verify
@@ -332,7 +347,7 @@ router.post('/forgotpassword', (req, res) => {
 
 // Posting The verified OTP adn redirecting to home page
 router.post('/otpverify', (req, res) => {
-  console.log("The phone is : 💩💩💩💩 : ", req.body)
+  
   var user = req.body
   var phone = req.body.countryCode + req.body.phone
   phone = parseInt(phone)
@@ -413,6 +428,7 @@ router.get('/cart', async (req, res) => {
   currentUser = req.session.user
 
   if (req.session.LoggedIn) {
+    req.session.redirectToCart = false
     let products = await userHelpers.getCartProducts(req.session.userDetails)
     let allProducts = await userHelpers.fetchProducts()
     if (products) {
@@ -426,6 +442,7 @@ router.get('/cart', async (req, res) => {
     }
 
   } else {
+    req.session.redirectToCart = true
     res.redirect('/login')
   }
 
@@ -435,12 +452,15 @@ router.get('/cart', async (req, res) => {
 
 // Adding items to the cart
 router.get('/add-to-cart/:id/:proPrice/:proName', (req, res) => {
+  
   if (req.session.LoggedIn) {
     user = req.session.userDetails
+    req.session.addToCart = false
     userHelpers.addToCart(req.params.id, req.session.userDetails, req.params.proPrice, req.params.proName).then(() => {
       res.json({ status: true })
     })
   } else {
+    req.session.addToCart = { id : req.params.id,price : req.params.proPrice,name : req.params.proName }
     res.redirect('/login');
   }
 })
@@ -477,13 +497,14 @@ router.get('/checkout', async (req, res) => {
 // Getting Checkout for buy now
 router.get('/checkoutbuynow/:id', async (req, res) => {
   if (req.session.LoggedIn) {
+    req.session.buyNowCheck = false
     let userId = req.session.userDetails
     userHelpers.getProductForBuyNow(req.params.id).then(async (productToBuy) => {
       let addresses = await userHelpers.findUserAddress(req.session.userDetails)
       res.render('user/user-buynowcheckout', { title: 'Checkout', theUser, user: true, userId, currentUser: req.session.user, typeOfPersonUser: true, logStatus, productToBuy, addresses })
     })
   } else {
-    
+    req.session.buyNowCheck = req.params.id
     res.redirect('/login')
   }
 })
@@ -783,7 +804,6 @@ router.get('/test',(req,res)=>{
 })
 
 router.get('/bikemodel/:brandId',(req,res)=>{
-
   userHelpers.findBikeModels(req.params.brandId).then((models)=>{
     res.render('user/user-bikemodel', { title: 'Wishlist', user: true, currentUser: req.session.user, typeOfPersonUser: true ,models})
   })
@@ -797,6 +817,7 @@ router.post('/currencycoverter/:amount',(req,res)=>{
 
 router.get('/shop',(req,res)=>{
   if(req.session.LoggedIn){
+    req.session.shop = false
     userHelpers.getAllProducts().then((products) => {
       adminHelper.fetchAllMainCategories().then((allCategories) => {
         adminHelper.getAllbikebrands().then((allBikeBrands) => {
@@ -805,6 +826,7 @@ router.get('/shop',(req,res)=>{
       })
     })
   }else{
+    req.session.shop = true
     res.redirect('/login')
   }
 })
@@ -870,7 +892,31 @@ router.get('/deletereview/:userId/:proId',(req,res)=>{
     res.json(response)
   })
 })
+
+router.get('/getproductsonbikemodel/:bikeModel',(req,res)=>{
+  userHelpers.findProductsOnModels(req.params.bikeModel).then((pro)=>{
+    console.log("the pro : ", req.params.bikeModel)
+    res.render('user/user-categorydisplay', { title: 'Category', user: true, logStatus: req.session.LoggedIn, currentUser: req.session.user, typeOfPersonUser: true, pro})
+  })
+})
   
+router.get('/getallproductsofsubcategory/:subCat',(req,res)=>{
+  userHelpers.findProductsOnSubCategory(req.params.subCat).then((pro)=>{
+    res.render('user/user-categorydisplay', { title: 'Category', user: true, logStatus: req.session.LoggedIn, currentUser: req.session.user, typeOfPersonUser: true, pro })
+  })
+})
+
+router.get('/getproductsonbikebrand/:bikeBrand',(req,res)=>{
+  userHelpers.findProductsOnBikeBrand(req.params.bikeBrand).then((pro)=>{
+    console.log("The pro are : ", pro);
+    res.render('user/user-categorydisplay', { title: 'Category', user: true, logStatus: req.session.LoggedIn, currentUser: req.session.user, typeOfPersonUser: true, pro })
+  })
+})
+router.get('/getproductsonprobrand/:proBrand',(req,res)=>{
+  userHelpers.findProductsInProBrand(req.params.proBrand).then((pro)=>{
+    res.render('user/user-categorydisplay', { title: 'Category', user: true, logStatus: req.session.LoggedIn, currentUser: req.session.user, typeOfPersonUser: true, pro })
+  })
+})
 
 // Logout
 router.get('/logout', (req, res) => {

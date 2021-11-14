@@ -4,13 +4,12 @@
   <section class="col-sm-12 col-lg-12 col-md-12 ml-5 mt-5">
 
 
-    <form style="width: 70%;" method="POST" action="/admin/edit-product/{{productDetails._id}}" enctype="multipart/form-data">
+    <form style="width: 70%;" method="POST" action="/admin/edit-product/{{productDetails._id}}" enctype="multipart/form-data" id="editProductForm">
 
       <div class="form-row">
         <div class="form-group col-md-6">
           <label for="">Product Name</label>
-          <input type="text" class="form-control" id="productname" name="productname" placeholder=""
-            value="{{productDetails.productname}}">
+          <input type="text" class="form-control" id="productname" name="productname" placeholder="" value="{{productDetails.productname}}">
         </div>
       </div>
 
@@ -210,10 +209,68 @@
   </section>
 </center>
 
+<script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk="
+  crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/jquery.validate.js"></script>
+
+
+<script>
+  $(document).ready(function(){
+    $('#editProductForm').validate({
+      rules:{
+        productname:{
+          required : true,
+        },
+        productcode :{
+          required : true
+        },
+        productcategory :{
+          required :true,
+        },
+        productsubcategory :{
+          required :true
+        },
+        productbrand:{
+          required :true,
+        },
+        suitablebikebrand:{
+          required :true,
+        },
+        suitablebikemodel:{
+          required : true,
+        },
+        productprice :{
+          required :true,
+          digits : true,
+        },
+        productquantity:{
+          required: true,
+          digits : true
+        },
+        productdate:{
+          required:true
+        },
+        productdes:{
+          required : true,
+          minlength:20,
+        },
+        image1:{
+          required : true
+        },
+        image2:{
+          required :true,
+        },
+        image3:{
+          required:true
+        }
+      }
+    })
+  })
+</script>
+
 <script>
 
   function showSubCats() {
-   alert('OOOOO')
     var val = document.getElementById('mainCategory').value
     $.ajax({
       url: '/admin/getthesubcat/' + val,
@@ -245,7 +302,7 @@
   }
 
    function showBikeModels() {
-     alert('OOOOO')
+    
       var brand = document.getElementById('bikebrand').value
       $.ajax({
         url: '/admin/getbikemodels/' + brand,
@@ -435,28 +492,6 @@ function buttonDisplay(){
       });
     }
   }
-
-
-  $(document).ready(function () {
-    $("#bikebrand").change(function () {
-      var val = $(this).val();
-      if (val == "ktm") {
-        $("#bikemodel").html("<option value='duke200'>Duke 200</option><option value='duke390'>Duke 390</option><option value='duke250'>Duke 250</option><option value='duke125'>Duke 125</option><option value='rc390'>RC 390</option>");
-      } else if (val == "Honda") {
-        $("#bikemodel").html("<option value='cbr250'>CBR 250</option><option value='cb300'>CB 300</option><option value='hnesscb350'>H'ness CB 350</option>");
-      } else if (val == "Hero") {
-        $("#bikemodel").html("<option value='xpulse'>Xpulse</option><option value='impulse'>Impulse</option>");
-      } else if (val == "BMW") {
-        $("#bikemodel").html("<option value='g310gs'>G 310 GS</option><option value='g310r'>G 310 R</option>");
-      } else if (val == "bajaj") {
-        $("#bikemodel").html("<option value='dominar400'>Dominar 400</option><option value='rs200'>RS 200</option><option value='ns200'>NS 200</option>");
-      } else if (val == "yamaha") {
-        $("#bikemodel").html("<option value='r15v3'>R 15V3</option><option value='r3'>R 3</option><option value='mt15'>MT 15</option>");
-      } else if (val == "others") {
-        $("#bikemodel").html("<option value='jawa'>Jawa</option><option value='ninja300'>Ninja 300</option>");
-      }
-    });
-  });
 </script>
 
 {{/if}}

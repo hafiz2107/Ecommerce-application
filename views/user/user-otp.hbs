@@ -15,7 +15,7 @@
               {{/if}}
 
               {{!-- Signin Form --}}
-              <form class="mb-0 myLoginForm" action="/otpverify" method="POST" id="loginform">
+              <form class="mb-0 myLoginForm" action="/otpverify" method="POST" id="otpform">
                 <div class="form-group">
                   <input type="text" class="form-control " id="username" name="otp"
                     placeholder="OTP Recieved in your mobile number">
@@ -41,6 +41,7 @@
   </section>
 </center>
 
+<script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/jquery.validate.js"></script>
 <script>
   var count = 30
   function counter() {
@@ -80,15 +81,12 @@
 
 <script>
   $(document).ready(function () {
-    $('#loginform').validate({
+    $('#otpform').validate({
       rules: {
-        username: {
-          required: true,
-          minlenght: 5,
-        },
-        pwd: {
-          required: true,
-          minlength: 6,
+        otp :{
+          digits : true,
+          minlength: 4,
+          maxlength : 4,
         }
       }
     })

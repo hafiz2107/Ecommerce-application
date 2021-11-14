@@ -3,10 +3,12 @@
         <h3>Bike brand Management</h3>
         <div class="row">
             <div class="col-md-6">
-                <form method="POST" action='/admin/addbikebrand' enctype="multipart/form-data">
+
+                <form method="POST" action='/admin/addbikebrand' enctype="multipart/form-data" id="addBikeBrand">
                     <label for="brandName" style="color: black;">New Brand Name : </label><br>
                     <input type="text" id="brandName" class="form-control" style="width: 50%;" name="brandName"
                         placeholder="Enter The brand name">
+
                     <label data-toggle="modal" data-target="#exampleModal" for="file1" class="btn btn-success"
                         type="button" class="btn btn-primary">Add Image</label>
                     <input type="file" name="productlogo" id="file1" onchange="return fileValidation()" hidden>
@@ -44,7 +46,7 @@
 
             {{!-- Adding models --}}
             <div class="col-md-6">
-                <form action="/admin/addbikemodel" method="post" enctype="multipart/form-data">
+                <form action="/admin/addbikemodel" method="post" enctype="multipart/form-data" id="addbikemodel">
                     <label for="bikemodel" style="color: black;">Add new Model : </label>
                     <br>
                     <input type="text" class="form-control" id="bikemodel" name="bikemodel" placeholder="Enter Bike Model" style="width: 50%;">
@@ -238,9 +240,42 @@
 
 <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk="
     crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/jquery.validate.js"></script>
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.11/cropper.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.11/cropper.js"></script>
+
+<script>
+    $(document).ready(function(){
+        $("#addBikeBrand").validate({
+            rules :{
+                brandName :{
+                    required : true,
+                },
+                productlogo : {
+                    required : true,
+                }
+            }
+        })
+    })
+
+    $(document).ready(function(){
+        $("#addbikemodel").validate({
+            rules:{
+                bikemodel: {
+                    required: true,
+                },
+                bikeBrandId: {
+                    required: true,
+                },
+                modelLogo :{
+                    required : true,
+                }
+            }
+          
+        })
+    })
+</script>
 
 <script>
     function fileValidation() {
