@@ -2,7 +2,6 @@
 
 
 
-
   <div class="container shop-content">
     {{!-- Product Main single image --}}
     <div class="row" id="topDiv">
@@ -14,7 +13,6 @@
             <img src="/uploads/{{singleProduct._id}}__3.jpg" alt="product image" class="zoom-image" />
 
           </div>
-
           {{!-- Product nav images --}}
           <div class="product-img-nav">
             <img src="/uploads/{{singleProduct._id}}__1.jpg" alt="product image" style="height: 70px;"
@@ -31,9 +29,13 @@
         <div class="product-title text-center-xs">
           <h3>{{singleProduct.productname}}
             <div class="wishBack" style="display: inline;margin-left: 10px;">
-
+              {{#if logStatus}}
               {{#checkItemExistOnWishlist wishlist singleProduct._id}}
               {{/checkItemExistOnWishlist}}
+              {{else}}
+              <a class="wishOn " style=" width: 20px; border: white" href="/login/?wishId={{singleProduct._id}}"><i class="bi bi-heart"></i></a>
+              {{/if}}
+              
 
             </div>
           </h3>
@@ -84,7 +86,7 @@
             {{#checkItemExistInCart items singleProduct._id singleProduct.productprice}}
             {{/checkItemExistInCart}}
             {{else}}
-            <a href="/login" class="btn btn-primary add-to-cart">Add to cart</a>
+            <a href="/login?id={{singleProduct._id}}&price={{singleProduct.productprice}}&name={{singleProduct.productname}}" class="btn btn-primary add-to-cart">Add to cart</a>
             {{/if}}
 
             {{/gt}}
@@ -467,6 +469,8 @@
     })
   }
 </script>
+
+
 <style>
   .wishBack {
     background-color: #c2c2c23d;

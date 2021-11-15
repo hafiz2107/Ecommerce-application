@@ -18,8 +18,6 @@ var theUser
 
 /* GET home page. */
 router.get('/', async function (req, res, next) {
-
-
   adminHelper.checkOfferDate().then((offersToExpire)=>{
    
     offersToExpire.map((category)=>{
@@ -49,9 +47,7 @@ router.get('/', async function (req, res, next) {
       adminHelper.fetchAllMainCategories().then((allCategories) => {
         adminHelper.findAllProductBrands().then((allProductBrands) => {
           adminHelper.getAllbikebrands().then((allBikeBrands) => {
-            console.log("Current : ", currentUser)
-
-            res.render('user/user-home', { title: 'Home', user: true, Cartproducts, currentUser ,typeOfPersonUser: true, products, logStatus: req.session.LoggedIn, cartCount, items: cartProductsTodisplay, allCategories, allProductBrands, allBikeBrands, ads, newArrivals});
+             res.render('user/user-home', { title: 'Home', user: true, Cartproducts, currentUser ,typeOfPersonUser: true, products, logStatus: req.session.LoggedIn, cartCount, items: cartProductsTodisplay, allCategories, allProductBrands, allBikeBrands, ads, newArrivals});
           })
         })
       })
@@ -81,8 +77,6 @@ router.get('/', async function (req, res, next) {
         })
       })
     })
-
-
   }
 });
 
@@ -92,7 +86,14 @@ router.get('/login', (req, res) => {
     res.redirect('/')
   }
   else {
-    res.render('user/user-login', { title: 'Login', loginAndSignup: true, loggedInErr: req.session.loggedInErr, typeOfPersonUser: true, emailError: req.session.emailError, passError: req.session.passError, block: req.session.block, reset: req.session.resetPassSuccess })
+    if(req.query.id){
+      req.session.addToCart = { id: req.query.id, proPrice: req.query.price, proName: req.query.name}
+    }
+    if (req.query.wishId){
+      req.session.addToWishlist = { id: req.query.wishId }
+    }
+    res.render('user/user-login', { title: 'Login', loginAndSignup: true, loggedInErr: req.session.loggedInErr, typeOfPersonUser: true, emailError: req.session.emailError, passError: req.session.passError, block: req.session.block, reset: req.session.resetPassSuccess, newSignUpSuccess: req.session.newSignUpSuccess})
+    req.session.newSignUpSuccess = false
     req.session.block = false
     req.session.emailError = false;
     req.session.passError = false;
@@ -130,12 +131,12 @@ router.post('/login', (req, res) => {
         req.session.LoggedIn = true
         if(req.session.shop){
           res.redirect('/shop')
-        }
-        else if(req.session.redirectToCart){
-          res.redirect('/cart')
-        }
-        else if (req.session.addToCart){
-          res.redirect('/add-to-cart/'+req.session.addToCart.id+'/'+req.session.addToCart.proPrice+'/'+req.session.proName)
+        } else if (req.session.addToWishlist){
+          res.redirect('/addtowishlist/'+req.session.addToWishlist.id)
+        } else if (req.session.viewwishlist){
+          res.redirect('/wishlist')
+        }else if (req.session.addToCart){
+          res.redirect('/add-to-cart/' + req.session.addToCart.id + '/' + req.session.addToCart.proPrice + '/' + req.session.addToCart.proName)
         } else if (req.session.buyNowCheck){
           res.redirect('/checkoutbuynow/' + req.session.buyNowCheck)
         }
@@ -160,6 +161,7 @@ router.post('/login', (req, res) => {
 
 // Gettting sign up page
 router.get('/signup', (req, res) => {
+  req.session.newSignUpSuccess = false
   if (req.session.LoggedIn) {
     res.redirect('/')
   }
@@ -176,18 +178,15 @@ router.get('/signup', (req, res) => {
 // posting Signed up data
 router.post('/signup', (req, res) => {
   userHelpers.userSignup(req.body).then((response) => {
-
-
     if (response) {
       req.session.newUser = req.body
       var mobile = req.body.countryCode + req.body.mobile;
       mobile = parseInt(mobile);
-
       client.verify.services(keys.serviceid)
         .verifications
         .create({ to: '+' + mobile, channel: 'sms' }).then((data) => {
           // Data will  be recieved with The send status adn all
-          res.render('user/user-mobileconfirmation', { title: 'Mobile Confirmation', loginAndSignup: true, typeOfPersonUser: true, mobile })
+          res.render('user/user-mobileconfirmation', { title: 'Mobile Confirmation', loginAndSignup: true, typeOfPersonUser: true, mobile, countryCode: req.body.countryCode, mobile: req.body.mobile})
 
         }).catch((err) => {
           console.log(err);
@@ -217,13 +216,14 @@ router.post('/mobileConfirmation', (req, res) => {
       if (verification_check.status == 'approved') {
         userHelpers.insertNewUserToDB(req.session.newUser).then((data) => {
           if (data) {
+            req.session.newSignUpSuccess = true
           res.redirect('/login');
         }
         })
       } else {
         mobile = req.body.phone
         otpError = true
-        res.render('user/user-mobileconfirmation', { title: 'Mobile Confirmation', loginAndSignup: true, typeOfPersonUser: true, mobile: req.session.mobileDetails , otpError })
+        res.render('user/user-mobileconfirmation', { title: 'Mobile Confirmation', loginAndSignup: true, typeOfPersonUser: true, mobile: req.session.mobileDetails, otpError})
         otpError = false
       }
     }).catch((err) => {
@@ -238,7 +238,7 @@ router.get('/signinotp', (req, res) => {
 
 // Sign in using OTP
 router.post('/signinotp', async(req, res) => {
-  console.log("the req.body is : 🐬🐬🐬",req.body)
+ 
   var mobile = req.body.countryCode + req.body.mobileno;
   
   mobile = parseInt(mobile);
@@ -268,12 +268,12 @@ router.post('/signinotp', async(req, res) => {
 
 // Post sign in using OTP
 router.post('/signinconfirmation', (req, res) => {
-  
+  otpError = false
   client.verify
-    .services(keys.serviceid)
+  .services(keys.serviceid)
     .verificationChecks.create({ to: '+' + req.body.phone[0], code: req.body.otp })
     .then((verification_check) => {
-
+      
       if (verification_check.status == 'approved') {
         phoneNo = req.body.phone[0].slice(2)
 
@@ -295,11 +295,9 @@ router.post('/signinconfirmation', (req, res) => {
       } else {
         mobile = req.body.phone[0]
         countryCode = req.body.phone[1]
-
-       
         otpError = true
         res.render('user/user-signinconfirmation', { title: 'Mobile Confirmation', loginAndSignup: true, typeOfPersonUser: true, mobile, otpError, countryCode})
-        otpError = false
+        
       }
     }).catch((err) => {
       console.log("The Error :",err);
@@ -316,10 +314,10 @@ router.get('/forgotpassword', (req, res) => {
 // Posting Forgot password PAge and checking the user exist or not 
 router.post('/forgotpassword', (req, res) => {
 
-  console.log("HYYYYY 🦗🦗🦗🦗🦗🦗🦗 : ",req.body)
+ 
   mobileError = false
   mobile = parseInt(req.body.countryCode + req.body.mobileno)
-  console.log(" 🦗🦗🦗🦗🦗🦗🦗 : ", mobile)
+ 
   userHelpers.checkMobNo(req.body).then((user) => {
     userToresetPass = user;
     if (user) {
@@ -351,6 +349,7 @@ router.post('/otpverify', (req, res) => {
   var user = req.body
   var phone = req.body.countryCode + req.body.phone
   phone = parseInt(phone)
+  otpError = false
   // userHelpers.checkMobNo(req.body)
   // Checking whether the Entered OTP Is wrong
   client.verify
@@ -360,14 +359,12 @@ router.post('/otpverify', (req, res) => {
       // If the OTP is wright It will give status as Approved else it will give status as Pending
       if (verification_check.status == 'approved') {
         res.render('user/user-resetpassword', { title: 'Verify OTP', loginAndSignup: true, typeOfPersonUser: true })
-      } else {
-       
+      } else { 
         mobile = req.body.phone
         otpError = true
-        res.render('user/user-otp', { title: 'Forgot Password', loginAndSignup: true, typeOfPersonUser: true, mobile, otpError, countryCode: req.body.countryCode, mobileno: req.body.phone})
-        otpError = false
+        res.render('user/user-otp', { title: 'Forgot Password', loginAndSignup: true, typeOfPersonUser: true, mobile, otpError, countryCode: req.body.countryCode, mobileno: req.body.phone})  
       }
-    }).catch((err) => {
+    }).catch((err) => {   
       console.log(err);
     })
 })
@@ -395,28 +392,31 @@ router.post('/resetpassword', (req, res) => {
 
 // Getting product single view page
 router.get('/productview/:id', async (req, res) => {
+  var proId = req.params.id
+  var review = await userHelpers.getAllReviews(req.params.id)
+  var reviewCount
+  if (review === false) {
+    reviewCount = 0
+  } else {
+    reviewCount = review.proReview.length
+  }
   if (req.session.LoggedIn) {
-    var proId = req.params.id
     logStatus = req.session.LoggedIn
     let cartProductsTodisplay = await userHelpers.getCartProducts(req.session.userDetails)
     let cartCount = await userHelpers.getCartCount(req.session.userDetails)
     let wishlist =await userHelpers.getUserWish(req.session.userDetails)
-    let review = await userHelpers.getAllReviews(req.params.id)
-    let reviewCount
     let checkUserPurchasedItem = await userHelpers.checkUserPurchasedItem(req.session.userDetails,req.params.id)
     // Buy Now
-    console.log('check : ', checkUserPurchasedItem)
-    if(review === false){
-         reviewCount = 0
-    }else{
-        reviewCount = review.proReview.length
-    } 
+    
+     
     var userComment = await userHelpers.findUserComment(proId, req.session.userDetails)
     userHelpers.singleProduct(proId).then(([singleProduct, relatedProduct]) => {
       res.render('user/user-singleproduct', { title: 'Product', user: true, typeOfPersonUser: true, singleProduct, relatedProduct, cartCount, theUser, logStatus, items: cartProductsTodisplay, wishlist, review, reviewCount, checkUserPurchasedItem, userComment})
     })
   } else {
-    res.redirect('/login')
+    userHelpers.singleProduct(proId).then(([singleProduct, relatedProduct]) => {
+    res.render('user/user-singleproduct', { title: 'Product', user: true, typeOfPersonUser: true, singleProduct, relatedProduct,  logStatus : false, review, reviewCount})
+    })
   }
 })
 
@@ -428,7 +428,8 @@ router.get('/cart', async (req, res) => {
   currentUser = req.session.user
 
   if (req.session.LoggedIn) {
-    req.session.redirectToCart = false
+    
+    req.session.addToCart = false
     let products = await userHelpers.getCartProducts(req.session.userDetails)
     let allProducts = await userHelpers.fetchProducts()
     if (products) {
@@ -455,12 +456,13 @@ router.get('/add-to-cart/:id/:proPrice/:proName', (req, res) => {
   
   if (req.session.LoggedIn) {
     user = req.session.userDetails
-    req.session.addToCart = false
+    if(req.session.addToCart){
+      res.redirect('/cart')
+    }
     userHelpers.addToCart(req.params.id, req.session.userDetails, req.params.proPrice, req.params.proName).then(() => {
       res.json({ status: true })
     })
   } else {
-    req.session.addToCart = { id : req.params.id,price : req.params.proPrice,name : req.params.proName }
     res.redirect('/login');
   }
 })
@@ -590,16 +592,27 @@ router.post('/checkout', async (req, res) => {
           res.json({ codSuccess: true })
         })
       } else {
-        console.log("The payemetn 🦈🦈🦈🦈🦈: ", orderId, productprice);
-        userHelpers.generateRazorpay(orderId, parseInt(productprice)).then((response) => {
-          userHelpers.decreseQuantityOncartOrder(products).then(() => {
-            // Response get after payement
-            userHelpers.deleteCartProductsAfterOrder(req.body)
-            res.json(response)
+        if (req.body.payment_method == 'razorpay'){
+          console.log("The payemetn 🦈🦈🦈🦈🦈: ", orderId, productprice);
+          userHelpers.generateRazorpay(orderId, parseInt(productprice)).then((response) => {
+            userHelpers.decreseQuantityOncartOrder(products).then(() => {
+              // Response get after payement
+              userHelpers.deleteCartProductsAfterOrder(req.body)
+              res.json(response)
+            })
+          }).catch((err) => {
+            res.redirect('/404')
           })
-        }).catch((err) => {
-          res.redirect('/404')
-        })
+        }else{
+          userHelpers.generatePaypal(orderId, productprice).then((paySuccess) => {
+            userHelpers.decreaseProductQuantity(req.body.proId).then((rslt) => {
+              res.json(paySuccess)
+            })
+          }).catch((err) => {
+            res.redirect('/404')
+          })
+        }
+        
       }
 
     })
@@ -758,6 +771,9 @@ router.get('/checkcoupon/:couponcode/:proPrice', (req, res) => {
 // Add to wishlist
 router.get('/addtowishlist/:proId', (req, res) => {
   if (req.session.LoggedIn) {
+    if (req.session.addToWishlist){
+      res.redirect('/wishlist')
+    }
     userHelpers.addToWishlist(req.params.proId, req.session.userDetails).then((response) => {
       res.json(response)
     })
@@ -769,10 +785,12 @@ router.get('/addtowishlist/:proId', (req, res) => {
 
 router.get('/wishlist',(req,res)=>{
   if(req.session.LoggedIn){
+    req.session.viewwishlist = false
     userHelpers.getUserWish(req.session.userDetails).then((wishProducts)=>{
       res.render('user/user-wishlist', {title: 'Wishlist', user: true, currentUser: req.session.user, typeOfPersonUser: true,wishProducts })
     })
   }else{
+    req.session.viewwishlist = true
     res.redirect('/login')
   }
 })

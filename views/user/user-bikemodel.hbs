@@ -1,3 +1,4 @@
+
 <section style="padding-top:50px;padding-bottom:30px;margin-bottom:-100px">
     <div class="container heading">
 
@@ -8,15 +9,15 @@
             </div>
 
             <div class="col-xs-6 col-sm-6 col-md-6" style="display:flex;justify-content:end">
-                {{!-- <img src="/bike brand logos/{{models._id}}__1.jpg" style="height:100px;width:100px" alt="client"> --}}
-                {{!-- <h2>{{models.bikeBrand}}</h2> --}}
+                {{!-- <img src="/bike brand logos/{{models._id}}__1.jpg" style="height:100px;width:100px" alt="client">  --}}
+                <h2 style="color: red;">{{models.bikeBrand}}</h2>
             </div>
 
         </div>
 
     </div>
 
-    <div class="row product-boxes">
+    <div class="row product-boxes ">
 
         {{#each models.models}}
         <div class="col-md-3 product-box">
@@ -24,7 +25,7 @@
             <a href="/getproductsonbikemodel/{{this.bikemodels}}">
 
                 <div class="product-img" style="display:flex; justify-content:center;">
-                    <img src="/bike model logos/{{this.id}}__1.jpg" style="height:150px;width:230px"
+                    <img src="/bike model logos/{{this.id}}__1.jpg" style="height:150px;width:250px"
                         alt="Product" />
                 </div>
 

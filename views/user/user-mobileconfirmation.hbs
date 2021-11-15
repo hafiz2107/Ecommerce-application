@@ -21,7 +21,7 @@
                     placeholder="OTP Recieved in your mobile number">
                   <input type="hidden" value="{{mobile}}" name="phone">
                   <input type="hidden" value="{{otp}}" name="phone">
-
+                  
                 </div>
                 <button type="submit" class="btn btn-primary btn-block">Submit</button>
               </form>
@@ -30,7 +30,7 @@
                 <div id="counter"></div>
 
                 <button class="btn btn-info" class="disabled" id="resendButton"
-                  onclick="resendotp('{{mobile}}','{{countryCode}}')" disabled>Resend OTP</button>
+                  onclick="resendotp('{{mobile1}}','{{countryCode}}')" disabled>Resend OTP</button>
               </div>
 
             </div>
@@ -62,22 +62,22 @@
     document.getElementById('resendButton').disabled = false
   }
 
+    function resendotp(mobile, countryCode) {
+      console.log("the mobile : ", mobile, countryCode)
 
-  function resendotp(mobile, countryCode) {
-    console.log("the mobile : ", mobile, countryCode)
-
-    $.ajax({
-      url: '/signinotp',
-      data: {
-        countryCode: countryCode,
-        mobileno: mobile,
-      },
-      method: 'post',
-      success: () => {
-        location.reload()
-      }
-    })
-  }
+      $.ajax({
+        url: '/signup',
+        data: {
+          countryCode: countryCode,
+          mobile: mobile,
+        },
+        method: 'post',
+        success: () => {
+          location.reload()
+        }
+      })
+    }
+ 
 
 </script>
 <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/jquery.validate.js"></script>

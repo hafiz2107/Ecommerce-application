@@ -160,8 +160,7 @@
                         <p>Select your payment method</p>
 
                         <div class="pcb-cuppon-input clearfix">
-                            <input type="radio" name="payment_method" id="payementChoiceCod" value="COD"
-                                onclick="hideError()">
+                            <input type="radio" name="payment_method" id="payementChoiceCod" value="COD" onclick="hideError()">
                             <label
                                 style="margin-left: 10px;color: #000000;font-size: 14px;font-weight: 400;">COD</label>
                         </div>
@@ -170,17 +169,11 @@
 
                             <input type="radio" name="payment_method" id="payementChoiceRazor" value="razorpay"
                                 onclick="hideError()">
-                            <label style="margin-left: 10px;color: #000000;font-size: 14px;font-weight: 400;">Razor
-                                Pay</label><br>
+                            <label style="margin-left: 10px;color: #000000;font-size: 14px;font-weight: 400;">Razor Pay</label><br>
 
                             <input type="radio" name="payment_method" id="payementChoicePay" value="paypal" onclick="hideError()">
                             <label style="margin-left: 10px;color: #000000;font-size: 14px;font-weight: 400;">PayPal</label>
 
-                            {{!-- <div id="paypal-button" ></div> --}}
-
-
-                            {{!-- <label for="paypal-button">Paypal</label>
-                            <input type="radio" name="" id="paypal-button"> --}}
 
                             <div id="showPayError"></div>
                         </div>
@@ -341,8 +334,6 @@
                             // Execute the payment
 
                             onAuthorize: function (data, actions) {
-
-                                console.log("The orders : ", actions.payment)
                                 return actions.payment.execute().then(function () {
 
 

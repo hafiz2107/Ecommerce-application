@@ -169,22 +169,28 @@
                                 style="margin-left: 10px;color: #000000;font-size: 14px;font-weight: 400;">COD</label>
                         </div>
                         <div class="pcb-cuppon-input clearfix">
-                            <input type="radio" name="payment_method" id="payementChoiceOnline" value="online">
-                            <label style="margin-left: 10px;color: #000000;font-size: 14px;font-weight: 400;">Online
-                                Payment</label>
+                            <input type="radio" name="payment_method" id="payementChoiceRazor" value="razorpay">
+                            <label style="margin-left: 10px;color: #000000;font-size: 14px;font-weight: 400;">Razorpay</label><br>
+
+                                <input type="radio" name="payment_method" id="payementChoicePay" value="paypal" onclick="hideError()">
+                                <label style="margin-left: 10px;color: #000000;font-size: 14px;font-weight: 400;">PayPal</label>
+                            
                             <div id="showPayError"></div>
+
                         </div>
                         <input type="hidden" id="user_id" value="{{user}}" name="userId">
 
                         <div class="create-account-checkout-method">
                             <div class="place-order">
-                                <button type="submit" class="checkout-page-button hvr-bs">Place order</button>
+                                <button type="submit" class="checkout-page-button hvr-bs" id="paypal-button">Place order</button>
                             </div>
                         </div>
+                      
                         </form>
                     </div>
                 </div>
             </div>
+            <input type="hidden" id="usdToInr" value="">
 </section>
 
 <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/jquery.validate.js"></script>
@@ -198,6 +204,10 @@
         document.getElementById('phone').value = ''
     }
     }
+     function hideError() {
+            document.getElementById('showPayError').style.display = 'none';
+
+        }
 </script>
 
 <script>
@@ -244,8 +254,74 @@
 
             },
             submitHandler: function () {
-                if (document.getElementById('payementChoiceCod').checked == true || document.getElementById('payementChoiceOnline').checked == true) {
+                if (document.getElementById('payementChoiceCod').checked == true || document.getElementById('payementChoiceRazor').checked == true || document.getElementById('payementChoicePay').checked == true) {
                     document.getElementById('showPayError').style.display = 'none'
+                   
+                    if (document.getElementById('payementChoicePay').checked == true){
+                       
+                            paypal.Button.render({
+                            // Configure environment
+                            env: 'sandbox',
+                            client: {
+                                sandbox: 'demo_sandbox_client_id',
+                                production: 'demo_production_client_id'
+                            },
+                            // Customize button (optional)
+                            locale: 'en_US',
+                            style: {
+                                size: 'small',
+                                color: 'blue',
+                                shape: 'rect',
+                            },
+                            // Enable Pay Now checkout flow (optional)
+                            commit: true,
+                            // Set up a payment
+                            payment: function (data, actions) {
+                                $.ajax({
+                                    url: '/currencycoverter/' + document.getElementById('orderTotal').innerHTML,
+                                    method: 'post',
+                                    success: (total) => {
+                                        document.getElementById('usdToInr').value = total
+                                    }
+                                })
+                                price = document.getElementById('usdToInr').value
+
+
+                                return actions.payment.create({
+                                    transactions: [{
+                                        amount: {
+                                            total: parseFloat(price).toFixed(2),
+                                            currency: 'USD',
+                                        }
+                                    }]
+                                });
+                            },
+
+                            // Execute the payment
+
+                            onAuthorize: function (data, actions) {
+                                return actions.payment.execute().then(function () {
+
+                                    alert(2)
+                                    $.ajax({
+                                        url: '/checkout',
+                                        method: 'post',
+                                        data: $('#checkoutbuynow-form').serialize(),
+                                        success: (response) => {
+                                            if (response) {
+                                                location.href = '/orderconfirmed';
+                                            } else {
+                                                location.href = '/404';
+                                            }
+                                        }
+                                    })
+
+                                });
+
+                            }
+
+                        },'#paypal-button');
+                    }else{
                     $.ajax({
                         url: '/checkout',
                         method: 'post',
@@ -259,6 +335,7 @@
                             }
                         }
                     })
+                }
                 }
                 else {
                     document.getElementById('showPayError').style.display = 'block'

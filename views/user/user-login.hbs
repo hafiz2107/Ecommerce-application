@@ -24,6 +24,10 @@
                             <span style="color: rgb(0, 114, 6);">{{reset}}</span>
                           {{/if}}
 
+                          {{#if newSignUpSuccess}}
+                            <span style="color: rgb(0, 114, 6);">You have succesfully signed up please login to continue !</span>
+                          {{/if}}
+
                         {{!-- Signin Form --}}
                       <form class="mb-0 myLoginForm" action="/login" method="POST" id="loginform">
                         <div class="form-group">

@@ -64,7 +64,7 @@ module.exports = {
 
     // Inserting new user to DB after verifying the mobile
     insertNewUserToDB: (userData) => {
-        console.log("💖💖💖 : ",userData)
+        
         return new Promise(async (resolve, reject) => {
             userData.pwd = await bcrypt.hash(userData.pwd, 10)
             userData.pwdc = await bcrypt.hash(userData.pwdc, 10)

@@ -76,18 +76,20 @@
             <div class="product-action">
               {{!-- To hide and display the add to cart and buy now related to the quantity --}}
               {{#gt this.productquantity '0'}}
-           
+              
               <a id="" class="btn btn-primary payment">Buy Now</a>
-           
+              
               {{else}}
               <a id="" class="btn btn-primary payment" style="display: none;">Buy Now</a>
               {{/gt}}
               {{#gt this.productquantity '0'}}
 
-             
+              {{#if ../logStatus}}
               {{#hello ../items this._id this.productprice this.productname}}
               {{/hello}}
-                
+                {{else}}
+                    <a href="/login?id={{this._id}}&price={{this.productprice}}&name={{this.productname}}" class="btn btn-primary add-to-cart">Add To Cart</a>
+              {{/if}}
 
               {{/gt}}
             </div>
@@ -113,6 +115,7 @@
           </div>
           {{#if this.offer}}
           <span>MRP : ₹<s>{{this.productofferprice}}</s><span style="color: green;"> {{this.offer}} % OFF</span></span>
+
           {{/if}}
         </div>
       </div>
