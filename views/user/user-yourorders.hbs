@@ -103,7 +103,7 @@
                                         <div class="tab__content">
                                             <div class="col-md-12">
                                 
-                                                {{#each allOrders}}
+                                                {{#each orders }}
                                                 {{#eq this.mode 'buynow'}}
                                                 {{#eq this.status 'shipped'}}
                                 
@@ -125,18 +125,7 @@
                                                     </div>
                                                 </div>
                                 
-                                                {{!-- {{else}}
-                                                <div class="text-center " style="margin-top:2%;">
-                                
-                                
-                                                    <img src="https://cdn3.iconfinder.com/data/icons/virancie-shopping-1/30/shopping_072-no_shipping-delivery-truck-vehicle-transport-512.png"
-                                                        style="height:250px;width:290px">
-                                
-                                                    <h1 class="h2">Currently there are no products under transist</h1>
-                                                    <br>
-                                
-                                                    <a class="btn btn-primary btn-wide" href="/">Start Shopping</a>
-                                                </div> --}}
+                                       
                                                 {{/eq}}
                                 
                                                 {{else}}
@@ -332,6 +321,15 @@
     </div>
 </section>
 
+<script>
+function redirectToInvoice(orderId,proName,item){
+
+    $.ajax({
+        url : '/orderinvoice/?orderId='+orderId+'&proId='+ item+'&proName='+ proName,
+        method : 'get',
+    })
+}
+</script>
 
 <style>
     .productview :hover {

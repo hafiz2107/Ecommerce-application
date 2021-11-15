@@ -5,11 +5,12 @@ function addToCart(proId, proPrice, proName) {
     $.ajax({
         url: ' /add-to-cart/'+proId+'/'+proPrice+'/'+proName,
         method: 'get',
-        success: (response) => {
+        success: async(response) => {
             if (response.status) {
                 let count = $('#cartCount').html()
                 count = parseInt(count) + 1
                 $('#cartCount').html(count)
+                await swal("Added to cart!", "Your product have successfully added to cart!", "success");
             }
             location.reload();
         }

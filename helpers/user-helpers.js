@@ -365,7 +365,7 @@ module.exports = {
     placeOrderOnCart: (orderDetails, products, productprice, couponCode) => {
 
         return new Promise((resolve, reject) => {
-            let status = orderDetails.payment_method == 'COD' ? 'placed' : 'pending';
+            let status = orderDetails.payment_method == 'COD' ? 'placed' : 'placed';
             let orderObj = {
                 userId: objectId(orderDetails.userId),
                 delivery: {
@@ -396,7 +396,7 @@ module.exports = {
     // Function to place the order on Buy now
     placeOrder: (orderDetails, products, totalAmount) => {
         return new Promise((resolve, reject) => {
-            let status = orderDetails.payment_method == 'COD' ? 'placed' : 'pending';
+            let status = orderDetails.payment_method == 'COD' ? 'placed' : 'placed';
             let orderObj = {
                 userId: objectId(orderDetails.userId),
                 delivery: {
@@ -463,7 +463,7 @@ module.exports = {
     // Function to generate the razor pay
     generateRazorpay: (orderId, totalPrice) => {
 
-        console.log("The payemetn : ", orderId, totalPrice);
+       
         return new Promise((resolve, reject) => {
             var options = {
                 amount: totalPrice * 100,  // amount in the smallest currency unit
@@ -505,7 +505,7 @@ module.exports = {
             db.get().collection(collection.orders).updateOne(
                 {
                     _id: objectId(orderId)
-                }, {
+                },{
                 $set:
                 {
                     status: 'placed'
@@ -688,6 +688,7 @@ module.exports = {
     decreaseProductQuantity: (proId) => {
         return new Promise(async (resolve, reject) => {
             db.get().collection(collection.newproducts).updateOne({ _id: objectId(proId) }, { $inc: { productquantity: -1 } }).then((result) => {
+                console.log("🫁🫁🫁 : ",result)
                 resolve()
             })
         })

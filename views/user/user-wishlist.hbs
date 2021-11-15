@@ -29,7 +29,11 @@
                             {{else}}
                             <p class="card-text" style="font-size: 15px;">Stock : Sold Out</p>
                             {{/gt}}
-                            <a onclick="removeFromWish('{{this.item}}')" class="btn btn-danger">Remove</a>
+
+                                    {{#hello ../cartProductsTodisplay this.item this.proPrice this.proName}}
+                                    {{/hello}}
+
+                            <a onclick="removeFromWish('{{this.item}}')" class="btn btn-secondary" >Remove</a>
                         </div>
                     </div>
                 </div>

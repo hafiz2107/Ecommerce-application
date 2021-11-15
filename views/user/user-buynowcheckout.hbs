@@ -160,7 +160,8 @@
                         <p>Select your payment method</p>
 
                         <div class="pcb-cuppon-input clearfix">
-                            <input type="radio" name="payment_method" id="payementChoiceCod" value="COD" onclick="hideError()">
+                            <input type="radio" name="payment_method" id="payementChoiceCod" value="COD"
+                                onclick="hideError()">
                             <label
                                 style="margin-left: 10px;color: #000000;font-size: 14px;font-weight: 400;">COD</label>
                         </div>
@@ -169,10 +170,13 @@
 
                             <input type="radio" name="payment_method" id="payementChoiceRazor" value="razorpay"
                                 onclick="hideError()">
-                            <label style="margin-left: 10px;color: #000000;font-size: 14px;font-weight: 400;">Razor Pay</label><br>
+                            <label style="margin-left: 10px;color: #000000;font-size: 14px;font-weight: 400;">Razor
+                                Pay</label><br>
 
-                            <input type="radio" name="payment_method" id="payementChoicePay" value="paypal" onclick="hideError()">
-                            <label style="margin-left: 10px;color: #000000;font-size: 14px;font-weight: 400;">PayPal</label>
+                            <input type="radio" name="payment_method" id="payementChoicePay" value="paypal"
+                                onclick="hideError()">
+                            <label
+                                style="margin-left: 10px;color: #000000;font-size: 14px;font-weight: 400;">PayPal</label>
 
 
                             <div id="showPayError"></div>
@@ -181,22 +185,24 @@
                         {{!-- Other Checkouts --}}
                         <div class="create-account-checkout-method" id="otherCheckOuts">
                             <div class="place-order">
-                                <button type="submit" class="checkout-page-button hvr-bs" id="paypal-button"> Place order</button>
+                                <button type="submit" class="checkout-page-button hvr-bs" id="placeOrderBtn"> Place
+                                    order</button>
+                                    <div id="paypal-button"></div>
                             </div>
                         </div>
 
                         {{!-- Paypal checkout --}}
-                
+                            
 
                         <input type="hidden" value="{{productToBuy._id}}" name="proId">
                         <input type="hidden" id="user_id" value="{{userId}}" name="userId">
+                        <input type="hidden" name="" id="usdToInr" name="usdtoinr">
                         </form>
                     </div>
                 </div>
             </div>
 
 
-            <input type="hidden" name="" id="usdToInr">
             <!-- Modal HTML -->
 
 
@@ -208,14 +214,20 @@
 <script>
     //For Hiding the error shown when no payement selected
     function hideError() {
+
         document.getElementById('showPayError').style.display = 'none';
-        
+
+        if (document.getElementById('payementChoicePay').checked == false) {
+            document.getElementById('placeOrderBtn').style.display = 'block'
+            document.getElementById('paypal-button').style.display = 'none'
+            document.getElementById('paypal-button').innerHTML = ''
+        }
     }
 
     //For displaying registered phoen number when clicking the checkbox
     function useRegPhone() {
         if (document.getElementById('useRegPh').checked == true) {
-            document.getElementById('phone').value = {{theUser.mobile}}
+            document.getElementById('phone').value = {{ theUser.mobile }}
     }
     else {
         document.getElementById('phone').value = ''
@@ -287,10 +299,23 @@
                     alpha: "Please Enter alphabets only",
                 },
             },
-            submitHandler : function () {
+            submitHandler: function () {
 
                 if (document.getElementById('payementChoiceCod').checked == true || document.getElementById('payementChoiceRazor').checked == true || document.getElementById('payementChoicePay').checked == true) {
+
                     if (document.getElementById('payementChoicePay').checked == true) {
+
+                        $.ajax({
+                            url: '/currencycoverter/' + document.getElementById('orderTotal').innerHTML,
+                            method: 'post',
+                            success: (total) => {
+                                document.getElementById('usdToInr').value = parseFloat(total).toFixed(2)
+                            }
+                        })
+
+                        document.getElementById('paypal-button').style.display = 'block'
+                        document.getElementById('placeOrderBtn').style.display = 'none'
+
 
                         paypal.Button.render({
                             // Configure environment
@@ -310,14 +335,7 @@
                             commit: true,
                             // Set up a payment
                             payment: function (data, actions) {
-                                console.log("the datas are : ", actions)
-                                $.ajax({
-                                    url: '/currencycoverter/' + document.getElementById('orderTotal').innerHTML,
-                                    method: 'post',
-                                    success: (total) => {
-                                        document.getElementById('usdToInr').value = total
-                                    }
-                                })
+                                
                                 price = document.getElementById('usdToInr').value
 
 
@@ -354,27 +372,32 @@
 
                             }
 
-                        },'#paypal-button');
+                        }, '#paypal-button');
                     } else {
+                        document.getElementById('paypal-button').style.display = 'none'
+                        document.getElementById('placeOrderBtn').style.display = 'block'
+                        document.getElementById('paypal-button').innerHTML = ''
+
 
                         $.ajax({
                             url: '/checkoutbuynow',
                             method: 'post',
                             data: $('#checkoutbuynow-form').serialize(),
                             success: (response) => {
-
+                                console.log("Teh user deatils are : ",response)
                                 if (response.codSuccess) {
                                     location.href = '/orderconfirmed';
                                 } else {
+                                   
                                     razorpayPayment(response)
                                 }
                             }
                         })
-                    } 
-            } else {
+                    }
+                } else {
                     document.getElementById('showPayError').innerHTML = '<span style="color: red;">Please choose a payement method</span>'
                 }
-        }
+            }
         })
 
 
@@ -506,28 +529,26 @@
 
 
     function razorpayPayment(order) {
+        console.log("AT RAZOR")
         var options = {
             "key": "rzp_test_6unoyhPHG9D97d", // Enter the Key ID generated from the Dashboard
-            "amount": order.amount, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+            "amount": order.response.amount, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
             "currency": "INR",
             "name": "Rideofy",
             "description": "Test Transaction",
             "image": "https://example.com/your_logo",
-            "order_id": order.id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
+            "order_id": order.response.id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
             "handler": function (response) {
-                alert(response.razorpay_payment_id);
-                alert(response.razorpay_order_id);
-                alert(response.razorpay_signature)
-
+             
                 verifyPayement(response, order)
             },
             "prefill": {
-                "name": "Gaurav Kumar",
-                "email": "rideofy@example.com",
-                "contact": "9207790729"
+                "name": order.user.firstname,
+                "email": order.user.firstname,
+                "contact": order.user.phone
             },
             "notes": {
-                "address": "Rideofy Corporate Office"
+                "address": order.user.housename
             },
             "theme": {
                 "color": "#ff3849"
@@ -538,6 +559,7 @@
     }
 
     function verifyPayement(payment, order) {
+        
         $.ajax({
             url: '/verify-payment',
             data: {
@@ -549,7 +571,7 @@
                 if (response.status) {
                     location.href = '/orderconfirmed'
                 } else {
-                    alert('Payement failed')
+                    console.log('Payement failed')
                 }
             }
         })
@@ -558,7 +580,7 @@
 
 
 
-<script src="https://www.paypalobjects.com/api/checkout.js"></script>
+    <script src="https://www.paypalobjects.com/api/checkout.js"></script>
 
 
 <script>

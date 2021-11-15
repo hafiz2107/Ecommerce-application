@@ -52,7 +52,7 @@
                                 <th> <strong>Status</strong></th>
                                 
                                
-                                <th> <strong>Total</strong></th>
+                               
                             </tr>
                         </thead>
                         <tbody>
@@ -67,9 +67,7 @@
 
                                 {{#eq this.status 'pending'}}
                                 <td>
-                                    <select name="status" id="{{this.proId}}"
-                                        class="dropdown btn btn-success dropdown-toggle"
-                                        onchange="updateStatus('{{this._id}}','{{this.userId}}','{{this.proId}}')">
+                                    <select name="status" id="{{this.proId}}" class="dropdown btn btn-success dropdown-toggle" onchange="updateStatus('{{this._id}}','{{this.userId}}','{{this.proId}}')">
                                         <option value="placed" selected>Pending<i class="bi bi-chevron-down"></i>
                                         </option>
                                         <option value="placed">Placed</option>
@@ -168,8 +166,8 @@
             },
             method: 'post',
             success: (response) => {
-                document.getElementById(proId).value = status
                 location.reload();
+                //document.getElementById(proId).value = status
             }
         })
     }

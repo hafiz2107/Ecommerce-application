@@ -1,4 +1,4 @@
-    <section class="ftco-section bg-light">
+    <section class="ftco-section bg-light text-center">
         <center>
         
         <div class="container">
@@ -13,7 +13,7 @@
                 {{#eq this.mode 'cartorder'}}
                     {{#each this.products}}
                         
-                <div class="col-md-4 ftco-animate fadeInUp ftco-animated">
+                <div class="col-md-4 ftco-animate fadeInUp ftco-animated text-center" >
                     <div class="block-7">
                         <div class="img">
                         <img src="/uploads/{{this.item}}__1.jpg" alt="" height="280px" style="width: 100%;">
@@ -25,7 +25,7 @@
                                 
                                 <li>Product Name : {{this.name}}</li>
                                 <li>Quantity : {{this.quantity}}</li>   
-                                <li>Address : {{../this.delivery.address}}</li>
+                                
                                 <li>Mobile : {{../this.delivery.mobile}}</li>
                             </ul>
                         </div>
@@ -35,7 +35,7 @@
                     {{/each}}
 
                 {{else}}
-                <div class="col-md-4 ftco-animate fadeInUp ftco-animated">
+                <div class="col-md-4 ftco-animate fadeInUp ftco-animated text-center">
                     <div class="block-7">
                         <div class="img">
                             <img src="/uploads/{{this.productId}}__1.jpg" alt="" height="280px" style="width: 100%;">
@@ -48,7 +48,7 @@
                 
                                     <li>Product Name : {{this.productName}}</li>
                                 
-                                    <li>Address : {{this.delivery.address}}</li>
+                                    
                                     <li>Mobile : {{this.delivery.mobile}}</li>
                                 </ul>
                         </div>

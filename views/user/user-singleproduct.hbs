@@ -413,7 +413,8 @@
     $.ajax({
       url: '/addtowishlist/' + proId,
       method: 'get',
-      success: (response) => {
+      success: async(response) => {
+        await swal("Added to wishlist!", "The product have been successfully added to wishlist", "success");
         location.reload()
       }
     })

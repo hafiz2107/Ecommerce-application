@@ -164,12 +164,12 @@
                     <div class="pcb-content">
                         <p>Select your payment method</p>
                         <div class="pcb-cuppon-input clearfix">
-                            <input type="radio" name="payment_method" id="payementChoiceCod" value="COD">
+                            <input type="radio" name="payment_method" id="payementChoiceCod" value="COD" onclick="hideError()">
                             <label
                                 style="margin-left: 10px;color: #000000;font-size: 14px;font-weight: 400;">COD</label>
                         </div>
                         <div class="pcb-cuppon-input clearfix">
-                            <input type="radio" name="payment_method" id="payementChoiceRazor" value="razorpay">
+                            <input type="radio" name="payment_method" id="payementChoiceRazor" value="razorpay" onclick="hideError()">
                             <label style="margin-left: 10px;color: #000000;font-size: 14px;font-weight: 400;">Razorpay</label><br>
 
                                 <input type="radio" name="payment_method" id="payementChoicePay" value="paypal" onclick="hideError()">
@@ -182,10 +182,13 @@
 
                         <div class="create-account-checkout-method">
                             <div class="place-order">
-                                <button type="submit" class="checkout-page-button hvr-bs" id="paypal-button">Place order</button>
+                                <button type="submit" class="checkout-page-button hvr-bs" id="placeOrderBtn">Place order</button>
+                            <div id="paypal-button"></div>
                             </div>
                         </div>
-                      
+                        
+            
+
                         </form>
                     </div>
                 </div>
@@ -194,7 +197,7 @@
 </section>
 
 <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/jquery.validate.js"></script>
-
+    <script src="https://www.paypalobjects.com/api/checkout.js"></script>
 <script>
     function useRegPhone() {
         if (document.getElementById('useRegPh').checked == true) {
@@ -206,6 +209,13 @@
     }
      function hideError() {
             document.getElementById('showPayError').style.display = 'none';
+
+            if (document.getElementById('payementChoicePay').checked == false) {
+
+             document.getElementById('placeOrderBtn').style.display = 'block'
+             document.getElementById('paypal-button').style.display = 'none'
+             document.getElementById('paypal-button').innerHTML = ''
+         }
 
         }
 </script>
@@ -254,12 +264,25 @@
 
             },
             submitHandler: function () {
+                
                 if (document.getElementById('payementChoiceCod').checked == true || document.getElementById('payementChoiceRazor').checked == true || document.getElementById('payementChoicePay').checked == true) {
-                    document.getElementById('showPayError').style.display = 'none'
-                   
-                    if (document.getElementById('payementChoicePay').checked == true){
-                       
-                            paypal.Button.render({
+                    
+
+                    if (document.getElementById('payementChoicePay').checked == true) {
+
+                        $.ajax({
+                            url: '/currencycoverter/' + document.getElementById('orderTotal').innerHTML,
+                            method: 'post',
+                            success: (total) => {
+                                document.getElementById('usdToInr').value = parseFloat(total).toFixed(2)
+                            }
+                        })
+
+                        document.getElementById('paypal-button').style.display = 'block'
+                        document.getElementById('placeOrderBtn').style.display = 'none'
+
+
+                        paypal.Button.render({
                             // Configure environment
                             env: 'sandbox',
                             client: {
@@ -277,13 +300,7 @@
                             commit: true,
                             // Set up a payment
                             payment: function (data, actions) {
-                                $.ajax({
-                                    url: '/currencycoverter/' + document.getElementById('orderTotal').innerHTML,
-                                    method: 'post',
-                                    success: (total) => {
-                                        document.getElementById('usdToInr').value = total
-                                    }
-                                })
+
                                 price = document.getElementById('usdToInr').value
 
 
@@ -302,7 +319,7 @@
                             onAuthorize: function (data, actions) {
                                 return actions.payment.execute().then(function () {
 
-                                    alert(2)
+
                                     $.ajax({
                                         url: '/checkout',
                                         method: 'post',
@@ -320,22 +337,29 @@
 
                             }
 
-                        },'#paypal-button');
-                    }else{
-                    $.ajax({
-                        url: '/checkout',
-                        method: 'post',
-                        data: $('#checkoutbuynow-form').serialize(),
-                        success: (response) => {
+                        }, '#paypal-button');
+                    } else {
+                        document.getElementById('paypal-button').style.display = 'none'
+                        document.getElementById('placeOrderBtn').style.display = 'block'
+                        document.getElementById('paypal-button').innerHTML = ''
 
-                            if (response.codSuccess) {
-                                location.href = '/orderconfirmed';
-                            } else {
-                                razorpayPayment(response)
+
+                        $.ajax({
+                            url: '/checkout',
+                            method: 'post',
+                            data: $('#checkoutbuynow-form').serialize(),
+                            success: (response) => {
+                               
+                                if (response.codSuccess) {
+                                    location.href = '/orderconfirmed';
+                                } else {
+
+                                    razorpayPayment(response)
+                                }
                             }
-                        }
-                    })
-                }
+                        })
+                    }
+                    
                 }
                 else {
                     document.getElementById('showPayError').style.display = 'block'
@@ -469,19 +493,19 @@
     function razorpayPayment(order) {
         var options = {
             "key": "rzp_test_6unoyhPHG9D97d", // Enter the Key ID generated from the Dashboard
-            "amount": order.amount, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+            "amount": order.response.amount, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
             "currency": "INR",
             "name": "Rideofy",
             "description": "Test Transaction",
             "image": "https://example.com/your_logo",
-            "order_id": order.id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
+            "order_id": order.response.id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
             "handler": function (response) {
                 verifyPayement(response, order)
             },
             "prefill": {
-                "name": "Gaurav Kumar",
-                "email": "gaurav.kumar@example.com",
-                "contact": "9999999999"
+                "name": order.user.firstname,
+                "email": order.user.firstname +"@gmail.com",
+                "contact": order.user.phone
             },
             "notes": {
                 "address": "Razorpay Corporate Office"
