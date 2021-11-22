@@ -1,28 +1,61 @@
 const { response } = require("express")
 const { DeactivationsList } = require("twilio/lib/rest/messaging/v1/deactivation")
 
-function addToCart(proId, proPrice, proName) {
-    $.ajax({
-        url: ' /add-to-cart/'+proId+'/'+proPrice+'/'+proName,
+async function addToCart(proId, proPrice, proName) {
+   $.ajax({
+        url: ' /add-to-cart/' + proId + '/' + proPrice + '/' + proName,
         method: 'get',
-        success: async(response) => {
+        success: async (response) => {
             if (response.status) {
                 let count = $('#cartCount').html()
                 count = parseInt(count) + 1
                 $('#cartCount').html(count)
-                await swal("Added to cart!", "Your product have successfully added to cart!", "success");
+                reloadP()
             }
-            location.reload();
+            
         }
     })
 }
+
+function reloadP() {
+    sessionStorage.setItem("reloading", "true");
+    document.location.reload();
+}
+
+
+
+function reloadingfunction() {
+    toastr.options = {
+        "closeButton": true,
+        "debug": false,
+        "newestOnTop": false,
+        "progressBar": true,
+        "positionClass": "toast-bottom-right",
+        "preventDuplicates": false,
+        "onclick": function () {
+            location.href = '/cart'
+        },
+        "showDuration": "300",
+        "hideDuration": "1000",
+        "timeOut": "5000",
+        "extendedTimeOut": "1000",
+        "showEasing": "swing",
+        "hideEasing": "linear",
+        "showMethod": "fadeIn",
+        "hideMethod": "fadeOut"
+    }
+
+    toastr.success('Item Successfully added to cart')
+}
+
+
 
 function updateDiv() {
     $("#total").load(window.location.href + " #total");
 }
 
 function changeQuantity(proQty, cart_id, pro_id, count, price, totalprice, userId) {
- 
+
     let quantity = parseInt(document.getElementById(pro_id).value)
     if (count == 1 && quantity == 8) {
         limitReachedInCart(quantity)
@@ -67,7 +100,7 @@ function changeQuantity(proQty, cart_id, pro_id, count, price, totalprice, userI
             }
         } else {
             if (quantity != 1) {
-               
+
                 price = parseInt(price)
                 totalprice = parseInt(totalprice)
 
@@ -118,8 +151,103 @@ function deleteCartItem(cart_id, pro_id) {
         method: 'POST',
         success: (response) => {
             if (response) {
-                location.reload()
+                sessionStorage.setItem("deletecartreloading", "true");
+                document.location.reload();
             }
         }
     })
 }
+
+function showToastInDeletecart(){
+    toastr.options = {
+        "closeButton": true,
+        "debug": false,
+        "newestOnTop": false,
+        "progressBar": true,
+        "positionClass": "toast-bottom-right",
+        "preventDuplicates": false,
+        "onclick": null,
+        "showDuration": "300",
+        "hideDuration": "1000",
+        "timeOut": "5000",
+        "extendedTimeOut": "1000",
+        "showEasing": "swing",
+        "hideEasing": "linear",
+        "showMethod": "fadeIn",
+        "hideMethod": "fadeOut"
+    }
+    toastr.success('Item successfully removed from cart')
+}
+
+function addToWishList(proId) {
+
+    $.ajax({
+        url: '/addtowishlist/' + proId,
+        method: 'get',
+        success: async (response) => {
+            wishReload()
+        }
+    })
+}
+
+function wishReload(){
+    sessionStorage.setItem("wishreloading", "true");
+    document.location.reload();
+}
+
+function showToastInWishlist(){
+    toastr.options = {
+        "closeButton": true,
+        "debug": false,
+        "newestOnTop": false,
+        "progressBar": true,
+        "positionClass": "toast-bottom-right",
+        "preventDuplicates": false,
+        "onclick": function (){
+            location.href = '/wishlist'
+        },
+        "showDuration": "300",
+        "hideDuration": "1000",
+        "timeOut": "5000",
+        "extendedTimeOut": "1000",
+        "showEasing": "swing",
+        "hideEasing": "linear",
+        "showMethod": "fadeIn",
+        "hideMethod": "fadeOut"
+    }
+    toastr.success('Item successfully added to wishlist')
+}
+
+function showToastWhenRemoveWishlist(){
+    toastr.options = {
+        "closeButton": true,
+        "debug": false,
+        "newestOnTop": false,
+        "progressBar": true,
+        "positionClass": "toast-bottom-right",
+        "preventDuplicates": false,
+        "onclick": null,
+        "showDuration": "300",
+        "hideDuration": "1000",
+        "timeOut": "5000",
+        "extendedTimeOut": "1000",
+        "showEasing": "swing",
+        "hideEasing": "linear",
+        "showMethod": "fadeIn",
+        "hideMethod": "fadeOut"
+    }
+    toastr.error('Item successfully removed from wishlist')
+}
+
+
+function removeFromWish(proId) {
+    $.ajax({
+        url: '/removefromwish/' + proId,
+        method: 'get',
+        success: (response) => {
+            sessionStorage.setItem("wishremovereloading", "true");
+            document.location.reload();
+        }
+    })
+}
+

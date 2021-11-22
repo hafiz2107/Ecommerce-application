@@ -235,7 +235,7 @@ module.exports = {
             suitablebikebrand: productData.suitablebikebrand,
             suitablebikemodel: productData.suitablebikemodel,
             productprice: parseInt(productData.productprice),
-            productofferprice: parseInt(productData.productofferprice),
+            productofferprice: parseInt(productData.productprice),
             productquantity: parseInt(productData.productquantity),
             productdate: new Date().getTime(),
             productdes: productData.productdes,
@@ -272,12 +272,19 @@ module.exports = {
             })
         })
     },
+    
     // To delte a product
     deleteproduct: (productId) => {
+        console.log("the erwer", productId )
         return new Promise((resolve, reject) => {
-            db.get().collection(collection.newproducts).deleteOne({ _id: objectId(productId) }).then((result) => {
-                resolve(result);
+            db.get().collection(collection.cartItems).update({}, { $pull: { products: { item : objectId(productId) } } }).then((response) => {
+                console.log("HHHHH : ",response)
+                resolve(response)
             })
+
+            // db.get().collection(collection.newproducts).deleteOne({ _id: objectId(productId) }).then((result) => {
+               
+            // })
 
         })
     },
@@ -505,6 +512,7 @@ module.exports = {
         })
     },
     addNewCatOffer: (offerDetails) => {
+        console.log("The offer details .offer name is : ",offerDetails.offername)
         return new Promise(async (resolve, reject) => {
             var d = new Date().toISOString().slice(0, 10)
             var day1 = new Date(d)
@@ -513,7 +521,7 @@ module.exports = {
 
             var offerdiscount = parseInt(offerDetails.offerdiscount)
 
-            db.get().collection(collection.newproducts).update({ productcategory: offerDetails.category }, { $set: { offer: offerdiscount } })
+            db.get().collection(collection.newproducts).updateMany({ productcategory: offerDetails.category, offer: { $exists: false } }, { $set: { offer: offerdiscount, offername: offerDetails.offername} })
 
             db.get().collection(collection.categoryoffer).insertOne({
                 offerName: offerDetails.offername,
@@ -522,10 +530,7 @@ module.exports = {
                 offercreatedAt: new Date(),
                 offerdiscount: offerDetails.offerdiscount,
             }).then(async (result) => {
-                // db.get().collection(collection.categoryoffer).createIndex({ "offerexpiry": 1 }, { expireAfterSeconds: diff }).then((result)=>{
-                //     console.log("the result is : ",result)
-                // })
-                var products = await db.get().collection(collection.newproducts).find({ productcategory: offerDetails.category }).toArray()
+                var products = await db.get().collection(collection.newproducts).find({ productcategory: offerDetails.category, offername : { $exists: true }}).toArray()
                 resolve(products)
             })
         })
@@ -536,35 +541,56 @@ module.exports = {
         })
     }, updatePrice: (proDetails) => {
         return new Promise((resolve, reject) => {
-            db.get().collection(collection.newproducts).updateOne({ _id: objectId(proDetails._id) }, { $set: { productofferprice: proDetails.productprice, productprice: proDetails.productprice - (proDetails.productprice * proDetails.offer / 100) } }).then((result) => {
+            db.get().collection(collection.newproducts).updateOne({ _id: objectId(proDetails._id) }, { $set: { productofferprice: proDetails.productprice, productprice: proDetails.productprice - (proDetails.productprice * proDetails.offer / 100).toFixed(2) } }).then((result) => {
                 resolve(result)
             })
         })
-    },
-    deleteoffer: (offerId, category) => {
+    },    
+    deleteoffer: (offerId, category,offername) => {
+        
         return new Promise((resolve, reject) => {
             db.get().collection(collection.categoryoffer).deleteOne({ _id: objectId(offerId) }).then(async (rsponse) => {
                 db.get().collection(collection.ads).deleteOne({ adForOfferCat: category }).then(async () => {
-                    var products = await db.get().collection(collection.newproducts).find({ productcategory: category }).toArray()
+                    var products = await db.get().collection(collection.newproducts).find({ productcategory: category, offername :offername }).toArray()
                     resolve(products)
                 })
 
             })
         })
     },
+    deleteProOffer : (offerId , proName)=>{
+    
+        return new Promise((resolve,reject)=>{
+            db.get().collection(collection.productoffer).deleteOne({_id : objectId(offerId)}).then(async(response)=>{
+                var proToUpdate = await db.get().collection(collection.newproducts).findOne({productname : proName})
+                db.get().collection(collection.newproducts).updateOne({ productname: proName }, { $set: { productprice: proToUpdate.productofferprice }})
+                db.get().collection(collection.newproducts).updateOne({ productname: proName }, { $unset: { offer : 1}})
+                
+                resolve(response)
+            })
+        })
+    },
     updateProductsWhenOfferDeleted: (proToUpdate) => {
         return new Promise((resolve, reject) => {
             db.get().collection(collection.newproducts).updateOne({ _id: objectId(proToUpdate._id) }, { $set: { productprice: proToUpdate.productofferprice } }, { $unset: { offer: proToUpdate.offer } }).then((result) => {
-                db.get().collection(collection.newproducts).updateOne({ _id: objectId(proToUpdate._id) }, { $unset: { offer: proToUpdate.offer } }).then((dltRslt) => {
+                db.get().collection(collection.newproducts).updateOne({ _id: objectId(proToUpdate._id) }, { $unset: { offer: proToUpdate.offer, offername: proToUpdate.offername} }).then((dltRslt) => {
                     resolve(dltRslt)
                 })
             })
         })
     },
+
     checkOfferDate: () => {
         return new Promise(async (resolve, reject) => {
             var d = new Date().getTime()
             var offer = await db.get().collection(collection.categoryoffer).find({ offerexpiry: { $lte: d } }).toArray()
+            resolve(offer)
+        })
+    },
+    checkProOfferExpiry : ()=>{
+        return new Promise(async(resolve,reject)=>{
+            var today = new Date().getTime()
+            var offer = await db.get().collection(collection.productoffer).find({ offerexpiry : {$lte : today}}).toArray()
             resolve(offer)
         })
     },
@@ -595,7 +621,7 @@ module.exports = {
                 offername: offerDetails.offername,
                 product: offerDetails.product,
                 productName: theProduct.productname,
-                offerexpiry: offerDetails.offerexpiry,
+                offerexpiry:new Date(offerDetails.offerexpiry).getTime(),
                 offerdiscount: parseInt(offerDetails.offerdiscount),
                 offercreatedAt: new Date()
             }).then((result) => {
@@ -706,7 +732,7 @@ module.exports = {
                 }
             ]).toArray()
 
-            console.log("The sub cats are : ",subCats)
+         
             resolve(subCats)
         })
     },

@@ -85,11 +85,8 @@
                         <td>{{this.offercreatedAt}}</td>
                         <td>{{this.offerexpiry}}</td>
                         {{!-- Delete offer --}}
-                        <td class="text-center">
-                            <a class="btn btn-success" style="color: white;">Edit</a>
-                            {{!-- <a href="/admin/deleteoffer/{{this._id}}/{{this.category}}"
-                                class="btn btn-danger">Delete</a> --}}
-                            <a onclick="deleteOffer('{{this._id}}','{{this.category}}')" class="btn btn-danger"
+                        <td class="text-center">    
+                            <a onclick="deleteOffer('{{this._id}}','{{this.category}}','{{this.offerName}}')" class="btn btn-danger"
                                 style="color: white;">Delete</a>
                         </td>
                     </tr>
@@ -123,6 +120,7 @@
                 offerdiscount:{
                     required :true,
                     digits : true,
+                    maxlength:2,
                 }
             }
         })

@@ -87,6 +87,8 @@ router.get('/add-product', (req, res) => {
 
 // Posting add product form to database
 router.post('/add-product', (req, res) => {
+
+  console.log("🐸🐸🐸🐸 : ",req.files)
   // Calling function for uploading add product form
   adminHelper.addProduct(req.body).then((id) => {
 
@@ -159,15 +161,13 @@ router.get('/blockuser/:id', (req, res) => {
   id = req.params.id
   adminHelper.blockUser(id).then((response) => {
     if (response) {
-      res.redirect('/admin/usermanagement')
+      res.redirect('/admin/usermanagement')  
     }
   })
 })
 
 router.get('/unblockuser/:id', (req, res) => {
-
   id = req.params.id
-
   adminHelper.unBlockUser(id).then((response) => {
     if (response) {
       res.redirect('/admin/usermanagement')
@@ -382,12 +382,9 @@ router.get('/offermanagement', (req, res) => {
 })
 
 router.post('/addcatoffer', (req, res) => {
-
-  console.log('THe time : ', new Date(req.body.offerexpiry).getTime())
   adminHelper.addNewCatOffer(req.body).then((products) => {
     products.map((proDetails) => {
       adminHelper.updatePrice(proDetails).then((response) => {
-        console.log('The resu;t : ', response)
         res.redirect('/admin/offermanagement')
       })
     })
@@ -401,12 +398,19 @@ router.get('/checkoffer/:offercat', (req, res) => {
 })
 
 router.get('/deleteoffer/', (req, res) => {
-  adminHelper.deleteoffer(req.query.offerId, req.query.category).then((products) => {
+
+  adminHelper.deleteoffer(req.query.offerId, req.query.category,req.query.offername).then((products) => {
     products.map((productToUpdate) => {
-      adminHelper.updateProductsWhenOfferDeleted(productToUpdate).then((result) => {
+      adminHelper.updateProductsWhenOfferDeleted(productToUpdate).then((response) => {
         res.json(response)
       })
     })
+  })
+})
+
+router.get('/deleteProoffer/',(req,res)=>{
+  adminHelper.deleteProOffer(req.query.offerId, req.query.proName).then((response)=>{
+    res.json(response)
   })
 })
 
@@ -522,5 +526,9 @@ router.post('/getbikemodels/:bikebrand',(req,res)=>{
     console.log("The models are  : ",models)
     res.json(models)
   })
+})
+
+router.get('/test',(req,res)=>{
+  res.render('admin/test', { typeOfPersonAdmin: true, adminHeader: true, adminNav: true, weatherDet })
 })
 module.exports = router;

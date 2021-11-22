@@ -15,22 +15,135 @@
   <meta name="description" content="construction html5 template" />
   {{!--
   <link href="assets/images/favicon/favicon.ico" rel="icon" /> --}}
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
   {{!--
   <script src="/javascripts/jquery.js"></script> --}}
   <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
   <script src="/javascripts/cart.js"></script>
   <script src="/javascripts/swal.js"></script>
 
+  <script>
+    window.onload = function () {
+        if (sessionStorage.getItem("reloading")) {
+          sessionStorage.removeItem("reloading");
+          reloadingfunction();
+        }else if(sessionStorage.getItem("wishreloading")){
+          sessionStorage.removeItem("wishreloading");
+          showToastInWishlist();
+        }else if(sessionStorage.getItem("wishremovereloading")){
+          sessionStorage.removeItem("wishremovereloading");
+          showToastWhenRemoveWishlist();
+        }else if(sessionStorage.getItem('deletecartreloading')){
+          sessionStorage.removeItem('deletecartreloading')
+          showToastInDeletecart()
+        }
+      }
+  
+  </script>
+
+<style>
+  #snackbar {
+    visibility: hidden;
+    /* Hidden by default. Visible on click */
+    min-width: 250px;
+    /* Set a default minimum width */
+    margin-left: -125px;
+    /* Divide value of min-width by 2 */
+    background-color: #333;
+    /* Black background color */
+    color: #fff;
+    /* White text color */
+    text-align: center;
+    /* Centered text */
+    border-radius: 2px;
+    /* Rounded borders */
+    padding: 16px;
+    /* Padding */
+    position: fixed;
+    /* Sit on top of the screen */
+    z-index: 1;
+    /* Add a z-index if needed */
+    left: 50%;
+    /* Center the snackbar */
+    bottom: 30px;
+    /* 30px from the bottom */
+  }
+
+  /* Show the snackbar when clicking on a button (class added with JavaScript) */
+  #snackbar.show {
+    visibility: visible;
+    /* Show the snackbar */
+    /* Add animation: Take 0.5 seconds to fade in and out the snackbar.
+  However, delay the fade out process for 2.5 seconds */
+    -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
+    animation: fadein 0.5s, fadeout 0.5s 2.5s;
+  }
+
+  /* Animations to fade the snackbar in and out */
+  @-webkit-keyframes fadein {
+    from {
+      bottom: 0;
+      opacity: 0;
+    }
+
+    to {
+      bottom: 30px;
+      opacity: 1;
+    }
+  }
+
+  @keyframes fadein {
+    from {
+      bottom: 0;
+      opacity: 0;
+    }
+
+    to {
+      bottom: 30px;
+      opacity: 1;
+    }
+  }
+
+  @-webkit-keyframes fadeout {
+    from {
+      bottom: 30px;
+      opacity: 1;
+    }
+
+    to {
+      bottom: 0;
+      opacity: 0;
+    }
+  }
+
+  @keyframes fadeout {
+    from {
+      bottom: 30px;
+      opacity: 1;
+    }
+
+    to {
+      bottom: 0;
+      opacity: 0;
+    }
+  }
+</style>
 
   <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
   <script src="/javascripts/country-states.js"></script>
   {{!--
   <script src="/javascripts/zoomsl.js" type="text/javascript" defer></script> --}}
 
+
+  {{!- Snack bar styles --}}
+  
+
+
   <style>
-    .error{
+    .error {
       color: red !important;
     }
   </style>
@@ -55,7 +168,7 @@
 
   </script>
   {{!-- Zoom end --}}
-  
+
   <link
     href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i,800,800i%7CRaleway:100,100i,200,200i,300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i%7CUbuntu:300,300i,400,400i,500,500i,700,700i"
     rel="stylesheet" type="text/css" />
@@ -85,13 +198,13 @@
 
     <script src="/javascripts/plugin.js"></script>
     <script src="/javascripts/script.js"></script>
-
     <script src="/javascripts/zoomsl.js"></script>
 
 
     {{!--
     <script src="/public/javascripts/zoomsl.min.js"></script> --}}
   </div>
+  <div id="snackbar"><i class="bi bi-bag-check"></i> Item successfully added to cart</div>
 </body>
 
 </html>
@@ -129,11 +242,11 @@
   <script type="text/javascript" charset="utf8"
     src="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.0/jquery.dataTables.min.js" defer></script>
   {{!-- Data tables end --}}
-<style>
-  .error {
-    color: red !important;
-  }
-</style>
+  <style>
+    .error {
+      color: red !important;
+    }
+  </style>
   {{!--
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.11/cropper.css"> --}}
   <title>

@@ -23,14 +23,15 @@
 
                             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                 <center>
-                                    <a class="dropdown-item" href="/editaddress/{{this._id}}">Edit</a>
-                                        <hr>
-                                    <a class="dropdown-item"  href="/deleteaddress/{{this._id}}">Delete</a>
+                                    <a class="dropdown-item" onclick="editAdd('{{this._id}}')"
+                                        href="/editaddress/{{this._id}}">Edit</a>
+                                    <hr>
+                                    <a class="dropdown-item" onclick="deleteAdd('{{this._id}}')">Delete</a>
 
-
+                                  
                                     <!-- Modal -->
-                                    
-                                    {{!-- Modal  end --}}
+
+                                    {{!-- Modal end --}}
                                 </center>
                             </div>
                         </div>
@@ -77,3 +78,27 @@
         float: right;
     }
 </style>
+
+<script>
+
+    function deleteAdd(adId) {
+        
+        swal({
+            title: "Are you sure?",
+            text: "Once deleted, you will not be able to recover !",
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+        }).then((willDelete) => {
+            console.log("the id is : ",adId)
+                $.ajax({
+                url: '/deleteaddress/'+adId,
+                method: 'get',
+                success : ()=>{
+                    location.reload()
+                }
+            })
+
+            });
+    }
+</script>

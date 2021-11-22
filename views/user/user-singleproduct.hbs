@@ -408,18 +408,6 @@
 </section>
 
 <script>
-  function addToWishList(proId) {
-
-    $.ajax({
-      url: '/addtowishlist/' + proId,
-      method: 'get',
-      success: async(response) => {
-        await swal("Added to wishlist!", "The product have been successfully added to wishlist", "success");
-        location.reload()
-      }
-    })
-  }
-
   function postEditedReviewForm(proId, proName, userId, userName) {
     ratingCheck = document.querySelector('input[name="rating1"]:checked')
     var rating = ratingCheck ? parseInt(ratingCheck.value) : 0;
@@ -620,15 +608,7 @@
   /*Rating Ends */
 </style>
 <script>
-  function removeFromWish(proId) {
-    $.ajax({
-      url: '/removefromwish/' + proId,
-      method: 'get',
-      success: (response) => {
-        location.reload()
-      }
-    })
-  }
+  
 </script>
 
 {{!-- Edit review --}}

@@ -1,5 +1,5 @@
 <div>
-  <div class="sidebar" data-color="danger" data-background-color="white" style="overflow-y: scroll;overflow-x:hidden ">
+  <div class="sidebar" data-color="danger" data-background-color="white" style="overflow-y: inherit;overflow-x:hidden">
 
     <div class="logo">
       <a href="#" class="simple-text logo-normal" style="text-decoration: none;">
@@ -160,3 +160,16 @@
     }
   </script>
 </div>
+<style>
+.sidebar::-webkit-scrollbar {
+  width: 12px;     
+  display: none;          /* width of the entire scrollbar */
+}
+.sidebar {
+ 
+  overflow-y: scroll;
+  scrollbar-color: rgba(0, 0, 0, 0) rgba(0, 128, 0, 0);
+  scrollbar-width: thin;
+}
+
+  </style>

@@ -87,6 +87,7 @@
               {{#if ../logStatus}}
               {{#hello ../items this._id this.productprice this.productname}}
               {{/hello}}
+              
                 {{else}}
                     <a href="/login?id={{this._id}}&price={{this.productprice}}&name={{this.productname}}" class="btn btn-primary add-to-cart">Add To Cart</a>
               {{/if}}
@@ -115,7 +116,6 @@
           </div>
           {{#if this.offer}}
           <span>MRP : ₹<s>{{this.productofferprice}}</s><span style="color: green;"> {{this.offer}} % OFF</span></span>
-
           {{/if}}
         </div>
       </div>
@@ -242,9 +242,6 @@
       {{/each}}
     </ul>
 
-<script>
- 
-</script>
     <div class="tab-content">
       {{#each allCategories}}
       <div class="tab-pane" id="{{this._id}}">
@@ -303,191 +300,9 @@
       </div>
     </div>
   </a>
+  
 </section>
 {{! Advertisement 2 Ends }}
-
-<section id="offers" class="offers">
-  <div class="container">
-    <div class="row">
-      <div class="col-xs-12 col-sm-12 col-md-3">
-        <div class="widget widget-recent-products">
-          <div class="widget-title">
-            <h5>Special Offer</h5>
-          </div>
-          <div class="widget-content">
-            <div class="product">
-              <img src="assets/images/shop/thumb/4.jpg" alt="product" />
-              <div class="product-desc">
-                <div class="product-title">
-                  <a href="#">Front LIGHTING Name Goes Here</a>
-                </div>
-                <div class="product-meta">
-                  <span class="color-theme">$13.99</span>
-                </div>
-              </div>
-            </div>
-
-            <div class="product">
-              <img src="assets/images/shop/thumb/5.jpg" alt="product" />
-              <div class="product-desc">
-                <div class="product-title">
-                  <a href="#">Thermal Fan Name Goes Here</a>
-                </div>
-                <div class="product-meta">
-                  <span class="color-theme">$15.99</span>
-                </div>
-              </div>
-            </div>
-
-            <div class="product">
-              <img src="assets/images/shop/thumb/6.jpg" alt="product" />
-              <div class="product-desc">
-                <div class="product-title">
-                  <a href="#">Cold Air System Name Goes Here</a>
-                </div>
-                <div class="product-meta">
-                  <span class="color-theme">$11.99</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="col-xs-12 col-sm-12 col-md-3">
-        <div class="widget widget-recent-products">
-          <div class="widget-title">
-            <h5>Best Sellers</h5>
-          </div>
-          <div class="widget-content">
-            <div class="product">
-              <img src="assets/images/shop/thumb/7.jpg" alt="product" />
-              <div class="product-desc">
-                <div class="product-title">
-                  <a href="#">Front LIGHTING Name Goes Here </a>
-                </div>
-                <div class="product-meta">
-                  <span class="color-theme">$103.99</span>
-                </div>
-              </div>
-            </div>
-
-            <div class="product">
-              <img src="assets/images/shop/thumb/8.jpg" alt="product" />
-              <div class="product-desc">
-                <div class="product-title">
-                  <a href="#">Thermal Fan Name Goes Here </a>
-                </div>
-                <div class="product-meta">
-                  <span class="color-theme">$150.99</span>
-                </div>
-              </div>
-            </div>
-
-            <div class="product">
-              <img src="assets/images/shop/thumb/9.jpg" alt="product" />
-              <div class="product-desc">
-                <div class="product-title">
-                  <a href="#">Cold Air System Name Goes Here </a>
-                </div>
-                <div class="product-meta">
-                  <span class="color-theme">$61.99</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="col-xs-12 col-sm-12 col-md-3">
-        <div class="widget widget-recent-products">
-          <div class="widget-title">
-            <h5>Featured</h5>
-          </div>
-          <div class="widget-content">
-            <div class="product">
-              <img src="assets/images/shop/thumb/4.jpg" alt="product" />
-              <div class="product-desc">
-                <div class="product-title">
-                  <a href="#">Front LIGHTING Name Goes Here</a>
-                </div>
-                <div class="product-meta">
-                  <span class="color-theme">$13.99</span>
-                </div>
-              </div>
-            </div>
-
-            <div class="product">
-              <img src="assets/images/shop/thumb/5.jpg" alt="product" />
-              <div class="product-desc">
-                <div class="product-title">
-                  <a href="#">Thermal Fan Name Goes Here</a>
-                </div>
-                <div class="product-meta">
-                  <span class="color-theme">$95.99</span>
-                </div>
-              </div>
-            </div>
-
-            <div class="product">
-              <img src="assets/images/shop/thumb/6.jpg" alt="product" />
-              <div class="product-desc">
-                <div class="product-title">
-                  <a href="#">Cold Air System Name Goes Here</a>
-                </div>
-                <div class="product-meta">
-                  <span class="color-theme">$71.99</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="col-xs-12 col-sm-12 col-md-3">
-        <div class="widget widget-recent-products">
-          <div class="widget-title">
-            <h5>Sales</h5>
-          </div>
-          <div class="widget-content">
-            <div class="product">
-              <img src="assets/images/shop/thumb/7.jpg" alt="product" />
-              <div class="product-desc">
-                <div class="product-title">
-                  <a href="#">Front LIGHTING Name Goes Here</a>
-                </div>
-                <div class="product-meta">
-                  <span class="discount">$300.99</span><span class="color-theme">$198.99</span>
-                </div>
-              </div>
-            </div>
-
-            <div class="product">
-              <img src="assets/images/shop/thumb/8.jpg" alt="product" />
-              <div class="product-desc">
-                <div class="product-title">
-                  <a href="#">Thermal Fan Name Goes Here</a>
-                </div>
-                <div class="product-meta">
-                  <span class="discount">$60.99</span><span class="color-theme">$19.99</span>
-                </div>
-              </div>
-            </div>
-
-            <div class="product">
-              <img src="assets/images/shop/thumb/9.jpg" alt="product" />
-              <div class="product-desc">
-                <div class="product-title">
-                  <a href="#">Cold Air System Name Goes Here</a>
-                </div>
-                <div class="product-meta">
-                  <span class="discount">$100.99</span><span class="color-theme">$71.99</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
 
 
 <style>
@@ -495,3 +310,4 @@
     border: 0px solid #ddd !important;
   }
 </style>
+

@@ -323,11 +323,7 @@
 
 <script>
 function redirectToInvoice(orderId,proName,item){
-
-    $.ajax({
-        url : '/orderinvoice/?orderId='+orderId+'&proId='+ item+'&proName='+ proName,
-        method : 'get',
-    })
+location.href = '/orderinvoice/' + orderId + '/' + item + '/' + proName
 }
 </script>
 

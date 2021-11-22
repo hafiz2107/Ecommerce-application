@@ -575,7 +575,6 @@ module.exports = {
                         $match: { 'products.item': objectId(proId) }
                     }
                 ]).toArray()
-                console.log("order : 🐬🐬🐬 : ", order[0])
                 resolve(order[0])
             } else {
                 resolve(order)

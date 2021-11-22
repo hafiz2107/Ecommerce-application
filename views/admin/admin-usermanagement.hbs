@@ -36,10 +36,33 @@
 									<a href="/admin/unblockuser/{{this._id}}" class="btn btn-success"
 										onclick="return confirm('Are you sure you want to unblock : {{this.username}}')">Unblock</a>
 									{{else}}
-									<a href="/admin/blockuser/{{this._id}}" class="btn btn-danger"
-										onclick="return confirm('Are you sure you want to block : {{this.username}}')">Block</a>
+									<a  class="btn btn-danger" onclick="blockUserCnfrm('{{this._id}}')">Block</a>
 									{{/eq}}
 
+										
+									<script>
+										function blockUserCnfrm(userId){
+											swal({
+												title: "Are you sure?",
+												text: "Are you sure to block the user ?",
+												icon: "warning",
+												buttons: true,
+												dangerMode: true,
+											})
+												.then((willDelete) => {
+													if (willDelete) {
+														$.ajax({
+															url : '/admin/blockuser/'+userId,
+															method : 'get',
+															success  : ()=>{
+																location.reload()
+															}
+														})
+													}
+												});
+										}
+										
+									</script>
 								</td>
 							</tr>
 							{{/each}}
@@ -51,12 +74,12 @@
 </div>
 </div>
 <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk="
-	crossorigin="anonymous"></script>
-<script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
+	crossorigin="anonymous"></>
+			<script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
 <link rel="stylesheet" href="https://cdn.datatables.net/1.11.3/css/jquery.dataTables.min.css">
 
 <script>
-	$(document).ready(function () {
-		$('#mineTable').DataTable();
+							 $(document).ready(function () {
+								 $('#mineTable').DataTable();
 	});
 </script>

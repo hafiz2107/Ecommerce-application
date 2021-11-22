@@ -1,243 +1,291 @@
-<center>
-  <section class="main-panel col-sm-12 col-lg-12 col-md-12 ml-5 mt-5">
+<style>
+  label {
+    color: rgb(43, 66, 197) !important;
+  }
+</style>
 
+<div class="content main-panel mt-5">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="card">
+          <div class="card-header card-header-primary">
+            <h4 class="card-title">Add Product</h4>
+            <p class="card-category">Complete your profile</p>
+          </div>
 
-    <form style="width: 50%;" method="POST" action="/admin/add-product" enctype="multipart/form-data" id="addProductForm">
-
-      <div class="form-row">
-        <div class="form-group col-md-6">
-          <label for="">Product Name</label>
-          <input type="text" class="form-control" id="productname" name="productname" placeholder="">
-        </div>
-      </div>
-
-      <div class="form-row mt-3">
-        <div class="form-group col-md-6">
-          <label for="">Product Code</label>
-          <input type="text" class="form-control" id="productcode" name="productcode" placeholder="">
-        </div>
-      </div>
-
-      <div class="mb-3 form-row mt-3">
-
-        <select name="productcategory" id="mainCategory" class="btn btn-primary text-light custom-select">
-          <option value="" class="dropdown-item text-dark bg-" disabled>Product Category </option>
-          {{#each allCategories}}
-          <option value="{{this.mainCategory}}" onclick="showSubCats()" class="dropdown-item">{{this.mainCategory}}
-          </option>
-          {{/each}}
-        </select>
-      </div>
-
-
-      <div class="mb-3 form-row mt-3">
-        <select name="productsubcategory" id="subcat" class="btn btn-primary text-light custom-select">
-          <option value="" class="dropdown-item text-dark bg-" disabled>Product sub Category </option>
-          {{!-- {{#each allCategories}}
-          {{#each this.SubCategory}}
-          <option value="{{this.id}}" class="dropdown-item">{{this.subCat}}</option>
-          {{/each}}
-          {{/each}} --}}
-
-        </select>
-      </div>
-
-
-      <div class="mb-3 form-row mt-3">
-        <select name="productbrand" id="" class="btn btn-primary text-light custom-select">
-          <option value="" class="dropdown-item text-dark bg-" disabled>Product Brand </option>
-          {{#each allProductBrands}}
-
-          <option value="{{this.ProBrand}}" class="dropdown-item">{{this.ProBrand}}</option>
-
-          {{/each}}
-
-        </select>
-      </div>
-
-
-      <div class="mb-3 form-row mt-3">
-        <select name="suitablebikebrand" id="bikebrand" class="btn btn-primary text-light custom-select">
-          <option value="" name="" class="dropdown-item text-dark bg-light">Suitable bike Brand </option>
-          {{#each allBikeBrands}}
-          <option value="{{this.bikeBrand}}" onclick="showBikeModels()" class="dropdown-item">{{this.bikeBrand}}
-          </option>
-          {{/each}}
-
-        </select>
-      </div>
-
-      <div class="mb-3 form-row mt-3">
-        <select name="suitablebikemodel" id="bikebrand1" class="btn btn-primary text-light custom-select">
-          <option value="" name="" class="dropdown-item text-dark bg-light">Suitable bike Model </option>
-          {{#each allBikeBrands}}
-          {{#each this.models}}
-          <option value="{{this.bikemodels}}" class="dropdown-item">{{this.bikemodels}}</option>
-          {{/each}}
-          {{/each}}
-
-        </select>
-      </div>
-
-
-      <div class="form-row mt-2">
-        <div class="form-group col-md-6">
-          <label for="">Price</label>
-          <input type="text" class="form-control" name="productprice" id="productprice" placeholder="">
-        </div>
-      </div>
-
-      <div class="form-row mt-2" style="display: none;">
-        <div class="form-group col-md-6">
-          <label for="">Offer Price</label>
-          <input type="text" class="form-control" name="productofferprice" id="productofferprice" placeholder="" hidden>
-        </div>
-      </div>
-
-      <div class="form-row mt-2">
-        <div class="form-group col-md-6">
-          <label for="">Quantity</label>
-          <input type="number" class="form-control" name="productquantity" id="productquantity" placeholder="">
-        </div>
-      </div>
-
-      {{!-- <div class="form-row mt-2">
-        <div class="form-group col-md-6  btn">
-          <h6>Uploading Date And Time</h6>
-          <input type="date" class="form-control" name="productdate" id="productdate" placeholder="" value="{{{date}}}">
-        </div>
-      </div> --}}
-
-      <div class="form-row mt-4">
-        <div class="form-group col-md-6">
-          <label for="">Description</label>
-          <input type="textarea" class="form-control" name="productdes" id="productdes" placeholder="">
-        </div>
-      </div>
-
-
-
-
-      <div class="form-row mt-5">
-        <div class="form-group col-md-6">
-          {{!-- Modal for image cropping --}}
-          <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-            aria-hidden="true">
-            <div class="modal-dialog" role="document">
-              <div class="modal-content">
-                <div class="modal-header">
-                  <h5 class="modal-title" id="exampleModalLabel">Crop Image</h5>
-                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                  </button>
+          <div class="card-body">
+            <form action="/admin/add-product" method="post" id="addProductForm" enctype="multipart/form-data">
+              <div class="row">
+                <div class="col-md-5">
+                  <div class="form-group">
+                    <label for="">Product Name</label>
+                    <input type="text" class="form-control" id="productname" name="productname" placeholder="">
+                  </div>
                 </div>
-                <div class="modal-body">
-                  <div class="col-12">
-                    <div style="width: 300px; height: auto; display: none;" id="image-box"></div>
-                    <button style="display: none;" class="btn btn-primary mt-4" type="button" id="crop-btn"
-                      data-dismiss="modal">Crop</button>
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal"
-                      onclick="buttonChange()">Close</button>
+                <div class="col-md-3">
+                  <div class="form-group">
+                    <label for="">Product Code</label>
+                    <input type="text" class="form-control" id="productcode" name="productcode" placeholder="">
                   </div>
                 </div>
               </div>
-            </div>
+              <hr>
+              <div class="row">
+                <div class="col-md-4">
+                  <div class="form-group">
+                    <label for="">Product Category</label><br>
+                    <select name="productcategory" id="mainCategory" class="btn btn-primary text-light custom-select">
+                      <option value="" class="dropdown-item text-dark bg-" disabled>Product
+                        Category </option>
+                      {{#each allCategories}}
+                      <option value="{{this.mainCategory}}" onclick="showSubCats()" class="dropdown-item">
+                        {{this.mainCategory}}
+                      </option>
+                      {{/each}}
+                    </select>
+                  </div>
+                </div>
+                <div class="col-md-3">
+                  <div class="form-group">
+                    <label for="">Product SubCategory : </label><br>
+                    <select name="productsubcategory" id="subcat" class="btn btn-primary text-light custom-select">
+                      <option value="" class="dropdown-item text-dark bg-" disabled>Product sub
+                        Category </option>
+                      {{!-- {{#each allCategories}}
+                      {{#each this.SubCategory}}
+                      <option value="{{this.id}}" class="dropdown-item">{{this.subCat}}</option>
+                      {{/each}}
+                      {{/each}} --}}
+
+                    </select>
+                  </div>
+                </div>
+              </div>
+              <hr>
+              <div class="row">
+                <div class="col-md-4">
+                  <label for="">Product Brand : </label><br>
+                  <select name="productbrand" id="" class="btn btn-primary text-light custom-select">
+                    <option value="" class="dropdown-item text-dark bg-" disabled>Product Brand
+                    </option>
+                    {{#each allProductBrands}}
+
+                    <option value="{{this.ProBrand}}" class="dropdown-item">{{this.ProBrand}}
+                    </option>
+
+                    {{/each}}
+
+                  </select>
+                </div>
+              </div>
+              <hr>
+              <div class="row">
+                <div class="col-md-4">
+                  <div class="form-group">
+                    <label for="">Bike Brand : </label><br>
+                    <select name="suitablebikebrand" id="bikebrand" class="btn btn-primary text-light custom-select">
+                      <option value="" name="" class="dropdown-item text-dark bg-light">Suitable
+                        bike Brand </option>
+                      {{#each allBikeBrands}}
+                      <option value="{{this.bikeBrand}}" onclick="showBikeModels()" class="dropdown-item">
+                        {{this.bikeBrand}}
+                      </option>
+                      {{/each}}
+
+                    </select>
+                  </div>
+                </div>
+
+                <div class="col-md-4">
+                  <div class="form-group">
+                    <label for="">Bike Model : </label><br>
+                    <select name="suitablebikemodel" id="bikebrand1" class="btn btn-primary text-light custom-select">
+                      <option value="" name="" class="dropdown-item text-dark bg-light">Suitable
+                        bike Model </option>
+                      {{#each allBikeBrands}}
+                      {{#each this.models}}
+                      <option value="{{this.bikemodels}}" class="dropdown-item">
+                        {{this.bikemodels}}</option>
+                      {{/each}}
+                      {{/each}}
+
+                    </select>
+                  </div>
+                </div>
+              </div>
+              <hr>
+              <div class="row">
+                <div class="col-md-4">
+                  <div class="form-group">
+                    <label for="">Price</label>
+                    <input type="text" class="form-control" name="productprice" id="productprice" placeholder="">
+                  </div>
+                </div>
+                <div class="col-md-4" style="display: none;">
+                  <div class="form-group">
+                    <label for="">Offer Price</label>
+                    <input type="text" class="form-control" name="productofferprice" id="productofferprice"
+                      placeholder="" hidden>
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <div class="form-group">
+                    <label for="">Quantity</label>
+                    <input type="number" class="form-control" name="productquantity" id="productquantity"
+                      placeholder="">
+                  </div>
+                </div>
+              </div>
+              <hr>
+              <div class="row">
+                <div class="col-md-4">
+                  <label for="">Description</label>
+                  <input type="textarea" class="form-control" name="productdes" id="productdes" placeholder="">
+                </div>
+
+              </div>
+
+              <div class="row">
+                <div class="col-md-3">
+                  <div class="form-group">
+                    <label data-toggle="modal" data-target="#exampleModal" for="file1" class="btn btn-primary"
+                      type="button" class="btn btn-primary">Image 1</label>
+                    <img src="" alt="" style="width: 100px; height:auto;display: inherit;" id="imgview1">
+                    <div id="errMess1"></div>
+                    <input type="file" name="image1" id="file1" class="form-control" onchange="return fileValidation1()">
+                  </div>
+                </div>
+
+                <div class="col-md-3">
+                  <div class="form-group">
+                    <label for="file2" data-toggle="modal" data-target="#exampleModal" class="btn btn-primary">IMAGE
+                      2</label>
+                    <img src="" alt="" style="width: 100px; height:auto;display: inherit;" id="imgview2">
+                    <div id="errMess2"></div>
+                    <input type="file" name="image2" id="file2" class="form-control"
+                      onchange="return fileValidation2()">
+                  </div>
+                </div>
+
+                <div class="col-md-3">
+                  <div class="form-group">
+                    <label for="file3" data-toggle="modal" data-target="#exampleModal" class="btn btn-primary">IMAGE
+                      3</label>
+                    <img src="" alt="" style="width: 100px; height:auto;display: inherit;" id="imgview3">
+                    <div id="errMess3"></div>
+                    <input type="file" name="image3" id="file3" class="form-control"
+                      onchange="return fileValidation3()">
+                  </div>
+                </div>
+              </div>
+
+
+
+
+              <div class="clearfix"></div>
+
+              {{!-- Modal for cropping --}}
+              <div class="form-row mt-5">
+                <div class="form-group col-md-6">
+                  {{!-- Modal for image cropping --}}
+                  <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog"
+                    aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <h5 class="modal-title" id="exampleModalLabel">Crop Image</h5>
+                          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                          </button>
+                        </div>
+                        <div class="modal-body">
+                          <div class="col-12">
+                            <div style="width: 300px; height: auto; display: none;" id="image-box"></div>
+                            <button style="display: none;" class="btn btn-primary mt-4" type="button" id="crop-btn"
+                              data-dismiss="modal">Crop</button>
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal"
+                              onclick="buttonChange()">Close</button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  {{!-- Modal for image cropping ends --}}
+
+                </div>
+              </div>
+              {{!-- Modal --}}
+              <input type="hidden" name="status" value="pending">
+
+              <button type="submit" id="confirm-btn" class="btn btn-success">Add product</button>
+              <a href="/admin/view-product" class="btn btn-danger">Cancel</a>
+           
+            </form>
           </div>
-          {{!-- Modal for image cropping ends --}}
-
-          {{!-- Image 1 --}}
-
-          <label data-toggle="modal" data-target="#exampleModal" for="file1" class="btn btn-primary" type="button"
-            class="btn btn-primary">Image 1</label>
-          <img src="" alt="" style="width: 100px; height:auto;display: inherit;" id="imgview1">
-          <div id="errMess1"></div>
-          <input type="file" name="image1" id="file1" class="form-control" onchange="return fileValidation1()">
-
-          {{!-- Image 1 ends --}}
-
-
-          {{!-- Image 2 --}}
-          <label for="file2" data-toggle="modal" data-target="#exampleModal" class="btn btn-primary">IMAGE 2</label>
-          <img src="" alt="" style="width: 100px; height:auto;display: inherit;" id="imgview2">
-          <div id="errMess2"></div>
-          <input type="file" name="image2" id="file2" class="form-control" onchange="return fileValidation2()">
-          {{!-- Image 2 ends --}}
-
-
-          {{!-- Image 3 --}}
-          <label for="file3" data-toggle="modal" data-target="#exampleModal" class="btn btn-primary">IMAGE 3</label>
-          <img src="" alt="" style="width: 100px; height:auto;display: inherit;" id="imgview3">
-          <div id="errMess3"></div>
-          <input type="file" name="image3" id="file3" class="form-control" onchange="return fileValidation3()">
-          {{!-- Image 3 Ends --}}
-
-
         </div>
       </div>
-      <input type="hidden" name="status" value="pending">
 
-      <button type="submit" id="confirm-btn" class="btn btn-success">Add product</button>
-      <a href="/admin/view-product" class="btn btn-danger">Cancel</a>
-
-    </form>
+    </div>
+  </div>
+</div>
 
 
-  </section>
-</center>
-<script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk="
+  crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/jquery.validate.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.11/cropper.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.11/cropper.js"></script>
 <style>
-  .error{
+  .error {
     color: red !important;
   }
 </style>
 <script>
-  $(document).ready(function (){
+  $(document).ready(function () {
     $('#addProductForm').validate({
-      rules :{
+      rules: {
         productname: {
-          required : true,
+          required: true,
         },
-        productcode  :{
-          required : true,
-          maxlength :10,
+        productcode: {
+          required: true,
+          maxlength: 10,
         },
-        productcategory : {
-          required : true,
+        productcategory: {
+          required: true,
         },
-        productsubcategory :{
-          required :true
-        },
-        productbrand :{
-          required : true
-        },
-        suitablebikebrand: {
-          required  :true,
-        },
-        suitablebikemodel :{
+        productsubcategory: {
           required: true
         },
-        productprice : {
-          required :true,
-          digits : true,
+        productbrand: {
+          required: true
         },
-        productquantity:{
-          required : true
+        suitablebikebrand: {
+          required: true,
         },
-        productdes : {
-          required :true,
-          minlength  :20,
+        suitablebikemodel: {
+          required: true
         },
-        image1 :{
-          required : true
+        productprice: {
+          required: true,
+          digits: true,
         },
-        image2 : {
-          required : true
+        productquantity: {
+          required: true
         },
-        image3 : {
-          required : true
+        productdes: {
+          required: true,
+          minlength: 20,
+        },
+        image1: {
+          required: true
+        },
+        image2: {
+          required: true
+        },
+        image3: {
+          required: true
         }
 
       }
@@ -284,7 +332,7 @@
       url: '/admin/getbikemodels/' + brand,
       method: 'post',
       success: (models) => {
-        console.log("the mdels are : ",models)
+        console.log("the mdels are : ", models)
         if (models.length > 0) {
           document.getElementById('bikebrand1').innerHTML = '';
           result = [];
@@ -293,7 +341,7 @@
           }
 
           var option = []
-          for(i=0;i<result.length;i++){
+          for (i = 0; i < result.length; i++) {
             option[i] = document.createElement('option')
             option[i].setAttribute('class', "dropdown-item");
             option[i].innerHTML = result[i].model

@@ -20,7 +20,7 @@
                   <input type="text" class="form-control " id="username" name="otp"
                     placeholder="OTP Recieved in your mobile number">
                   <input type="hidden" value="{{mobile}}" name="phone">
-                  <input type="hidden" value="{{otp}}" name="phone">
+                  <input type="hidden" value="{{countryCode}}" name="countryCode">
                   
                 </div>
                 <button type="submit" class="btn btn-primary btn-block">Submit</button>
@@ -89,9 +89,11 @@
           required: true,
           minlenght: 5,
         },
-        pwd: {
+        otp: {
           required: true,
-          minlength: 6,
+          digits :true,
+          minlength: 4,
+          maxlength : 4,
         }
       }
     })

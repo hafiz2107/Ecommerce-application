@@ -188,9 +188,11 @@
 <script>
     function setDeliveryDateToMin(){
         document.getElementById('todelivery').min =  document.getElementById('fromdelivery').value
+         document.getElementById('todelivery').max = new Date()
     }
     function setDeliveryDateToMax(){
          document.getElementById('fromdelivery').max = document.getElementById('todelivery').value
+          document.getElementById('fromdelivery').min = new Date()
     }
 
     function setDateToMin(){

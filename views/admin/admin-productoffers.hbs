@@ -13,7 +13,7 @@
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="exampleModalLabel">Add coupon</h5>
+                            <h5 class="modal-title" id="exampleModalLabel">Add Offer</h5>
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
@@ -80,7 +80,7 @@
                     {{#each offers}}
                     <tr class="gradeX">
                         <td>{{add @index '1'}}</td>
-                        <td>{{this.offerName}}</td>
+                        <td>{{this.offername}}</td>
                         <td>{{this.productName}}</td>
                         <td>{{this.offerdiscount}}%</td>
                         <td>{{this.offercreatedAt}}</td>
@@ -89,8 +89,7 @@
                         <td class="text-center">
                             <a class="btn btn-success" style="color: white;">Edit</a>
 
-                            <a onclick="deleteOffer('{{this._id}}','{{this.category}}')" class="btn btn-danger"
-                                style="color: white;">Delete</a>
+                            <a onclick="deleteProOffer('{{this._id}}','{{this.productName}}')" class="btn btn-danger" style="color: white;">Delete</a>
                         </td>
                     </tr>
 

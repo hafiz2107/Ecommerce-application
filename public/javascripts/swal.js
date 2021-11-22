@@ -90,7 +90,7 @@ function cancelCartOrder(proId, orderId, proQty) {
         });
 }
 
-function deleteOffer(offerId, category) {
+function deleteOffer(offerId, category,offername) {
     swal({
         title: "Are you sure?",
         text: "Once deleted, you will not be able to recover !",
@@ -102,7 +102,30 @@ function deleteOffer(offerId, category) {
             if (willDelete) {
 
                 $.ajax({
-                    url: '/admin/deleteoffer/?offerId=' + offerId + '&category=' + category,
+                    url: '/admin/deleteoffer/?offerId=' + offerId + '&category=' + category + '&offername=' + offername,
+                    method: 'get',
+                    success: (response) => {
+                        location.reload()
+                    }
+                })
+            }
+        });
+}
+
+function deleteProOffer(offerId,proName){
+    alert(proName)
+    swal({
+        title: "Are you sure?",
+        text: "Once deleted, you will not be able to recover !",
+        icon: "warning",
+        buttons: true,
+        dangerMode: true,
+    })
+        .then((willDelete) => {
+            if (willDelete) {
+
+                $.ajax({
+                    url: '/admin/deleteProoffer/?offerId=' + offerId  + '&proName=' + proName,
                     method: 'get',
                     success: (response) => {
                         location.reload()
