@@ -26,9 +26,9 @@
                         <td>
                             <div id="errMess1"></div>
 
-                            <label data-toggle="modal" data-target="#exampleModal" for="file1" class="btn btn-primary"
+                            <label for="file1" class="btn btn-primary"
                                 type="button" class="btn btn-primary">Add Image</label>
-                            <input type="file" name="productlogo" id="file1" onchange="return fileValidation()" hidden>
+                            <input data-toggle="modal" type="file" name="productlogo" id="file1" onchange="return fileValidation()" hidden>
                             <img src="" alt="" style="width: 100px; height:auto;display: inherit;" id="imgview1">
                         </td>
                         <td>
@@ -125,6 +125,21 @@
             return false;
         } else {
             document.getElementById('errMess1').innerHTML = ''
+
+            //Image input field id
+            var fileTrue = document.getElementById('file1').onchange.length
+            if(fileTrue == 1){
+                document.getElementById('file1').dataset.target = '#exampleModal'
+                //Give modal target to the input field
+
+                //add a click event to the input field so that the modal could open
+                document.getElementById('file1').click()
+
+                //Making filetrue to 0 So that the modal will only open if there is a file 
+            }
+            //Making data target to none so that modal will open if there is a file
+            document.getElementById('file1').dataset.target = 'none'
+
             //Image preview
             const img_data = fileInput.files[0]
             const url = URL.createObjectURL(img_data)

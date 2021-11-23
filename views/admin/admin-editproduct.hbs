@@ -10,7 +10,7 @@
       <div class="col-md-12">
         <div class="card">
           <div class="card-header card-header-primary">
-            <h4 class="card-title">Add Product</h4>
+            <h4 class="card-title">Edit Product</h4>
             <p class="card-category">Complete your profile</p>
           </div>
 
@@ -33,24 +33,26 @@
                 </div>
               </div>
               <hr>
+
               <div class="row">
                 <div class="col-md-4">
                   <div class="form-group">
                     <label for="">Product Category</label><br>
-                    <select name="productcategory" id="mainCategory" class="btn btn-primary text-light custom-select">
-                      <option value="" class="dropdown-item text-dark bg-" disabled>Product Category </option>
+                    <select name="productcategory" id="mainCategory"  onchange="showSubCats()"  class="btn btn-primary text-light custom-select">
+                      <option value="" class="dropdown-item text-dark bg-" >Product Category </option>
                       {{#each allCategories}}
-                      <option value="{{this.mainCategory}}" onclick="showSubCats()" class="dropdown-item">
-                        {{this.mainCategory}}</option>
+                      <option value="{{this.mainCategory}}"class="dropdown-item"> {{this.mainCategory}}</option>
                       {{/each}}
                     </select>
                   </div>
                 </div>
+
                 <div class="col-md-3">
                   <div class="form-group">
                     <label for="">Product SubCategory : </label><br>
                     <select name="productsubcategory" id="subcat" class="btn btn-primary text-light custom-select">
-                      <option value="" class="dropdown-item text-dark bg-" disabled>Product sub Category </option>
+
+                      <option value="" class="dropdown-item text-dark bg-" >Product sub Category </option>
 
                     </select>
                   </div>
@@ -61,7 +63,7 @@
                 <div class="col-md-4">
                   <label for="">Product Brand : </label><br>
                   <select name="productbrand" id="" class="btn btn-primary text-light custom-select">
-                    <option value="" class="dropdown-item text-dark bg-" disabled>Product Brand </option>
+                    <option value="" class="dropdown-item text-dark bg-">Product Brand </option>
                     {{#each allProductBrands}}
 
                     <option value="{{this.ProBrand}}" class="dropdown-item">{{this.ProBrand}}</option>
@@ -76,11 +78,10 @@
                 <div class="col-md-4">
                   <div class="form-group">
                     <label for="">Bike Brand : </label><br>
-                    <select name="suitablebikebrand" id="bikebrand" class="btn btn-primary text-light custom-select">
+                    <select name="suitablebikebrand" id="bikebrand" onchange="showBikeModels()" class="btn btn-primary text-light custom-select">
                       <option value="" name="" class="dropdown-item text-dark bg-light">Suitable bike Brand </option>
                       {{#each allBikeBrands}}
-
-                      <option value="{{this.bikeBrand}}" onclick="showBikeModels()" class="dropdown-item">
+                      <option value="{{this.bikeBrand}}" class="dropdown-item">
                         {{this.bikeBrand}}</option>
 
                       {{/each}}
@@ -126,13 +127,12 @@
                     value="{{{productDetails.productquantity}}}">
                 </div>
               </div>
-          </div>
+          
           <hr>
           <div class="row">
             <div class="col-md-4">
               <label for="">Description</label>
-              <input type="textarea" class="form-control" name="productdes" id="productdes" placeholder=""
-                value="{{productDetails.productdes}}">
+              <textarea class="form-control" name="productdes" id="productdes" placeholder="" >{{productDetails.productdes}}</textarea>
             </div>
 
           </div>
@@ -143,26 +143,24 @@
                 <div id="errMess1"></div>
                 <img src="/uploads/{{productDetails._id}}__1.jpg" alt=""
                   style="width: 100px; height:auto;display: inherit;" id="imgview1">
-                <label for="file1" data-toggle="modal" data-target="#editCrop" class="btn btn-primary">IMAGE 1</label>
-                <input type="file" name="image1" id="file1" class="form-control" onchange="return fileValidation1()">
+                <label for="file1"  class="btn btn-primary">IMAGE 1</label>
+                <input type="file" data-toggle="modal" name="image1" id="file1" class="form-control" onchange="return fileValidation1()">
               </div>
             </div>
 
             <div class="col-md-3">
               <div class="form-group">
                 <div id="errMess2"></div>
-                <img src="/uploads/{{productDetails._id}}__2.jpg" alt=""
-                  style="width: 100px; height:auto;display: inherit;" id="imgview2">
-                <label for="file2" data-toggle="modal" data-target="#editCrop" class="btn btn-primary">IMAGE 2</label>
-                <input type="file" name="image2" id="file2" class="form-control" onchange="return fileValidation2()">
+                <img src="/uploads/{{productDetails._id}}__2.jpg" alt="" style="width: 100px; height:auto;display: inherit;" id="imgview2">
+                <label for="file2" class="btn btn-primary">IMAGE 2</label>
+                <input type="file" data-toggle="modal" name="image2" id="file2" class="form-control" onchange="return fileValidation2()">
               </div>
             </div>
 
             <div class="col-md-3">
               <div class="form-group">
                 <div id="errMess3"></div>
-                <img src="/uploads/{{productDetails._id}}__3.jpg" alt=""
-                  style="width: 100px; height:auto;display: inherit;" id="imgview3">
+                <img src="/uploads/{{productDetails._id}}__3.jpg" alt="" style="width: 100px; height:auto;display: inherit;" id="imgview3">
                 <label for="file3" data-toggle="modal" data-target="#editCrop" class="btn btn-primary">IMAGE 3</label>
                 <div id="errMess3"></div>
                 <input type="file" name="image3" id="file3" class="form-control" onchange="return fileValidation3()">
@@ -221,19 +219,20 @@
                 </div>
                 <div class="modal-footer">
 
-                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                  <button type="submit" class="btn btn-success">Edit product</button>
+                  <button type="button" id="closeBtn" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                  <button type="submit" class="btn btn-success" >Edit product</button>
 
                 </div>
               </div>
             </div>
           </div>
+
           {{!-- Modal ends --}}
-          <button type="button" data-toggle="modal" data-target="#editConfirm" id="confirm-btn"
-            class="btn btn-primary">Edit</button>
-          <a href="/admin/view-product" class="btn btn-danger">Cancel</a>
+          <button type="button" data-toggle="modal" data-target="#editConfirm" style="width: 20%;" id="confirm-btn" class="btn btn-primary">Edit</button>
+          <a href="/admin/view-product" class="btn btn-danger " style="width: 20%;">Cancel</a>
 
           </form>
+          </div>
         </div>
       </div>
     </div>
@@ -246,10 +245,13 @@
 <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk="
   crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/jquery.validate.js"></script>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.11/cropper.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.11/cropper.js"></script>
 <script>
   $(document).ready(function () {
-
     $('#editProductForm').validate({
+      ignore: "",
       rules: {
         productname: {
           required: true,
@@ -290,11 +292,19 @@
         image1: {
           required: true
         },
+        
         image2: {
           required: true,
         },
         image3: {
           required: true
+        }
+      },
+      invalidHandler : function(event,validator){
+        var errors = validator.numberOfInvalids();
+        
+        if (errors) {
+         document.getElementById('closeBtn').click()
         }
       }
     })
@@ -304,6 +314,7 @@
 <script>
 
   function showSubCats() {
+    
     var val = document.getElementById('mainCategory').value
     $.ajax({
       url: '/admin/getthesubcat/' + val,
@@ -318,8 +329,8 @@
             result[i] = { subcat: subCat[i].SubCategory.subCat, id: subCat[i].SubCategory.id }
           }
 
-
           var option = []
+
           for (i = 0; i < result.length; i++) {
             option[i] = document.createElement('option')
             option[i].setAttribute('class', "dropdown-item");
@@ -382,6 +393,22 @@
       return false;
     } else {
       document.getElementById('errMess1').innerHTML = ''
+
+       //Image input field id
+      var fileTrue = document.getElementById('file1').onchange.length
+      if (fileTrue == 1) {
+        document.getElementById('file1').dataset.target = '#editCrop'
+        //Give modal target to the input field
+
+        //add a click event to the input field so that the modal could open
+        document.getElementById('file1').click()
+
+        //Making filetrue to 0 So that the modal will only open if there is a file 
+        fileTrue = 0
+      }
+      //Making data target to none so that modal will open if there is a file
+      document.getElementById('file1').dataset.target = 'none'
+
       //Image preview
       const img_data = fileInput.files[0]
       const url = URL.createObjectURL(img_data)
@@ -435,6 +462,22 @@
       return false;
     } else {
       document.getElementById('errMess2').innerHTML = ''
+
+       //Image input field id
+      var fileTrue1 = document.getElementById('file2').onchange.length
+      if (fileTrue1 == 1) {
+        document.getElementById('file2').dataset.target = '#editCrop'
+        //Give modal target to the input field
+
+        //add a click event to the input field so that the modal could open
+        document.getElementById('file2').click()
+
+        //Making filetrue to 0 So that the modal will only open if there is a file 
+        fileTrue1 = 0
+      }
+      //Making data target to none so that modal will open if there is a file
+      document.getElementById('file2').dataset.target = 'none'
+
       //Image preview
       const img_data = fileInput.files[0]
       const url = URL.createObjectURL(img_data)
@@ -487,6 +530,22 @@
       return false;
     } else {
       document.getElementById('errMess3').innerHTML = ''
+
+       //Image input field id
+      var fileTrue2 = document.getElementById('file3').onchange.length
+      if (fileTrue2 == 1) {
+        document.getElementById('file3').dataset.target = '#editCrop'
+        //Give modal target to the input field
+
+        //add a click event to the input field so that the modal could open
+        document.getElementById('file3').click()
+
+        //Making filetrue to 0 So that the modal will only open if there is a file 
+        fileTrue2 = 0
+      }
+      //Making data target to none so that modal will open if there is a file
+      document.getElementById('file3').dataset.target = 'none'
+
       //Image preview
       const img_data = fileInput.files[0]
       const url = URL.createObjectURL(img_data)

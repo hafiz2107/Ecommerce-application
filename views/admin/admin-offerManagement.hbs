@@ -34,6 +34,7 @@
 
                                     <label for="category" class="mt-4">Category</label><br>
                                     <select name="category" id="category" onchange="checkOfferExist()">
+                                        <option value="">Select Category</option>
                                         {{#each allCats}}
                                         <option value="{{this.mainCategory}}">{{this.mainCategory}}</option>
                                         {{/each}}

@@ -20,9 +20,10 @@
                         <option value="{{this._id}}">{{this.mainCategory}}</option>
                         {{/each}}
                     </select><br>
-                    <label for="subCatImg" class="btn btn-success" data-toggle="modal" data-target="#modelImages">Add
-                        Logo</label>
-                    <input type="file" name="subCatImg" id="subCatImg" onchange="modelImage()" hidden>
+                    <label for="subCatImg" class="btn btn-success" >Add Logo</label>
+
+                    <div id="errMess2"></div>
+                        <input type="file" name="subCatImg" id="subCatImg" data-toggle="modal"  onchange="modelImage()" hidden aria-required="true">
                     <img src="" alt="" id="image-view-model" height="150px">
                     <button type="submit" class="btn btn-success" id="confirm-btn1">Add subcategory</button>
                 </form>
@@ -40,7 +41,7 @@
                             </div>
                             <div class="modal-body">
                                 <div class="col-12">
-                                    <div id="errMess2"></div>
+                                    
                                     <div style="width: 300px; height: auto; display: none;" id="image-box1"></div>
                                     <button style="display: none;" class="btn btn-primary mt-4" type="button"
                                         id="crop-btn1" data-dismiss="modal">Crop</button>
@@ -219,6 +220,8 @@
 
     $(document).ready(function () {
         $("#addSubCarForm").validate({
+            ignore : "",
+
             rules: {
                 subCat: {
                     required: true
@@ -242,16 +245,13 @@
 
 <script>
     function modelImage() {
-        alert('hiii')
         const imagebox = document.getElementById('image-box1')
         const crop_btn = document.getElementById('crop-btn1')
         var fileInput = document.getElementById('subCatImg');
 
-        console.log('img : ', fileInput)
+        
         var filePath = fileInput.value;
-        console.log('img val : ', filePath)
-
-
+        
         var allowedExtensions = /(\.jpg)$/i;
         if (!allowedExtensions.exec(filePath)) {
             document.getElementById('errMess2').innerHTML = '<p style="color:red; display: block;">Invalid file type</p>'
@@ -259,6 +259,20 @@
             return false;
         } else {
             document.getElementById('errMess2').innerHTML = ''
+             //Image input field id
+                var fileTrue2 = document.getElementById('subCatImg').onchange.length
+                if (fileTrue2 == 1) {
+                    document.getElementById('subCatImg').dataset.target = '#modelImages'
+                    //Give modal target to the input field
+
+                    //add a click event to the input field so that the modal could open
+                    document.getElementById('subCatImg').click()
+
+                    //Making filetrue to 0 So that the modal will only open if there is a file 
+                    fileTrue2 = 0
+                }
+                //Making data target to none so that modal will open if there is a file
+                document.getElementById('subCatImg').dataset.target = 'none'
             //Image preview
             const img_data = fileInput.files[0]
             const url = URL.createObjectURL(img_data)

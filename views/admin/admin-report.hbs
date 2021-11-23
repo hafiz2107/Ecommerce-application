@@ -14,12 +14,16 @@
             <form action="">
                 <div>
                     <label for="from" style="color: black;">From date</label>
-                    <input type="date" name="from" id="from" class="form-control" style="width: 15%; display: inline;" oninput="setDateToMin()">
+                    <input type="date" name="from" id="from" class="form-control" style="width: 15%; display: inline;"
+                        oninput="setDateToMin()">
                     <label for="to" style="color: black;">To Date</label>
-                    <input type="date" name="to" id="to" class="form-control" style="width: 15%;display: inline;" oninput="setDateToMax()">
+                    <input type="date" name="to" id="to" class="form-control" style="width: 15%;display: inline;"
+                        oninput="setDateToMax()">
                     <button onclick="getReportOnDate()" class="btn btn-primary ml-3">Get Report</button>
                 </div><br>
             </form>
+            {{#if orders}}
+
 
             <thead>
                 <tr>
@@ -35,22 +39,10 @@
                 </tr>
             </thead>
             <tbody>
-                {{#if orderSortedInDate}}
+                {{#if orderondate}}
+                <a id="showAll" href="/admin/report/true" class="btn btn-success">Show All orders</a><br><br>
+                {{/if}}
 
-                {{#each orderSortedInDate}}
-                <tr class="gradeX">
-                    <td>{{add @index '1'}}</td>
-                    <td>{{this.orderDate}}</td>
-                    <td><a href="" style="cursor: pointer;">{{this._id}}</a></td>
-                    <td>{{this.userId}}</td>
-                    <td>{{this.delivery.city}},{{this.delivery.pincode}}</td>
-                    <td>{{this.payment_method}}</td>
-                    <td>{{this.totalAmount}}</td>
-                </tr>
-
-                {{/each}}
-                <a href="/admin/report/true" class="btn btn-success">Show All orders</a><br><br>
-                {{else}}
 
 
                 {{#each orders}}
@@ -66,14 +58,18 @@
                 </tr>
 
                 {{/each}}
-                {{/if}}
+
 
         </table>
-
         <button class="btn btn-danger" onclick="getReport()">Download pdf</button>
         <button class="btn btn-success" onclick="getspreadSheet()">Download XLS</button>
+        {{else}}
+        <h1>No data available</h1>
+        <a href="/admin/report/true" class="btn btn-success">Show All orders</a><br><br>
+        {{/if}}
+        
     </div>
-<hr style="border: 5px solid black;">
+    <hr style="border: 5px solid black;">
     {{!-- Table 2 --}}
 
     <div>
@@ -87,13 +83,15 @@
             <form action="">
                 <div>
                     <label for="fromdelivery" style="color: black;">From date</label>
-                    <input type="date" name="from" id="fromdelivery" class="form-control" style="width: 15%; display: inline;" oninput="setDeliveryDateToMin()">
+                    <input type="date" name="from" id="fromdelivery" class="form-control"
+                        style="width: 15%; display: inline;" oninput="setDeliveryDateToMin()">
                     <label for="todelivery" style="color: black;">To Date</label>
-                    <input type="date" name="to" id="todelivery" class="form-control" style="width: 15%;display: inline;" oninput="setDeliveryDateToMax()">
+                    <input type="date" name="to" id="todelivery" class="form-control"
+                        style="width: 15%;display: inline;" oninput="setDeliveryDateToMax()">
                     <button onclick="getReportOnDatedelivery()" class="btn btn-primary ml-3">Get Report</button>
                 </div><br>
             </form>
-
+            {{#if deliveredOrders}}
             <thead>
                 <tr>
                     <th><strong>Sl. No</strong></th>
@@ -108,21 +106,11 @@
                 </tr>
             </thead>
             <tbody>
-
-                {{#if deliveredReportonDate}}
-                {{#each deliveredReportonDate}}
-                <tr class="gradeX">
-                    <td>{{add @index '1'}}</td>
-                    <td>{{this.orderDate}}</td>
-                    <td>{{this._id}}</td>
-                    <td>{{this.userId}}</td>
-                    <td>{{this.delivery.city}},{{this.delivery.pincode}}</td>
-                    <td>{{this.payment_method}}</td>
-                    <td>{{this.totalAmount}}</td>
-                </tr>
-                {{/each}}
-                <a href="/admin/report/true" class="btn btn-success">Show All orders</a><br><br>
-                {{else}}
+                {{#if delivery}}
+                <a href="/admin/report/true" class="btn btn-success">Show All
+                    orders</a><br><br>
+                {{/if}}
+                {{!-- deliveredd --}}
                 {{#each deliveredOrders}}
                 <tr class="gradeX">
                     <td>{{add @index '1'}}</td>
@@ -134,18 +122,17 @@
                     <td>{{this.totalAmount}}</td>
                 </tr>
                 {{/each}}
-                {{/if}}
-
-
-
-
-
 
 
         </table>
-
         <button class="btn btn-danger" onclick="getDeliveryReport()">Download pdf</button>
         <button class="btn btn-success" onclick="getDeliveryspreadSheet()">Download XLS</button>
+                {{else}}
+                <a href="/admin/report/true" class="btn btn-success">Show All orders</a><br><br>
+                <h1>No data available</h1>
+                {{/if}}
+
+        
     </div>
     <hr><br>
 </div>
@@ -186,23 +173,28 @@
 
 
 <script>
-    function setDeliveryDateToMin(){
-        document.getElementById('todelivery').min =  document.getElementById('fromdelivery').value
-         document.getElementById('todelivery').max = new Date()
-    }
-    function setDeliveryDateToMax(){
-         document.getElementById('fromdelivery').max = document.getElementById('todelivery').value
-          document.getElementById('fromdelivery').min = new Date()
+    $(document).ready(function () {
+        document.getElementById('from').max = new Date().toISOString().split("T")[0]
+        document.getElementById('to').max = new Date().toISOString().split("T")[0]
+
+        document.getElementById('fromdelivery').max = new Date().toISOString().split("T")[0]
+        document.getElementById('todelivery').max = new Date().toISOString().split("T")[0]
+    })
+
+    function setDateToMin() {
+        document.getElementById('to').min = document.getElementById('from').value
     }
 
-    function setDateToMin(){
-        document.getElementById('to').min =  document.getElementById('from').value
-    }
-
-    function setDateToMax(){
+    function setDateToMax() {
         document.getElementById('from').max = document.getElementById('to').value
     }
 
+    function setDeliveryDateToMin() {
+        document.getElementById('todelivery').min = document.getElementById('fromdelivery').value
+    }
+    function setDeliveryDateToMax() {
+        document.getElementById('fromdelivery').max = document.getElementById('todelivery').value
+    }
     function getOrderDetails(orderId) {
         $.ajax({
             url: '/admin/getorderdetails/' + orderId,
@@ -255,7 +247,7 @@
             $.ajax({
                 url: '/admin/deliverygetreportondate/' + from + '/' + to,
                 method: 'get',
-                success: () => {
+                success: (deliveredReportonDate) => {
                     location.reload()
                 }
             })
@@ -267,6 +259,7 @@
     }
 
     function getReportOnDate() {
+
         from = document.getElementById('from').value
         to = document.getElementById('to').value
 
@@ -280,7 +273,7 @@
             $.ajax({
                 url: '/admin/getreportondate/' + from + '/' + to,
                 method: 'get',
-                success: () => {
+                success: (orderSortedInDate) => {
                     location.reload()
                 }
             })
