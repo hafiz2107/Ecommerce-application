@@ -178,5 +178,25 @@ function deleteComment(userId, proId) {
 
             }
         });
+}
 
+function deleteAdd(adId) {
+    swal({
+        title: "Are you sure?",
+        text: "Once deleted, you will not be able to recover !",
+        icon: "warning",
+        buttons: true,
+        dangerMode: true,
+    }).then((willDelete) => {
+        console.log("the id is : ", adId)
+        $.ajax({
+            url: '/deleteaddress/' + adId,
+            method: 'get',
+            success: () => {
+                sessionStorage.setItem('adressdeleteloading', 'true')
+                document.location.reload()
+            }
+        })
+
+    });
 }

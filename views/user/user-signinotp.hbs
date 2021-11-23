@@ -19,7 +19,7 @@
                             
 
                         {{!-- Signin Form --}}
-                      <form class="mb-0 myLoginForm" action="/signinotp" method="POST" id="loginform" style="display: inline;">
+                      <form class="mb-0 myLoginForm" action="/signinotp" method="POST" id="signinOtpForm" style="display: inline;">
                         <div class="form-group" style="display: table;">
                             
                             <div style="display: table-cell; ">
@@ -259,13 +259,14 @@
 <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/jquery.validate.js"></script>
   <script>
     $(document).ready(function(){
-      $('#loginform').validate({
+      $('#signinOtpForm').validate({
         rules:{
           countryCode : {
             required : true,
           },
           mobileno : {
             required : true,
+			digits : true,
             minlength : 10,
 			maxlength : 10,
           } 

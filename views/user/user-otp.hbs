@@ -19,7 +19,7 @@
                 <div class="form-group">
                   <input type="text" class="form-control " id="username" name="otp"
                     placeholder="OTP Recieved in your mobile number">
-                   
+
                   <input type="hidden" value="{{mobileno}}" name="phone">
                   <input type="hidden" value="{{countryCode}}" name="countryCode">
 
@@ -29,8 +29,8 @@
 
               <div>
                 <div id="counter"></div>
-                <button class="btn btn-info" class="disabled" id="resendButton"
-                  onclick="resendotp('{{mobileno}}','{{countryCode}}')" disabled>Resend OTP</button>
+                <a class="btn btn-info" class="disabled" id="resendButton"
+                  onclick="resendotp('{{mobileno}}','{{countryCode}}')" disabled>Resend OTP</a>
               </div>
 
             </div>
@@ -41,14 +41,32 @@
   </section>
 </center>
 
-<script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/jquery.validate.js"></script>
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/jquery.validate.js"></script>
+
+<script>
+  $(document).ready(function () {
+    $('#otpform').validate({
+      rules: {
+        otp : {
+          digits: true,
+          minlength: 4,
+          maxlength: 4,
+        }
+      }
+    })
+  })
+</script>
+
 <script>
   var count = 30
   function counter() {
-    document.getElementById("counter").innerHTML = `<span>You are able to resend OTP in : ${count}s</span>`
+    document.getElementById("counter").innerHTML = `<span>You are able to resend OTP in : ${count}s</span><br>`
     count = count - 1;
     if (count >= 0) {
       setTimeout(counter, 1000)
+    }else{
+      document.getElementById("counter").innerHTML = ''
     }
   }
 
@@ -77,18 +95,4 @@
       }
     })
   }
-</script>
-
-<script>
-  $(document).ready(function () {
-    $('#otpform').validate({
-      rules: {
-        otp :{
-          digits : true,
-          minlength: 4,
-          maxlength : 4,
-        }
-      }
-    })
-  })
 </script>

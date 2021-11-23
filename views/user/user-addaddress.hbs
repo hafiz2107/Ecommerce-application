@@ -135,7 +135,6 @@
                     },
                     housename: {
                         required: true,
-                        alpha: true,
                     },
                     city: {
                         required: true,
@@ -148,6 +147,8 @@
                     },
                     pincode: {
                         required: true,
+                        minlength:6,
+                        maxlength:6,
                         digits: true,
                     },
                     lastname: {
@@ -184,7 +185,7 @@
                     },
                     lastname: {
                         alpha: "Please Enter alphabets only",
-                    },
+                    }
                 }
             })
             })

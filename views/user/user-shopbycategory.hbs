@@ -17,8 +17,10 @@
     <div class="tab-wrap" style="margin-top: -0.001%;">
 
         {{#each category}}
+        
         <input type="radio" id={{this._id}} name="tabGroup1" class="tab" checked>
         <label for={{this._id}} style="font-weight: bolder;">{{this.Main_Cat}}</label>
+
         {{/each}}
 
         {{#each category}}

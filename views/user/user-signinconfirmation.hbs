@@ -49,6 +49,22 @@
 </style>
 <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/jquery.validate.js"></script>
 <script>
+  $(document).ready(function () {
+      $('#loginform').validate({
+        rules: {
+          otp: {
+            required: true,
+            minlenght: 4,
+            maxlength:4,
+          },
+
+        }
+      })
+    })
+</script>
+
+<script>
+
 
   var count = 30
   function counter() {
@@ -88,15 +104,5 @@
     })
   }
 
-  $(document).ready(function () {
-    $('#loginform').validate({
-      rules: {
-        otp: {
-          required: true,
-          minlenght: 4,
-        },
-        
-      }
-    })
-  })
+  
 </script>

@@ -475,11 +475,17 @@ module.exports = {
     },
     addCoupon: (coupon) => {
         return new Promise((resolve, reject) => {
-            db.get().collection(collection.coupon).insertOne({ couponcode: coupon.couponcode, coupondiscount: parseInt(coupon.coupondiscount), coupondate: new Date().toISOString().slice(0, 10) }).then((response) => {
+            db.get().collection(collection.coupon).insertOne({ couponcode: coupon.couponcode, coupondiscount: parseInt(coupon.coupondiscount), coupondate: new Date().toISOString().slice(0, 10), couponexpiry: coupon.couponexpiry }).then((response) => {
                 resolve(response)
             })
         })
 
+    },
+    checkCouponCode : (couponCode)=>{
+        return new Promise(async(resolve,reject)=>{            
+            var coupon = await db.get().collection(collection.coupon).findOne({ couponcode: couponCode})
+            resolve(coupon)
+        })
     },
     getCouponToEdit: (couponId) => {
         return new Promise(async (resolve, reject) => {
@@ -489,7 +495,7 @@ module.exports = {
     },
     editCoupon: (couponDetails) => {
         return new Promise((resolve, reject) => {
-            db.get().collection(collection.coupon).updateOne({ _id: objectId(couponDetails.couponId) }, { $set: { couponcode: couponDetails.couponcode, coupondiscount: parseInt(couponDetails.coupondiscount), coupondate: new Date().toISOString().slice(0, 10) } }).then((response) => {
+            db.get().collection(collection.coupon).updateOne({ _id: objectId(couponDetails.couponId) }, { $set: { couponcode: couponDetails.couponcode, coupondiscount: parseInt(couponDetails.coupondiscount), coupondate: new Date().toISOString().slice(0, 10), couponexpiry: couponDetails.couponexpiry} }).then((response) => {
                 resolve()
             })
         })

@@ -123,8 +123,7 @@
               <div class="col-md-4">
                 <div class="form-group">
                   <label for="">Quantity</label>
-                  <input type="number" class="form-control" name="productquantity" id="productquantity" placeholder=""
-                    value="{{{productDetails.productquantity}}}">
+                  <input type="number" class="form-control" name="productquantity" id="productquantity" placeholder="" value="{{{productDetails.productquantity}}}">
                 </div>
               </div>
           
@@ -161,9 +160,9 @@
               <div class="form-group">
                 <div id="errMess3"></div>
                 <img src="/uploads/{{productDetails._id}}__3.jpg" alt="" style="width: 100px; height:auto;display: inherit;" id="imgview3">
-                <label for="file3" data-toggle="modal" data-target="#editCrop" class="btn btn-primary">IMAGE 3</label>
+                <label for="file3"  class="btn btn-primary">IMAGE 3</label>
                 <div id="errMess3"></div>
-                <input type="file" name="image3" id="file3" class="form-control" onchange="return fileValidation3()">
+                <input type="file" name="image3" data-toggle="modal" id="file3" class="form-control" onchange="return fileValidation3()">
               </div>
             </div>
           </div>
@@ -251,7 +250,7 @@
 <script>
   $(document).ready(function () {
     $('#editProductForm').validate({
-      ignore: "",
+      
       rules: {
         productname: {
           required: true,
@@ -289,16 +288,7 @@
           required: true,
           minlength: 20,
         },
-        image1: {
-          required: true
-        },
-        
-        image2: {
-          required: true,
-        },
-        image3: {
-          required: true
-        }
+     
       },
       invalidHandler : function(event,validator){
         var errors = validator.numberOfInvalids();
@@ -485,7 +475,7 @@
       const image = document.getElementById('image')
       document.getElementById('image-box').style.display = 'block'
       document.getElementById('crop-btn').style.display = 'block'
-      document.getElementById('confirm-btn').style.display = 'none'
+      document.getElementById('confirm-btn').style.display = 'block'
 
       const cropper = new Cropper(image, {
         autoCropArea: 1,
@@ -533,6 +523,7 @@
 
        //Image input field id
       var fileTrue2 = document.getElementById('file3').onchange.length
+      console.log("The legnth : ", fileTrue2)
       if (fileTrue2 == 1) {
         document.getElementById('file3').dataset.target = '#editCrop'
         //Give modal target to the input field
@@ -553,7 +544,7 @@
       const image = document.getElementById('image')
       document.getElementById('image-box').style.display = 'block'
       document.getElementById('crop-btn').style.display = 'block'
-      document.getElementById('confirm-btn').style.display = 'none'
+      document.getElementById('confirm-btn').style.display = 'block'
 
       const cropper = new Cropper(image, {
         autoCropArea: 1,

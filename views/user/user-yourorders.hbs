@@ -31,7 +31,7 @@
                                                 {{#eq this.mode 'buynow'}}
                                                 {{#eq this.status 'placed'}}
                                 
-                                                <div class="gallery" style="display: inline;">
+                                                <div class="gallery" style="display: inline; heigth : 10em">
                                                     <div class="content">
                                                         <img src="/uploads/{{this.productId}}__1.jpg" style="width: 100%;" class="card-img-top"
                                                             alt="...">
@@ -65,8 +65,8 @@
                                                 {{else}}
                                                 {{#each this.products}}
                                                 {{#eq this.status 'placed'}}
-                                                <div class="gallery" style="display: inline;">
-                                                    <div class="content">
+                                                <div class="gallery" style="display: inline;heigth : 100px !important">
+                                                    <div class="content" style="height: 100px !important;">
                                                         <img src="/uploads/{{this.item}}__1.jpg" style="width: 100%;" class="card-img-top" alt="...">
                                                         <a href="/productview/{{this.item}}" class="productview">
                                                             <h5 class="card-title ">{{this.name}}</h5>
@@ -496,6 +496,8 @@ location.href = '/orderinvoice/' + orderId + '/' + item + '/' + proName
         flex-wrap: wrap;
         justify-content: left;
         width: 100%;
+        height: 100px;
+
     }
 
     .content {
@@ -549,7 +551,7 @@ location.href = '/orderinvoice/' + orderId + '/' + item + '/' + proName
 
     @media(max-width: 1000px) {
         .content {
-            width: 46%;
+            width: 44.7%;
         }
     }
 

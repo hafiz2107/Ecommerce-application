@@ -24,6 +24,14 @@ weather.find({ search: '673303', degreeType: 'C' }, function (err, result) {
   }
 });
 
+router.get('/',(req,res)=>{
+  if(req.session.adminLoggedIn){
+    res.redirect('/admin/home')
+  }else{
+    res.redirect('/admin/login')
+  }
+})
+
 // Getting Login page
 router.get('/login', (req, res) => {
   if (req.session.adminLoggedIn) {
@@ -88,16 +96,24 @@ router.get('/add-product', (req, res) => {
 // Posting add product form to database
 router.post('/add-product', (req, res) => {
 
-  console.log("🐸🐸🐸🐸 : ", req.files)
+
   // Calling function for uploading add product form
   adminHelper.addProduct(req.body).then((id) => {
+    if (req.files.image1) {
+      let image1 = req.files.image1
+      image1.mv('./public/uploads/' + id + '__1.jpg')
+    }
+    if (req.files.image2) {
+      let image2 = req.files.image2
+      image2.mv('./public/uploads/' + id + '__2.jpg')
+    }
+    if (req.files.image3) {
+      let image3 = req.files.image3
+      image3.mv('./public/uploads/' + id + '__3.jpg')
+    }
 
-    let image1 = req.files.image1
-    let image2 = req.files.image2
-    let image3 = req.files.image3
-    image1.mv('./public/uploads/' + id + '__1.jpg')
-    image2.mv('./public/uploads/' + id + '__2.jpg')
-    image3.mv('./public/uploads/' + id + '__3.jpg')
+
+
 
     // redirecting to admin add product after completing the upload
     res.redirect('/admin/add-product');
@@ -106,44 +122,65 @@ router.post('/add-product', (req, res) => {
 
 
 router.get('/view-product', (req, res) => {
-  adminHelper.getAllproducts().then((products) => {
-    res.render('admin/admin-productview', { typeOfPersonAdmin: true, adminHeader: true, adminNav: true, products, weatherDet })
-  })
+  if(req.session.adminLoggedIn){
+    adminHelper.getAllproducts().then((products) => {
+      res.render('admin/admin-productview', { typeOfPersonAdmin: true, adminHeader: true, adminNav: true, products, weatherDet })
+    })
+  }else{
+    res.redirect('/admin/login')
+  }
+  
 })
 
 // Delete Product
 router.get('/remove-product/:id', (req, res) => {
-  var productId = req.params.id
-  adminHelper.deleteproduct(productId).then((result) => {
-    res.redirect('/admin/view-product')
-  })
+  if(req.session.adminLoggedIn){
+    var productId = req.params.id
+    adminHelper.deleteproduct(productId).then((result) => {
+      res.redirect('/admin/view-product')
+    })
+  }else{
+    res.redirect('/admin/login')
+  }
+  
 })
 
 
 // Getting edit product
 router.get('/edit-product/:id', async (req, res) => {
-  let productDetails = await adminHelper.getProductToEdit(req.params.id)
-  adminHelper.fetchAllMainCategories().then((allCategories) => {
-    adminHelper.findAllProductBrands().then((allProductBrands) => {
-      adminHelper.getAllbikebrands().then((allBikeBrands) => {
-        res.render('admin/admin-editproduct', { productDetails, typeOfPersonAdmin: true, adminHeader: true, adminNav: true, allCategories, allProductBrands, allBikeBrands, weatherDet })
+  if(req.session.adminLoggedIn){
+    let productDetails = await adminHelper.getProductToEdit(req.params.id)
+    adminHelper.fetchAllMainCategories().then((allCategories) => {
+      adminHelper.findAllProductBrands().then((allProductBrands) => {
+        adminHelper.getAllbikebrands().then((allBikeBrands) => {
+          res.render('admin/admin-editproduct', { productDetails, typeOfPersonAdmin: true, adminHeader: true, adminNav: true, allCategories, allProductBrands, allBikeBrands, weatherDet })
+        })
       })
     })
-  })
+  }else{
+    res.redirect("/admin/login")
+  }
 })
 // TO get the product to edit when clicked on the on the edit button 
 router.post('/edit-product/:id', async (req, res) => {
   // var proId = req.params.id
   adminHelper.updateProduct(req.params.id, req.body).then(() => {
     res.redirect('/admin/view-product')
-    if (req.files.image1 || req.files.image2 || req.files.image3) {
+    if (req.files.image1) {
       let image1 = req.files.image1
-      let image2 = req.files.image2
-      let image3 = req.files.image3
       image1.mv('./public/uploads/' + req.params.id + '__1.jpg')
+    }
+
+    if (req.files.image2) {
+      let image2 = req.files.image2
       image2.mv('./public/uploads/' + req.params.id + '__2.jpg')
+    }
+
+    if (req.files.image3) {
+      let image3 = req.files.image3
       image3.mv('./public/uploads/' + req.params.id + '__3.jpg')
     }
+
 
   })
 })
@@ -154,30 +191,38 @@ router.get('/logout', (req, res) => {
 })
 
 router.get('/usermanagement', async (req, res) => {
-  if(req.session.adminLoggedIn){
-  let allUsers = await adminHelper.getAllUsers()
-  res.render('admin/admin-usermanagement', { typeOfPersonAdmin: true, adminHeader: true, adminNav: true, allUsers, weatherDet })
-  }else{
+  if (req.session.adminLoggedIn) {
+    let allUsers = await adminHelper.getAllUsers()
+    res.render('admin/admin-usermanagement', { typeOfPersonAdmin: true, adminHeader: true, adminNav: true, allUsers, weatherDet })
+  } else {
     res.redirect('/admin/login')
   }
 })
 
 router.get('/blockuser/:id', (req, res) => {
-  id = req.params.id
-  adminHelper.blockUser(id).then((response) => {
-    if (response) {
-      res.redirect('/admin/usermanagement')
-    }
-  })
+  if(req.session.adminLoggedIn){
+    id = req.params.id
+    adminHelper.blockUser(id).then((response) => {
+      if (response) {
+        res.redirect('/admin/usermanagement')
+      }
+    })
+  }else{
+    res.redirect('/admin/login')
+  }
 })
 
 router.get('/unblockuser/:id', (req, res) => {
-  id = req.params.id
-  adminHelper.unBlockUser(id).then((response) => {
-    if (response) {
-      res.redirect('/admin/usermanagement')
-    }
-  })
+  if(req.session.adminLoggedIn){
+    id = req.params.id
+    adminHelper.unBlockUser(id).then((response) => {
+      if (response) {
+        res.redirect('/admin/usermanagement')
+      }
+    })
+  }else{
+    res.redirect('/admin/login')
+  }
 })
 
 router.get('/ordermanagement', (req, res) => {
@@ -203,18 +248,28 @@ router.post('/updateorderstatusofbuynow', (req, res) => {
 })
 
 router.get('/viewoderlist/:orderId/:userId', (req, res) => {
-  adminHelper.getUserCartOrders(req.params.orderId, req.params.userId).then((cartOrders) => {
-    userDet = cartOrders[0]
-    console.log("the cart order : ", cartOrders[0])
-    res.render('admin/admin-veiwcartorders', { typeOfPersonAdmin: true, adminHeader: true, adminNav: true, cartOrders, weatherDet, userDet })
-  })
+  if(req.session.adminLoggedIn){
+    adminHelper.getUserCartOrders(req.params.orderId, req.params.userId).then((cartOrders) => {
+      userDet = cartOrders[0]
+      console.log("the cart order : ", cartOrders[0])
+      res.render('admin/admin-veiwcartorders', { typeOfPersonAdmin: true, adminHeader: true, adminNav: true, cartOrders, weatherDet, userDet })
+    })
+  }else{
+    res.redirect('/admin/login')
+  }
+  
 })
 router.get('/viewoderlistofBuyNow/:orderId/:userId', (req, res) => {
-  adminHelper.getBuyNowOrders(req.params.userId, req.params.orderId).then((buynowOrders) => {
-    console.log("the buynow : ", buynowOrders)
-    res.render('admin/admin-veiwbuynoworders', { typeOfPersonAdmin: true, adminHeader: true, adminNav: true, buynowOrders, weatherDet })
-  })
-   
+  if(req.session.adminLoggedIn){
+    adminHelper.getBuyNowOrders(req.params.userId, req.params.orderId).then((buynowOrders) => {
+      console.log("the buynow : ", buynowOrders)
+      res.render('admin/admin-veiwbuynoworders', { typeOfPersonAdmin: true, adminHeader: true, adminNav: true, buynowOrders, weatherDet })
+    })
+
+  }else{
+    res.redirect('/admin/login')
+  }
+  
 })
 
 router.get('/addmaincategory', (req, res) => {
@@ -244,16 +299,24 @@ router.post('/addsubcat', (req, res) => {
   })
 })
 router.get('/deletesubcat/', (req, res) => {
-  adminHelper.deleteSubcat(req.query.index, req.query.id, req.query.name).then(() => {
-    res.redirect('/admin/addmaincategory')
-  })
+  if(req.session.adminLoggedIn){
+    adminHelper.deleteSubcat(req.query.index, req.query.id, req.query.name).then(() => {
+      res.redirect('/admin/addmaincategory')
+    })
+  }else{
+    res.redirect('/admin/login')
+  }
 })
 
 router.get('/deletecategory/:id', (req, res) => {
-  adminHelper.deleteCategory(req.params.id).then(() => {
-    req.session.catDeleted = 'Category Deleted Successfully'
-    res.redirect('/admin/addmaincategory')
-  })
+  if(req.session.adminLoggedIn){
+    adminHelper.deleteCategory(req.params.id).then(() => {
+      req.session.catDeleted = 'Category Deleted Successfully'
+      res.redirect('/admin/addmaincategory')
+    })
+  }else{
+    res.redirect('/admin/login')
+  }
 })
 
 router.get('/brands', (req, res) => {
@@ -278,10 +341,14 @@ router.post('/addprobrand', (req, res) => {
   })
 })
 router.get('/deletebrand/:id', (req, res) => {
-  adminHelper.deleteBrand(req.params.id).then(() => {
-    req.session.brandDeleteSuccess = 'Brand have been successfully deleted';
-    res.redirect('/admin/brands')
-  })
+  if(req.session.adminLoggedIn){
+    adminHelper.deleteBrand(req.params.id).then(() => {
+      req.session.brandDeleteSuccess = 'Brand have been successfully deleted';
+      res.redirect('/admin/brands')
+    })
+  }else{
+    res.redirect('/admin/login')
+  }  
 })
 
 router.get('/bikebrands', (req, res) => {
@@ -313,16 +380,25 @@ router.post('/addbikemodel', (req, res) => {
 })
 
 router.get('/deletebikemodel/', (req, res) => {
-  adminHelper.deleteBikeModel(req.query.index, req.query.id, req.query.name).then(() => {
-    res.redirect('/admin/bikebrands')
-  })
+  if(req.session.adminLoggedIn){
+    adminHelper.deleteBikeModel(req.query.index, req.query.id, req.query.name).then(() => {
+      res.redirect('/admin/bikebrands')
+    })
+  }else{
+    res.redirect('/admin/login')
+  }
+  
 })
 
 router.get('/deletebikebrand/:id', (req, res) => {
-  adminHelper.deleteBikeBrand(req.params.id).then(() => {
-    req.session.bikebrandDelted = 'The brand has been removed successfully'
-    res.redirect('/admin/bikebrands')
-  })
+  if(req.session.adminLoggedIn){
+    adminHelper.deleteBikeBrand(req.params.id).then(() => {
+      req.session.bikebrandDelted = 'The brand has been removed successfully'
+      res.redirect('/admin/bikebrands')
+    })
+  }else{
+    res.redirect("/admin/login")
+  }
 })
 
 router.get('/coupons', (req, res) => {
@@ -341,13 +417,28 @@ router.post('/addcoupon', (req, res) => {
   })
 })
 
-router.get('/editcoupon/:couponId', (req, res) => {
+router.get('/checkcouponcode/:couponCode',(req,res)=>{
+  if(req.session.adminLoggedIn){
+    adminHelper.checkCouponCode(req.params.couponCode).then((response) => {
+      res.json(response)
+    })
+  }else{
+    res.redirect('/admin/login')
+  }
+  
+})
 
+router.get('/editcoupon/:couponId', (req, res) => {
+if(req.session.adminLoggedIn){
   adminHelper.getAllCoupons().then((allCoupons) => {
     var coupon = adminHelper.getCouponToEdit(req.params.couponId).then((couponToEdit) => {
       res.json(couponToEdit)
     })
   })
+}else{
+  res.redirect('/admin/login')
+}
+  
 })
 
 router.post('/editcoupon', (req, res) => {
@@ -357,67 +448,82 @@ router.post('/editcoupon', (req, res) => {
 })
 
 router.get('/deletecoupon/:couponId', (req, res) => {
-  adminHelper.deleteCoupon(req.params.couponId).then(() => {
-    res.redirect('/admin/coupons')
-  })
+  if(req.session.adminLoggedIn){
+    adminHelper.deleteCoupon(req.params.couponId).then(() => {
+      res.redirect('/admin/coupons')
+    })
+  }else{
+    res.redirect('/admin/login')
+  }
+  
 })
 
 router.get('/report', async (req, res) => {
-    if(req.session.adminLoggedIn){
-  if (req.session.filterOnDate) {
-    req.session.filterOnDate = false
-    
-    if (req.session.orderSortedInDate) {
-      
-      orderondate = true
-      orders = req.session.orderSortedInDate
-      req.session.orderSortedInDate = false
+  if (req.session.adminLoggedIn) {
+    if (req.session.filterOnDate) {
+      req.session.filterOnDate = false
+
+      if (req.session.orderSortedInDate) {
+
+        orderondate = true
+        orders = req.session.orderSortedInDate
+        req.session.orderSortedInDate = false
+        adminHelper.getDeliveredOrders().then(([buyNowDo, cartDo]) => {
+
+          deliveredOrders = [...buyNowDo, ...cartDo]
+          deliveredOrders = deliveredOrders.sort(function (a, b) { return new Date(b.orderDate) - new Date(a.orderDate) });
+          res.render('admin/admin-report', { typeOfPersonAdmin: true, adminHeader: true, adminNav: true, orders, weatherDet, deliveredOrders, orderondate })
+        })
+      }
+
+      if (req.session.deliveredReportonDate) {
+        delivery = true
+        deliveredOrders = req.session.deliveredReportonDate
+        req.session.deliveredReportonDate = false
+        res.render('admin/admin-report', { typeOfPersonAdmin: true, adminHeader: true, adminNav: true, orders, weatherDet, deliveredOrders })
+      }
+
+    } else {
+
+      var deliveredOrders
+      orders = await adminHelper.getAllOrders()
       adminHelper.getDeliveredOrders().then(([buyNowDo, cartDo]) => {
-        
+
         deliveredOrders = [...buyNowDo, ...cartDo]
         deliveredOrders = deliveredOrders.sort(function (a, b) { return new Date(b.orderDate) - new Date(a.orderDate) });
-        res.render('admin/admin-report', { typeOfPersonAdmin: true, adminHeader: true, adminNav: true, orders, weatherDet, deliveredOrders, orderondate })
+        res.render('admin/admin-report', { typeOfPersonAdmin: true, adminHeader: true, adminNav: true, orders, weatherDet, deliveredOrders })
       })
-    } 
-    
-    if (req.session.deliveredReportonDate) {
-      delivery = true
-      deliveredOrders = req.session.deliveredReportonDate
-      req.session.deliveredReportonDate = false
-      res.render('admin/admin-report', { typeOfPersonAdmin: true, adminHeader: true, adminNav: true, orders, weatherDet, deliveredOrders })
     }
-
   } else {
-    
-    var deliveredOrders
-    orders = await adminHelper.getAllOrders()
-    adminHelper.getDeliveredOrders().then(([buyNowDo, cartDo]) => {
-      
-      deliveredOrders = [...buyNowDo, ...cartDo]
-      deliveredOrders = deliveredOrders.sort(function (a, b) { return new Date(b.orderDate) - new Date(a.orderDate) });
-      res.render('admin/admin-report', { typeOfPersonAdmin: true, adminHeader: true, adminNav: true, orders, weatherDet, deliveredOrders })
-    })
+    res.redirect('/admin/login')
   }
-}else{
-  res.redirect('/admin/login')
-}
 })
 
-router.get('/report/:reset' , (req,res)=>{
-  req.session.filterOnDate = false
-  req.session.orderSortedInDate = false
-  req.session.deliveredReportonDate = false
-  res.redirect('/admin/report')
+router.get('/report/:reset', (req, res) => {
+  if(req.session.adminLoggedIn){
+    req.session.filterOnDate = false
+    req.session.orderSortedInDate = false
+    req.session.deliveredReportonDate = false
+    res.redirect('/admin/report')
+  }else{
+    res.redirect("/admin/login")
+  }
+  
 })
 
 
 
 router.get('/offermanagement', (req, res) => {
-  adminHelper.getAllCatOffers().then((offers) => {
-    adminHelper.fetchAllMainCategories().then((allCats) => {
-      res.render('admin/admin-offerManagement', { typeOfPersonAdmin: true, adminHeader: true, adminNav: true, weatherDet, offers, allCats })
+  if(req.session.adminLoggedIn){
+    adminHelper.getAllCatOffers().then((offers) => {
+      adminHelper.fetchAllMainCategories().then((allCats) => {
+        res.render('admin/admin-offerManagement', { typeOfPersonAdmin: true, adminHeader: true, adminNav: true, weatherDet, offers, allCats })
+      })
     })
-  })
+  }else{
+    res.redirect('/admin/login')
+  }
+  
 })
 
 router.post('/addcatoffer', (req, res) => {
@@ -431,26 +537,41 @@ router.post('/addcatoffer', (req, res) => {
 })
 
 router.get('/checkoffer/:offercat', (req, res) => {
-  adminHelper.checkOffer(req.params.offercat).then((response) => {
-    res.json(response)
-  })
+  if(req.session.adminLoggedIn){
+    adminHelper.checkOffer(req.params.offercat).then((response) => {
+      res.json(response)
+    })
+  }else{
+    res.redirect('/admin/login')
+  }
+  
 })
 
 router.get('/deleteoffer/', (req, res) => {
 
-  adminHelper.deleteoffer(req.query.offerId, req.query.category, req.query.offername).then((products) => {
-    products.map((productToUpdate) => {
-      adminHelper.updateProductsWhenOfferDeleted(productToUpdate).then((response) => {
-        res.json(response)
+  if(res.session.adminLoggedIn){
+    adminHelper.deleteoffer(req.query.offerId, req.query.category, req.query.offername).then((products) => {
+      products.map((productToUpdate) => {
+        adminHelper.updateProductsWhenOfferDeleted(productToUpdate).then((response) => {
+          res.json(response)
+        })
       })
     })
-  })
+  }else{
+    res.redirect('/admin/login')
+  }
+  
 })
 
 router.get('/deleteProoffer/', (req, res) => {
-  adminHelper.deleteProOffer(req.query.offerId, req.query.proName).then((response) => {
-    res.json(response)
-  })
+  if(req.session.adminLoggedIn){
+    adminHelper.deleteProOffer(req.query.offerId, req.query.proName).then((response) => {
+      res.json(response)
+    })
+  }else{
+    res.redirect('/admin/login')
+  }
+  
 })
 
 router.get('/productoffers', async (req, res) => {
@@ -481,11 +602,16 @@ router.post('/addprooffer', (req, res) => {
 })
 
 router.get('/getreportondate/:from/:to', (req, res) => {
-  adminHelper.getOrderReportOnDate(req.params.from, req.params.to).then((orderSortedInDate) => {
-    req.session.filterOnDate = true
-    req.session.orderSortedInDate = orderSortedInDate.sort(function (a, b) { return new Date(b.orderDate) - new Date(a.orderDate) });
-    res.json(orderSortedInDate)
-  })
+  if(req.session.adminLoggedIn){
+    adminHelper.getOrderReportOnDate(req.params.from, req.params.to).then((orderSortedInDate) => {
+      req.session.filterOnDate = true
+      req.session.orderSortedInDate = orderSortedInDate.sort(function (a, b) { return new Date(b.orderDate) - new Date(a.orderDate) });
+      res.json(orderSortedInDate)
+    })
+  }else{
+    res.redirect('/admin/login')
+  }
+  
 })
 
 router.get('/getorderdetails/:id', (req, res) => {
@@ -495,12 +621,18 @@ router.get('/getorderdetails/:id', (req, res) => {
 })
 
 router.get('/deliverygetreportondate/:from/:to', (req, res) => {
-  adminHelper.getDeliveryOnDate(req.params.from, req.params.to).then(([buyNowOrders, cartOrders]) => {
-    deliveredReportonDate = [...buyNowOrders, ...cartOrders]
-    req.session.filterOnDate = true
-    req.session.deliveredReportonDate = deliveredReportonDate.sort(function (a, b) { return new Date(b.orderDate) - new Date(a.orderDate) });
-    res.json(deliveredReportonDate)
-  })
+
+  if(req.session.adminLoggedIn){
+    adminHelper.getDeliveryOnDate(req.params.from, req.params.to).then(([buyNowOrders, cartOrders]) => {
+      deliveredReportonDate = [...buyNowOrders, ...cartOrders]
+      req.session.filterOnDate = true
+      req.session.deliveredReportonDate = deliveredReportonDate.sort(function (a, b) { return new Date(b.orderDate) - new Date(a.orderDate) });
+      res.json(deliveredReportonDate)
+    })
+  }else{
+    res.redirect('/admin/login')
+  }
+  
 })
 
 router.get('/admanagement', (req, res) => {
@@ -524,7 +656,7 @@ router.post('/topad1', (req, res) => {
 })
 
 router.post('/topad2', (req, res) => {
-  
+
   adminHelper.addProAds(req.body).then((id) => {
     let image2 = req.files.topimage2
     image2.mv('./public/ads/' + id + '__1.jpg')
