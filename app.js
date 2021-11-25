@@ -9,7 +9,7 @@ var adminRouter = require('./routes/admin');
 var db = require('./config/connection');
 var session = require('express-session');
 var fileUpload = require('express-fileupload');
-const collection = require('./config/collection');
+const collection = require('./config/collection');  
 var helper = require('handlebars-helpers')();
 var otpkeys = require('./config/otpkeys.js')
 var twilio = require('twilio')(otpkeys.accountsid, otpkeys.authtoken)
@@ -22,7 +22,7 @@ var hbs = exphbs.create({
   extname: 'hbs', defaultLayout: 'layout', layoutsDir: __dirname + '/views/layout/', partialsDir: __dirname + '/views/partials/',
   // Custom HBS helpers
   helpers: helper
-})
+})             
 
 
 var app = express();

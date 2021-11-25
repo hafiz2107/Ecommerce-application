@@ -55,8 +55,8 @@
 
                     <label for="selBrand" style="color: black;">Select Brand :</label>
                     <select name="bikeBrandId" id="selBrand"  class="form-select dropdownMenuButton1">
-                        {{#each allBikeBrands}}
                             <option class="dropdown-item" value="">Choose a brand</option>
+                        {{#each allBikeBrands}}
                             <option  class="dropdown-item" value="{{this._id}}">{{this.bikeBrand}}</option>
                         {{/each}}
                     </select>
