@@ -153,6 +153,7 @@ router.get('/edit-product/:id', async (req, res) => {
     adminHelper.fetchAllMainCategories().then((allCategories) => {
       adminHelper.findAllProductBrands().then((allProductBrands) => {
         adminHelper.getAllbikebrands().then((allBikeBrands) => {
+          console.log("🙂🤞 the product to edit  is  :",productDetails)
           res.render('admin/admin-editproduct', { productDetails, typeOfPersonAdmin: true, adminHeader: true, adminNav: true, allCategories, allProductBrands, allBikeBrands, weatherDet })
         })
       })

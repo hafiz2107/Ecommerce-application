@@ -162,7 +162,7 @@
         var fileInput1 = document.getElementById('topimage1');
 
         var filePath1 = fileInput1.value;
-        var allowedExtensions = /(\.jpg)$/i;
+        var allowedExtensions = /(\.jpg|\.jpeg|\.png|\.gif)$/i;
         if (!allowedExtensions.exec(filePath1)) {
             document.getElementById('errMessTop1').innerHTML = '<p style="color:red; display: block;">Invalid file type</p>'
             document.getElementById('image-box').style.display = 'none'
@@ -225,7 +225,7 @@
         var fileInput2 = document.getElementById('topimage2');
 
         var filePath2 = fileInput2.value;
-        var allowedExtensions = /(\.jpg)$/i;
+        var allowedExtensions = /(\.jpg|\.jpeg|\.png|\.gif)$/i;
         if (!allowedExtensions.exec(filePath2)) {
             document.getElementById('errMessTop2').innerHTML = '<p style="color:red; display: block;">Invalid file type</p>'
             document.getElementById('image-box').style.display = 'none'
@@ -288,7 +288,7 @@
         var fileInput3 = document.getElementById('topimage3');
 
         var filePath3 = fileInput3.value;
-        var allowedExtensions = /(\.jpg)$/i;
+        var allowedExtensions = /(\.jpg|\.jpeg|\.png|\.gif)$/i;
         if (!allowedExtensions.exec(filePath3)) {
             document.getElementById('errMessTop3').innerHTML = '<p style="color:red; display: block;">Invalid file type</p>'
             document.getElementById('image-box').style.display = 'none'

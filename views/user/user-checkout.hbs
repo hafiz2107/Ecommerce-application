@@ -28,7 +28,8 @@
                                 <dd>{{this.phone}}</dd>
                                 <dd>
                                     <label for="useaddress" style="color: #047bd5;">Use Address</label>
-                                    <input type="radio" name="use" id="{{this._id}}" onclick="changeAddress('{{this.firstname}}','{{this.lastname}}','{{this.address1}}','{{this.address2}}','{{this.country}}','{{this.state}}','{{this.pincode}}','{{this.phone}}','{{this.second_mobile}}','{{this.housename}}','{{this.city}}','{{this._id}}')">
+                                    <input type="radio" name="use" id="{{this._id}}"
+                                        onclick="changeAddress('{{this.firstname}}','{{this.lastname}}','{{this.address1}}','{{this.address2}}','{{this.country}}','{{this.state}}','{{this.pincode}}','{{this.phone}}','{{this.second_mobile}}','{{this.housename}}','{{this.city}}','{{this._id}}')">
                                 </dd>
                                 <br>
                             </dl>
@@ -113,7 +114,7 @@
 
                             <br>
 
-                            <div class="billing-address-input clearfix">    
+                            <div class="billing-address-input clearfix">
                                 <label id="saveaddresslabel" for=""> Save Address </label>
                                 <input name="saveaddress" style="margin-left: 5px;" type="checkbox" id="saveaddress">
                             </div>
@@ -129,7 +130,7 @@
                 <div class="promotional-code-box">
                     <h5 class="checkout-box-title">COUPON CODE</h5>
                     <div class="pcb-content">
-                         <p id="couponEnterSuccess">Enter your coupon code if you have one</p>
+                        <p id="couponEnterSuccess">Enter your coupon code if you have one</p>
 
                         <div class="pcb-cuppon-input clearfix">
                             <input type="text" placeholder="Coupon code" id="coupon" name="coupon">
@@ -150,8 +151,8 @@
                             <li class="clearfix">Discount <span>₹<span id="discount">0</span></span></li>
                             {{!-- <li class="order-total clearfix">Order Total <span>₹ {{total}}</span></li> --}}
 
-                            <li class="order-total clearfix">Order Total <span>₹ <span
-                                        id="orderTotal">{{total}}</span> </span>
+                            <li class="order-total clearfix">Order Total <span>₹ <span id="orderTotal">{{total}}</span>
+                                </span>
                                 <input type="hidden" name="totalAmount" id="productprice" value="">
                                 <input type="hidden" id="actualPrice" value="{{total}}">
                             </li>
@@ -164,17 +165,22 @@
                     <div class="pcb-content">
                         <p>Select your payment method</p>
                         <div class="pcb-cuppon-input clearfix">
-                            <input type="radio" name="payment_method" id="payementChoiceCod" value="COD" onclick="hideError()">
+                            <input type="radio" name="payment_method" id="payementChoiceCod" value="COD"
+                                onclick="hideError()">
                             <label
                                 style="margin-left: 10px;color: #000000;font-size: 14px;font-weight: 400;">COD</label>
                         </div>
                         <div class="pcb-cuppon-input clearfix">
-                            <input type="radio" name="payment_method" id="payementChoiceRazor" value="razorpay" onclick="hideError()">
-                            <label style="margin-left: 10px;color: #000000;font-size: 14px;font-weight: 400;">Razorpay</label><br>
+                            <input type="radio" name="payment_method" id="payementChoiceRazor" value="razorpay"
+                                onclick="hideError()">
+                            <label
+                                style="margin-left: 10px;color: #000000;font-size: 14px;font-weight: 400;">Razorpay</label><br>
 
-                                <input type="radio" name="payment_method" id="payementChoicePay" value="paypal" onclick="hideError()">
-                                <label style="margin-left: 10px;color: #000000;font-size: 14px;font-weight: 400;">PayPal</label>
-                            
+                            <input type="radio" name="payment_method" id="payementChoicePay" value="paypal"
+                                onclick="hideError()">
+                            <label
+                                style="margin-left: 10px;color: #000000;font-size: 14px;font-weight: 400;">PayPal</label>
+
                             <div id="showPayError"></div>
 
                         </div>
@@ -182,12 +188,13 @@
 
                         <div class="create-account-checkout-method">
                             <div class="place-order">
-                                <button type="submit" class="checkout-page-button hvr-bs" id="placeOrderBtn">Place order</button>
-                            <div id="paypal-button"></div>
+                                <button type="submit" class="checkout-page-button hvr-bs" id="placeOrderBtn">Place
+                                    order</button>
+                                <div id="paypal-button"></div>
                             </div>
                         </div>
-                        
-            
+
+
 
                         </form>
                     </div>
@@ -197,27 +204,28 @@
 </section>
 
 <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/jquery.validate.js"></script>
-    <script src="https://www.paypalobjects.com/api/checkout.js"></script>
+<script src="https://www.paypalobjects.com/api/checkout.js"></script>
+
 <script>
     function useRegPhone() {
         if (document.getElementById('useRegPh').checked == true) {
-            document.getElementById('phone').value = {{theUser.mobile}}
-        }
+            document.getElementById('phone').value = {{ theUser.mobile }}
+    }
         else {
         document.getElementById('phone').value = ''
     }
     }
-     function hideError() {
-            document.getElementById('showPayError').style.display = 'none';
+    function hideError() {
+        document.getElementById('showPayError').style.display = 'none';
 
-            if (document.getElementById('payementChoicePay').checked == false) {
+        if (document.getElementById('payementChoicePay').checked == false) {
 
-             document.getElementById('placeOrderBtn').style.display = 'block'
-             document.getElementById('paypal-button').style.display = 'none'
-             document.getElementById('paypal-button').innerHTML = ''
-         }
-
+            document.getElementById('placeOrderBtn').style.display = 'block'
+            document.getElementById('paypal-button').style.display = 'none'
+            document.getElementById('paypal-button').innerHTML = ''
         }
+
+    }
 </script>
 
 <script>
@@ -264,9 +272,9 @@
 
             },
             submitHandler: function () {
-                
+
                 if (document.getElementById('payementChoiceCod').checked == true || document.getElementById('payementChoiceRazor').checked == true || document.getElementById('payementChoicePay').checked == true) {
-                    
+
 
                     if (document.getElementById('payementChoicePay').checked == true) {
 
@@ -274,10 +282,10 @@
                             url: '/currencycoverter/' + document.getElementById('orderTotal').innerHTML,
                             method: 'post',
                             success: (total) => {
+                                console.log("the totoal is : ", total)
                                 document.getElementById('usdToInr').value = parseFloat(total).toFixed(2)
                             }
                         })
-
                         document.getElementById('paypal-button').style.display = 'block'
                         document.getElementById('placeOrderBtn').style.display = 'none'
 
@@ -300,9 +308,9 @@
                             commit: true,
                             // Set up a payment
                             payment: function (data, actions) {
-
                                 price = document.getElementById('usdToInr').value
 
+                                console.log("the totoal price is : ", price)
 
                                 return actions.payment.create({
                                     transactions: [{
@@ -325,7 +333,8 @@
                                         method: 'post',
                                         data: $('#checkoutbuynow-form').serialize(),
                                         success: (response) => {
-                                            if (response) {
+                                            if (response) {console.log("the repo : ",response)
+
                                                 location.href = '/orderconfirmed';
                                             } else {
                                                 location.href = '/404';
@@ -349,7 +358,7 @@
                             method: 'post',
                             data: $('#checkoutbuynow-form').serialize(),
                             success: (response) => {
-                               
+
                                 if (response.codSuccess) {
                                     location.href = '/orderconfirmed';
                                 } else {
@@ -359,7 +368,7 @@
                             }
                         })
                     }
-                    
+
                 }
                 else {
                     document.getElementById('showPayError').style.display = 'block'
@@ -388,7 +397,7 @@
             success: ({ coupon }) => {
 
                 if (coupon.appliedCoupon) {
-                     document.getElementById('discount').innerHTML = '0';
+                    document.getElementById('discount').innerHTML = '0';
                     document.getElementById('orderTotal').innerHTML = actualPrice
                     document.getElementById('productprice').value = actualPrice
                     document.getElementById('couponEnterSuccess').style.display = 'block';
@@ -397,14 +406,14 @@
                 }
                 else if (coupon.appliedCoupon == false) {
                     //Calculating Discounted Price
-                     document.getElementById('orderTotal').innerHTML = coupon.priceAfterDiscount
+                    document.getElementById('orderTotal').innerHTML = coupon.priceAfterDiscount
                     document.getElementById('productprice').value = coupon.priceAfterDiscount
                     document.getElementById('discount').innerHTML = coupon.discount
                     document.getElementById('couponEnterSuccess').style.display = 'none';
                     swal("Coupon Applied", `You are eligible for ${coupon.coupon.coupondiscount} % discount`, "success");
                 }
                 else if (coupon.couponDontExist) {
-                   document.getElementById('discount').innerHTML = '0';
+                    document.getElementById('discount').innerHTML = '0';
                     document.getElementById('orderTotal').innerHTML = actualPrice
                     document.getElementById('productprice').value = actualPrice
                     document.getElementById('couponEnterSuccess').style.display = 'block';
@@ -504,7 +513,7 @@
             },
             "prefill": {
                 "name": order.user.firstname,
-                "email": order.user.firstname +"@gmail.com",
+                "email": order.user.firstname + "@gmail.com",
                 "contact": order.user.phone
             },
             "notes": {

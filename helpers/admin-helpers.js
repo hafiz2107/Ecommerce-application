@@ -600,6 +600,13 @@ module.exports = {
             resolve(offer)
         })
     },
+    checkCouponExpiry :()=>{
+        return new Promise(async(resolve,reject)=>{
+            var date = new Date().toISOString().slice(0,10)
+            var coupon = await db.get().collection(collection.coupon).find({couponexpiry : {$lte:date}}).toArray()
+            resolve(coupon)
+        })
+    },
     getCatPro: (category) => {
         return new Promise(async (resolve, reject) => {
             productsUnderCategory = await db.get().collection(collection.newproducts).find({ productcategory: category.category }).toArray()

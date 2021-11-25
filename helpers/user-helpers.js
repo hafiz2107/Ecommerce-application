@@ -372,7 +372,7 @@ module.exports = {
                     firstname: orderDetails.firstname,
                     lastname: orderDetails.lastname,
                     mobile: orderDetails.phone,
-                    address: orderDetails.addressline1,
+                    address: orderDetails.addressline1,   
                     address2: orderDetails.addressline2,
                     city: orderDetails.city,
                     pincode: orderDetails.pincode,
@@ -685,9 +685,10 @@ module.exports = {
     },
     // Decreasing product quantity on buy now
     decreaseProductQuantity: (proId) => {
+        console.log("Thr pro iddd : ",proId)
         return new Promise(async (resolve, reject) => {
             db.get().collection(collection.newproducts).updateOne({ _id: objectId(proId) }, { $inc: { productquantity: -1 } }).then((result) => {
-                console.log("🫁🫁🫁 : ",result)
+               console.log("Teh reult is : ",result)
                 resolve()
             })
         })
@@ -874,7 +875,9 @@ module.exports = {
     },
 
     generatePaypal: (orderId, totalPrice) => {
+        console.log('🦠🦠🦠🦠🦠🦠🦠 : ', orderId);
         totalPrice = parseFloat(totalPrice).toFixed(2)
+        console.log("the total price is : ",totalPrice)
         return new Promise(async (resolve, reject) => {
             var create_payment_json = {
                 "intent": "sale",

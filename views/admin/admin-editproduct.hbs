@@ -38,11 +38,21 @@
                 <div class="col-md-4">
                   <div class="form-group">
                     <label for="">Product Category</label><br>
-                    <select name="productcategory" id="mainCategory"  onchange="showSubCats()"  class="btn btn-primary text-light custom-select">
-                      <option value="" class="dropdown-item text-dark bg-" >Product Category </option>
+                    <select name="productcategory" id="mainCategory" onchange="showSubCats()"
+                      class="btn btn-primary text-light custom-select">
+                      {{!-- <option value="" class="dropdown-item text-dark bg-">Product Category </option> --}}
                       {{#each allCategories}}
-                      <option value="{{this.mainCategory}}"class="dropdown-item"> {{this.mainCategory}}</option>
+                        <option value="{{this.mainCategory}}" class="dropdown-item"> {{this.mainCategory}}</option>
                       {{/each}}
+
+                       {{!-- {{#each allCategories}}
+                      {{#eq this.mainCategory ../productDetails.productcategory}}
+                      <option value="{{this.mainCategory}}" class="dropdown-item" selected> {{this.mainCategory}}</option>
+                      {{else}}
+                      <option value="{{this.mainCategory}}" class="dropdown-item"> {{this.mainCategory}}</option>
+                      {{/eq}}
+                      {{/each}} --}}
+                      
                     </select>
                   </div>
                 </div>
@@ -51,9 +61,7 @@
                   <div class="form-group">
                     <label for="">Product SubCategory : </label><br>
                     <select name="productsubcategory" id="subcat" class="btn btn-primary text-light custom-select">
-
-                      <option value="" class="dropdown-item text-dark bg-" >Product sub Category </option>
-
+                      <option value="" class="dropdown-item text-dark bg-">Product sub Category </option>
                     </select>
                   </div>
                 </div>
@@ -78,7 +86,8 @@
                 <div class="col-md-4">
                   <div class="form-group">
                     <label for="">Bike Brand : </label><br>
-                    <select name="suitablebikebrand" id="bikebrand" onchange="showBikeModels()" class="btn btn-primary text-light custom-select">
+                    <select name="suitablebikebrand" id="bikebrand" onchange="showBikeModels()"
+                      class="btn btn-primary text-light custom-select">
                       <option value="" name="" class="dropdown-item text-dark bg-light">Suitable bike Brand </option>
                       {{#each allBikeBrands}}
                       <option value="{{this.bikeBrand}}" class="dropdown-item">
@@ -123,114 +132,122 @@
               <div class="col-md-4">
                 <div class="form-group">
                   <label for="">Quantity</label>
-                  <input type="number" class="form-control" name="productquantity" id="productquantity" placeholder="" value="{{{productDetails.productquantity}}}">
+                  <input type="number" class="form-control" name="productquantity" id="productquantity" placeholder=""
+                    value="{{{productDetails.productquantity}}}">
                 </div>
               </div>
-          
-          <hr>
-          <div class="row">
-            <div class="col-md-4">
-              <label for="">Description</label>
-              <textarea class="form-control" name="productdes" id="productdes" placeholder="" >{{productDetails.productdes}}</textarea>
-            </div>
 
-          </div>
-
-          <div class="row">
-            <div class="col-md-3">
-              <div class="form-group">
-                <div id="errMess1"></div>
-                <img src="/uploads/{{productDetails._id}}__1.jpg" alt=""
-                  style="width: 100px; height:auto;display: inherit;" id="imgview1">
-                <label for="file1"  class="btn btn-primary">IMAGE 1</label>
-                <input type="file" data-toggle="modal" name="image1" id="file1" class="form-control" onchange="return fileValidation1()">
-              </div>
-            </div>
-
-            <div class="col-md-3">
-              <div class="form-group">
-                <div id="errMess2"></div>
-                <img src="/uploads/{{productDetails._id}}__2.jpg" alt="" style="width: 100px; height:auto;display: inherit;" id="imgview2">
-                <label for="file2" class="btn btn-primary">IMAGE 2</label>
-                <input type="file" data-toggle="modal" name="image2" id="file2" class="form-control" onchange="return fileValidation2()">
-              </div>
-            </div>
-
-            <div class="col-md-3">
-              <div class="form-group">
-                <div id="errMess3"></div>
-                <img src="/uploads/{{productDetails._id}}__3.jpg" alt="" style="width: 100px; height:auto;display: inherit;" id="imgview3">
-                <label for="file3"  class="btn btn-primary">IMAGE 3</label>
-                <div id="errMess3"></div>
-                <input type="file" name="image3" data-toggle="modal" id="file3" class="form-control" onchange="return fileValidation3()">
-              </div>
-            </div>
-          </div>
-
-
-
-
-          <div class="clearfix"></div>
-
-          {{!-- Modal for cropping --}}
-          <div class="modal fade" id="editCrop" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-            aria-hidden="true">
-            <div class="modal-dialog" role="document">
-              <div class="modal-content">
-                <div class="modal-header">
-                  <h5 class="modal-title" id="exampleModalLabel" data-dismiss="modal">Crop Image</h5>
-                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true"></span>
-                  </button>
+              <hr>
+              <div class="row">
+                <div class="col-md-4">
+                  <label for="">Description</label>
+                  <textarea class="form-control" name="productdes" id="productdes"
+                    placeholder="">{{productDetails.productdes}}</textarea>
                 </div>
 
-                <div class="modal-body">
+              </div>
 
-                  <div class="col-12">
-
-                    <div style="display: none; " id="image-box"></div>
-                    <button style="display: none;" class="btn btn-primary mt-4" type="button" data-dismiss="modal"
-                      id="crop-btn">Crop</button>
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal"
-                      onclick="buttonDisplay()">Close</button>
-
+              <div class="row">
+                <div class="col-md-3">
+                  <div class="form-group">
+                    <div id="errMess1"></div>
+                    <img src="/uploads/{{productDetails._id}}__1.jpg" alt=""
+                      style="width: 100px; height:auto;display: inherit;" id="imgview1">
+                    <label for="file1" class="btn btn-primary">IMAGE 1</label>
+                    <input type="file" data-toggle="modal" name="image1" id="file1" class="form-control"
+                      onchange="return fileValidation1()">
                   </div>
                 </div>
 
-              </div>
-            </div>
-          </div>
-          {{!-- Modal --}}
-
-          {{!-- modal for edit confirmation --}}
-          <div class="modal fade bd-example-modal-sm" id="editConfirm" tabindex="-1" role="dialog"
-            aria-labelledby="mySmallModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-sm">
-              <div class="modal-content">
-                <div class="modal-header">
-                  <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
-                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                  </button>
+                <div class="col-md-3">
+                  <div class="form-group">
+                    <div id="errMess2"></div>
+                    <img src="/uploads/{{productDetails._id}}__2.jpg" alt=""
+                      style="width: 100px; height:auto;display: inherit;" id="imgview2">
+                    <label for="file2" class="btn btn-primary">IMAGE 2</label>
+                    <input type="file" data-toggle="modal" name="image2" id="file2" class="form-control"
+                      onchange="return fileValidation2()">
+                  </div>
                 </div>
-                <div class="modal-body">
-                  Are you sure ?
-                </div>
-                <div class="modal-footer">
 
-                  <button type="button" id="closeBtn" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                  <button type="submit" class="btn btn-success" >Edit product</button>
-
+                <div class="col-md-3">
+                  <div class="form-group">
+                    <div id="errMess3"></div>
+                    <img src="/uploads/{{productDetails._id}}__3.jpg" alt=""
+                      style="width: 100px; height:auto;display: inherit;" id="imgview3">
+                    <label for="file3" class="btn btn-primary">IMAGE 3</label>
+                    <div id="errMess3"></div>
+                    <input type="file" name="image3" data-toggle="modal" id="file3" class="form-control"
+                      onchange="return fileValidation3()">
+                  </div>
                 </div>
               </div>
-            </div>
-          </div>
 
-          {{!-- Modal ends --}}
-          <button type="button" data-toggle="modal" data-target="#editConfirm" style="width: 20%;" id="confirm-btn" class="btn btn-primary">Edit</button>
-          <a href="/admin/view-product" class="btn btn-danger " style="width: 20%;">Cancel</a>
 
-          </form>
+
+
+              <div class="clearfix"></div>
+
+              {{!-- Modal for cropping --}}
+              <div class="modal fade" id="editCrop" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="exampleModalLabel" data-dismiss="modal">Crop Image</h5>
+                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true"></span>
+                      </button>
+                    </div>
+
+                    <div class="modal-body">
+
+                      <div class="col-12">
+
+                        <div style="display: none; " id="image-box"></div>
+                        <button style="display: none;" class="btn btn-primary mt-4" type="button" data-dismiss="modal"
+                          id="crop-btn">Crop</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal"
+                          onclick="buttonDisplay()">Close</button>
+
+                      </div>
+                    </div>
+
+                  </div>
+                </div>
+              </div>
+              {{!-- Modal --}}
+
+              {{!-- modal for edit confirmation --}}
+              <div class="modal fade bd-example-modal-sm" id="editConfirm" tabindex="-1" role="dialog"
+                aria-labelledby="mySmallModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-sm">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                      </button>
+                    </div>
+                    <div class="modal-body">
+                      Are you sure ?
+                    </div>
+                    <div class="modal-footer">
+
+                      <button type="button" id="closeBtn" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                      <button type="submit" class="btn btn-success">Edit product</button>
+
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {{!-- Modal ends --}}
+              <button type="button" data-toggle="modal" data-target="#editConfirm" style="width: 20%;" id="confirm-btn"
+                class="btn btn-primary">Edit</button>
+              <a href="/admin/view-product" class="btn btn-danger " style="width: 20%;">Cancel</a>
+
+            </form>
           </div>
         </div>
       </div>
@@ -250,7 +267,7 @@
 <script>
   $(document).ready(function () {
     $('#editProductForm').validate({
-      
+
       rules: {
         productname: {
           required: true,
@@ -288,13 +305,13 @@
           required: true,
           minlength: 20,
         },
-     
+
       },
-      invalidHandler : function(event,validator){
+      invalidHandler: function (event, validator) {
         var errors = validator.numberOfInvalids();
-        
+
         if (errors) {
-         document.getElementById('closeBtn').click()
+          document.getElementById('closeBtn').click()
         }
       }
     })
@@ -304,7 +321,7 @@
 <script>
 
   function showSubCats() {
-    
+
     var val = document.getElementById('mainCategory').value
     $.ajax({
       url: '/admin/getthesubcat/' + val,
@@ -384,7 +401,7 @@
     } else {
       document.getElementById('errMess1').innerHTML = ''
 
-       //Image input field id
+      //Image input field id
       var fileTrue = document.getElementById('file1').onchange.length
       if (fileTrue == 1) {
         document.getElementById('file1').dataset.target = '#editCrop'
@@ -453,7 +470,7 @@
     } else {
       document.getElementById('errMess2').innerHTML = ''
 
-       //Image input field id
+      //Image input field id
       var fileTrue1 = document.getElementById('file2').onchange.length
       if (fileTrue1 == 1) {
         document.getElementById('file2').dataset.target = '#editCrop'
@@ -521,7 +538,7 @@
     } else {
       document.getElementById('errMess3').innerHTML = ''
 
-       //Image input field id
+      //Image input field id
       var fileTrue2 = document.getElementById('file3').onchange.length
       console.log("The legnth : ", fileTrue2)
       if (fileTrue2 == 1) {

@@ -28,9 +28,17 @@ router.get('/', async function (req, res, next) {
     })
   })
 
-  adminHelper.checkProOfferExpiry().then((proOfferToExpire)=>{
-    console.log("the offer to expire : ",proOfferToExpire)
-    proOfferToExpire.map((singleOffers)=>{
+  adminHelper.checkCouponExpiry().then((couponToExpire) => {
+    couponToExpire.map((coupon) => {
+      adminHelper.deleteCoupon(coupon._id).then((result) => {
+
+      })
+    })
+  })
+
+  adminHelper.checkProOfferExpiry().then((proOfferToExpire) => {
+    console.log("the offer to expire : ", proOfferToExpire)
+    proOfferToExpire.map((singleOffers) => {
       adminHelper.deleteProOffer(singleOffers._id, singleOffers.productName)
     })
   })
@@ -91,6 +99,7 @@ router.get('/', async function (req, res, next) {
 
 // Getting login page
 router.get('/login', (req, res) => {
+
   if (req.session.LoggedIn) {
     res.redirect('/')
   }
@@ -571,12 +580,12 @@ router.post('/checkoutbuynow', async (req, res) => {
       }
       // Paypal
       else {
-        orderId = uuidv4()
         userHelpers.generatePaypal(orderId, req.body.usdtoinr).then((paySuccess) => {
           userHelpers.placeOrder(req.body, product, productprice).then((orderIdReturned) => {
             req.session.currentOrderId = orderIdReturned
             userHelpers.changePaymentStatus(req.session.currentOrderId).then(() => {
               userHelpers.decreaseProductQuantity(req.body.proId).then((rslt) => {
+                console.log("the result after dermetning : ",rslt)
                 res.json(paySuccess)
               })
             })
@@ -594,7 +603,6 @@ router.post('/checkoutbuynow', async (req, res) => {
 
 // Posting Checkout form for Cart
 router.post('/checkout', async (req, res) => {
-
   if (req.session.LoggedIn) {
 
     if (req.body.saveaddress == 'on') {
@@ -627,17 +635,22 @@ router.post('/checkout', async (req, res) => {
     } else {
       if (req.body.payment_method == 'razorpay') {
 
-        orderId = uuidv4()
+        var orderId = uuidv4()
         userHelpers.generateRazorpay(orderId, parseInt(productprice)).then((response) => {
           res.json({ response: response, user: req.body })
         }).catch((err) => {
           res.redirect('/404')
         })
-      } else {
-        userHelpers.generatePaypal(orderId, productprice).then((paySuccess) => {
-          userHelpers.decreaseProductQuantity(req.body.proId).then((rslt) => {
-            userHelpers.deleteCartProductsAfterOrder(req.session.userDetails)
-            res.json(paySuccess)
+      }
+      // Pay pal 
+      else {
+        userHelpers.generatePaypal(uuidv4(), productprice).then((paySuccess) => {
+          userHelpers.placeOrderOnCart(req.body, products, parseInt(productprice), req.body.coupon).then((orderId) => {
+            req.session.currentOrderId = orderId
+            userHelpers.decreseQuantityOncartOrder(products).then(() => {
+              userHelpers.deleteCartProductsAfterOrder(req.session.userDetails)
+              res.json(paySuccess)
+            })
           })
         }).catch((err) => {
           res.redirect('/404')
@@ -667,6 +680,7 @@ router.get('/vieworders', async (req, res) => {
   if (req.session.LoggedIn) {
     userHelpers.getUserOrders(req.session.userDetails).then(async (orders) => {
       singleProducts = await userHelpers.getSingleOrderedProducts(req.session.currentOrderId)
+      console.log("the current order id is : ", req.session.currentOrderId)
       req.session.deleteCartProducts = true
       res.render('user/user-vieworders', { title: 'View Orders', user: true, currentUser: req.session.user, orders, typeOfPersonUser: true, logStatus, cartCount, singleProducts })
     })
@@ -677,8 +691,8 @@ router.get('/vieworders', async (req, res) => {
 
 // Funtion to verify the payement done
 router.post('/verify-payment', async (req, res) => {
+  // Buy now
   if (req.session.buyNowrazor) {
-
     req.session.buyNowrazor = false
     var product = await userHelpers.getProductForBuyNow(req.session.buynowCheckOut.proId)
     if (req.session.buynowCheckOut.totalAmount) {
@@ -902,7 +916,7 @@ router.post('/currencycoverter/:amount', (req, res) => {
   })
 })
 
-router.get('/shop', async(req, res) => {
+router.get('/shop', async (req, res) => {
 
 
   if (req.session.LoggedIn) {
@@ -940,14 +954,14 @@ router.get('/shop', async(req, res) => {
 
 router.get('/shopcat/', (req, res) => {
   if (req.session.LoggedIn) {
-    
+
     if (req.query.catName) {
       userHelpers.applyCatFilter(req.query.catName).then((catProducts) => {
         req.session.catPro = catProducts
         req.session.filters = true
         res.redirect('/shop')
       })
-    }else{
+    } else {
       req.session.filters = false
       res.redirect('/shop')
     }
