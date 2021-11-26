@@ -1,6 +1,7 @@
 var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
+require('dotenv').config()
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var exphbs = require('express-handlebars')
@@ -11,8 +12,8 @@ var session = require('express-session');
 var fileUpload = require('express-fileupload');
 const collection = require('./config/collection');  
 var helper = require('handlebars-helpers')();
-var otpkeys = require('./config/otpkeys.js')
-var twilio = require('twilio')(otpkeys.accountsid, otpkeys.authtoken)
+// var otpkeys = require('./config/otpkeys.js')
+var twilio = require('twilio')(process.env.TWILIO_ACCOUNTSID, process.env.TWILIO_AUTH_TOKEN)
 var Handlebars = require("handlebars");
 var userHelpers = require('./helpers/user-helpers')
 

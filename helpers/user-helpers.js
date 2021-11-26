@@ -11,16 +11,16 @@ const { wishlist, bikeBrands, proBrands } = require('../config/collection')
 var paypal = require('paypal-rest-sdk');
 
 const axios = require('axios')
-const ACCESS_KEY = 'ee0367e92bd60f64cb2889e3139e2452'
+const ACCESS_KEY = process.env.AXIOS_ACCESS_KEY
 
 var instance = new Razorpay({
-    key_id: 'rzp_test_6unoyhPHG9D97d',
-    key_secret: 'cN0l9zD6cn9mh8DdO2hvfdad',
+    key_id: process.env.RAZORPAY_KEY_ID,
+    key_secret: process.env.RAZORPAY_KEY_SECRET,
 });
 paypal.configure({
     'mode': 'sandbox', //sandbox or live
-    'client_id': 'AZJmkWDqUJSC1e1abjeQfccbsnD5ge6CIRRcKTfMU4Y4U70An9wayPT5wzgQAu-ZDBAaAsQ90V0ypfA9',
-    'client_secret': 'EDjHlLanOgz8Vr4vv0JWZkJYkRMOLb5zxL0FTLacM0PYDZoUY5OUPqxtDI7OXGxs2SYGYw8SVafPweV-'
+    'client_id': process.env.PAYPAL_CLIENT_ID,
+    'client_secret': process.env.PAYPAL_CLIENT_SECRET,
 });
 
 

@@ -3,9 +3,8 @@ var express = require('express');
 var router = express.Router();
 var userHelpers = require('../helpers/user-helpers')
 var adminHelper = require('../helpers/admin-helpers')
-const keys = require('../config/otpkeys');
 const { parse } = require('dotenv');
-const client = require('twilio')(keys.accountsid, keys.authtoken);
+const client = require('twilio')(process.env.TWILIO_ACCOUNTSID, process.env.TWILIO_AUTH_TOKEN);
 const { v4: uuidv4 } = require('uuid');
 
 
@@ -203,7 +202,7 @@ router.post('/signup', (req, res) => {
       req.session.newUser = req.body
       var mobile = req.body.countryCode + req.body.mobile;
       mobile = parseInt(mobile);
-      client.verify.services(keys.serviceid)
+      client.verify.services(process.env.TWILIO_SERVICE_ID)
         .verifications
         .create({ to: '+' + mobile, channel: 'sms' }).then((data) => {
           // Data will  be recieved with The send status adn all
@@ -232,7 +231,7 @@ router.post('/mobileConfirmation', (req, res) => {
   req.session.code = req.body.otp
 
   client.verify
-    .services(keys.serviceid)
+    .services(process.env.TWILIO_SERVICE_ID)
     .verificationChecks.create({ to: '+' + req.session.mobileDetails, code: req.session.code })
     .then((verification_check) => {
 
@@ -270,7 +269,7 @@ router.post('/signinotp', async (req, res) => {
     if (user) {
 
       // If response is true sending the OTP Message
-      client.verify.services(keys.serviceid)
+      client.verify.services(process.env.TWILIO_SERVICE_ID)
         .verifications
         .create({ to: '+' + mobile, channel: 'sms' }).then((data) => {
           // Data will  be recieved with The send status adn all
@@ -293,7 +292,7 @@ router.post('/signinotp', async (req, res) => {
 router.post('/signinconfirmation', (req, res) => {
   otpError = false
   client.verify
-    .services(keys.serviceid)
+    .services(process.env.TWILIO_SERVICE_ID)
     .verificationChecks.create({ to: '+' + req.body.phone[0], code: req.body.otp })
     .then((verification_check) => {
 
@@ -351,7 +350,7 @@ router.post('/forgotpassword', (req, res) => {
     userToresetPass = user;
     if (user) {
       // If response is true sending the OTP Message
-      client.verify.services(keys.serviceid)
+      client.verify.services(process.env.TWILIO_SERVICE_ID)
         .verifications
         .create({ to: '+' + mobile, channel: 'sms' }).then((data) => {
           // Data will  be recieved with The send status adn all
@@ -382,7 +381,7 @@ router.post('/otpverify', (req, res) => {
   // userHelpers.checkMobNo(req.body)
   // Checking whether the Entered OTP Is wrong
   client.verify
-    .services(keys.serviceid)
+    .services(process.env.TWILIO_SERVICE_ID)
     .verificationChecks.create({ to: '+' + phone, code: req.body.otp })
     .then((verification_check) => {
       // If the OTP is wright It will give status as Approved else it will give status as Pending
