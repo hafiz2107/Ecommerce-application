@@ -1,3 +1,8 @@
 /node_modules
 package-lock.json
 .env
+/public/ads
+/public/bike brand logos
+/public/bike model logos
+/public/subCat Logo
+/public/uploads
