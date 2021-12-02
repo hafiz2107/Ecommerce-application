@@ -236,7 +236,12 @@
   <div class="container">
     <ul style="width:100%" class="nav  nav-tabs navbar-nav navbar-left">
       {{#each allCategories}}
+
+      {{#eq @index 0}}
+      <li class="active">
+        {{else}}
       <li>
+      {{/eq}}
         <a id="catNav" style="color:black" data-toggle="tab" href="#{{this._id}}">{{this.mainCategory}}</a>
       </li>
       {{/each}}
@@ -244,7 +249,12 @@
 
     <div class="tab-content">
       {{#each allCategories}}
-      <div class="tab-pane" id="{{this._id}}">
+      {{#eq @index 0}}
+      <div class="tab-pane active" id="{{this._id}}">
+        {{else}}
+        <div class="tab-pane" id="{{this._id}}">
+          {{/eq}}
+
         <div class="row product-boxes">
 
           {{#each this.SubCategory}}
@@ -261,11 +271,8 @@
               </div>
 
             </a>
-
           </div>
           {{/each}}
-
-
         </div>
       </div>
 
@@ -275,35 +282,6 @@
     </div>
   </div>
 </section>
-{{! Shop By category ends}}
-
-{{! Advertisement 2 Bottom }}
-{{!-- <section id="hero" class="hero container">
-  <a href="#">
-    <div id="hero-slider" class="hero-slider">
-      <div class="slide">
-        <div class="bg-section">
-          <img src="assets/images/sliders/7.jpg" alt="Background" class="image-fluid" />
-        </div>
-      </div>
-
-      <div class="slide">
-        <div class="bg-section">
-          <img src="assets/images/sliders/4.jpg" alt="Background" />
-        </div>
-      </div>
-
-      <div class="slide">
-        <div class="bg-section">
-          <img src="assets/images/sliders/1.jpg" alt="Background" />
-        </div>
-      </div>
-    </div>
-  </a>
-  
-</section> --}}
-{{! Advertisement 2 Ends }}
-
 
 <style>
   #catNav {

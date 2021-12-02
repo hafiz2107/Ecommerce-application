@@ -1,0 +1,74 @@
+<section id="featuredItems" class="shop" style="padding-top: 8px;padding-bottom:0px;">
+
+    <div class="container heading" style="padding-bottom:0;margin-bottom:0"> 
+
+        <div class="row">
+            <div class="col-xs-12 col-sm-12 col-md-12">
+                <p class="subheading">LET'S SEE WHAT YOU ARE LOOKING FOR</p>
+                <h2>SHOP BY CATEGORY</h2>
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="container">
+
+        <ul style="width:100%" class="nav  nav-tabs navbar-nav navbar-left">
+            {{#each categories}}
+
+            {{#eq @index 0}}
+            <li class="active">
+                {{else}}
+            <li>
+                {{/eq}}
+                <a style="color:black" data-toggle="tab" href="#{{this._id}}">{{this.Main_Cat}}</a>
+            </li>
+
+            {{/each}}
+
+        </ul>
+
+        <div class="tab-content">
+            {{#each categories}}
+            {{#eq @index 0}}
+            <div class="tab-pane active" id="{{this._id}}">
+                {{else}}
+                <div class="tab-pane" id="{{this._id}}">
+                    {{/eq}}
+                    <div class="row product-boxes">
+
+                        {{#each this.Sub_Cat}}
+                        <div class="col-md-3 product-box">
+
+                            <a href="/shopByCat?subCat={{this.Sub_Cat}}">
+
+                                <div class="product-img" style="display:flex; justify-content:center;">
+                                    <img src="sub-category-images/{{this.subCatId}}SCI.jpg"
+                                        style="height:150px;width:150px" alt="Product" />
+                                </div>
+
+                                <div class="text-center" style="margin-top:12px;">
+                                    <h6>{{this.Sub_Cat}}</h6>
+                                </div>
+
+                            </a>
+
+                        </div>
+                        {{/each}}
+
+                    </div>
+                </div>
+
+                {{/each}}
+
+
+            </div>
+
+
+
+
+
+        </div>
+
+</section>

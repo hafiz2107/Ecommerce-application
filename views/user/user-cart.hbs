@@ -1,120 +1,112 @@
-<section id="shopcart" class="shop shop-cart">
+<section class="section-content padding-y bg">
   <div class="container">
 
-    <div id="innerModal">
 
-    </div>
+    <!-- ============================ COMPONENT 1 ================================= -->
+
+
 
     {{#if products}}
 
+
     <div class="row">
+      <aside class="col-lg-9">
 
-      <div class="col-xs-12 col-sm-12 col-md-12">
-
-
-        <div class="cart-table table-responsive">
-          <table class="table table-bordered">
-            <thead>
-              <tr class="cart-product">
-                <th class="cart-product-item">Product</th>
-                <th class="cart-product-price">Price</th>
-                <th class="cart-product-quantity">Quantity</th>
-                <th class="cart-product-total">Total</th>
+        <div class="card">
+          <table class="table table-borderless table-shopping-cart table-responsive">
+            <thead class="text-muted">
+              <tr class="small text-uppercase">
+                <th scope="col">Product</th>
+                <th scope="col">Quantity</th>
+                <th scope="col" width="120">Price</th>
+                <th scope="col" class="text-right" width="200"> </th>
               </tr>
             </thead>
             <tbody>
-              {{#each products}}
-              <tr class="cart-product" >
-
-
-                <td class="cart-product-item">
-
-                  <div>
-                    <a class="cart-product-remove" onclick="deleteCartProduct('{{this._id}}','{{this.product._id}}')"
-                      style="color: white;"><i class="fa fa-close"></i></a>
-                  </div>
-
-                  <div class="cart-product-img">
-                    <img src="/uploads/{{this.product._id}}__1.jpg" alt="product" style="height: 50px;" />
-                  </div>
-
-                  <div class="cart-product-name">
-                    <h6>{{this.product.productname}}</h6>
-                  </div>
-                </td>
-
-                <center>
-                  <div id="limitReached"></div>
-                </center>
-
-
-                <td class="cart-product-price" style="color: brown;">₹ {{this.price}}</td>
-                <td class="cart-product-quantity">
-
-                  <div class="product-quantity">
-
-
-                    <button id="minus"
-                      onclick="changeQuantity('{{this.product.productquantity}}','{{this._id}}','{{this.product._id}}',-1,'{{this.price}}','{{../userId}}')"><i
-                        class="fa fa-minus"></i></button>
-
-                    <input type="text" value="{{this.quantity}}" id="{{this.product._id}}" readonly />
-                    <button
-                      onclick="changeQuantity('{{this.product.productquantity}}','{{this._id}}','{{this.product._id}}',1,'{{this.price}}','{{../userId}}')"><i
-                        class="fa fa-plus"></i></button>
-
-                    {{!-- {{#quantityCheckInCart ../allProducts this.product._id this.quantity this._id this.price
-                    userId}} --}}
-                    {{!-- {{/quantityCheckInCart}} --}}
-
-
-
-
-                  </div>
-                </td>
-                <td class="cart-product-total" id="{{this.product._id}}1">{{this.totalprice}}</td>
-              </tr>
-              {{/each}}
-
-              <tr class="cart-product-action">
-                <td colspan="4">
-                  <div class="row clearfix">
-
-
-
-
-                    <div class="col-xs-12 col-sm-6 col-md-6 pull-right">
-                      <h6 class="pull-right mb-4">Cart Totals : Rs. <span style="color: brown;font-weight:600;font-size: 19px;" id="total">{{totalValue}}</span></h6>
-                      <br>
-                      <hr>
-                      {{!-- <a class="btn btn-primary pull-right " href="/checkout" onclick="reload()"
-                        style="float: right;">Proceed To Checkout</a> --}}
-                      <a class="btn btn-primary pull-right "  onclick="confirmCheckOut('{{totalValue}}')" style="float: right;">Proceed To Checkout</a>
+            {{#each products}}
+              <tr>
+                <td>
+                  
+                  <figure class="itemside align-items-center">
+                    <div class="">
+                      <img src="/uploads/{{this.product._id}}__1.jpg" class="img-sm" height="90px">
                     </div>
-                  </div>
+
+                    <figcaption class="info">
+                      <h6>{{this.product.productname}}</h6>
+                    </figcaption>
+                  </figure>
+
+                </td>
+                <td>
+                  <!-- col.// -->
+                  <div class="col">
+                    <div class="" style="width: max-content;">
+
+                      <div class="" style="display: inline;">
+                        <a onclick="changeQuantity('{{this.product.productquantity}}','{{this._id}}','{{this.product._id}}',-1,'{{this.price}}','{{../userId}}')" class="btn btn-light" type="button"
+                           id="minus"> <i class="fa fa-minus"></i> </a>
+                      </div>
+
+                      <div style="display: inline;">
+                      <input type="text" class=" text-center" value="{{this.quantity}}" id="{{this.product._id}}" style="width: 2em; background-color: transparent;border: none;"  readonly>
+                      </div>
+
+
+                      <div class="" style="display: inline;">
+                        <a onclick="changeQuantity('{{this.product.productquantity}}','{{this._id}}','{{this.product._id}}',1,'{{this.price}}','{{../userId}}')" class="btn btn-light" type="button"
+                          id="button-plus"> <i class="fa fa-plus"></i> </a>
+                      </div>
+                    </div> <!-- input-group.// -->
+
+                  </div> <!-- col.// -->
+                </td>
+                <td>
+                  <div class="price-wrap">
+                    <span>₹ </span>
+                    <span class="price" id="{{this.product._id}}1"> {{this.totalprice}}</span>
+                    
+                  </div> <!-- price-wrap .// -->
+                </td>
+                <td class="text-right">
+                  <!-- Button trigger modal -->
+                  <a class="cart-product-remove" onclick="deleteCartProduct('{{this._id}}','{{this.product._id}}')"
+                      style="color: white;"><i class="fa fa-close"></i></a>
                 </td>
               </tr>
+            {{/each}}
             </tbody>
           </table>
-        </div>
-      </div>
+        </div> <!-- card.// -->
+
+      </aside> <!-- col.// -->
+{{!-- Each ends --}}
+      <aside class="col-lg-3">
+
+        <div class="card">
+          <div class="card-body">
+            <dl class="dlist-align">
+              <dt>Total price:</dt>
+              <dd class="text-right" id="total">₹ {{totalValue}}</dd>
+            </dl>
+           
+            
+
+            <hr>
+            <p class="text-center mb-3">
+              <img src="{% static './images/misc/payments.png' %}" height="26">
+            </p>
+
+            <a onclick="confirmCheckOut('{{totalValue}}')" class="btn btn-primary btn-block"> Checkout </a>
+            <a href="/home" class="btn btn-light btn-block">Continue Shopping</a>
+          </div> <!-- card-body.// -->
+        </div> <!-- card.// -->
+
+      </aside> <!-- col.// -->
 
 
+    </div> <!-- row.// -->
 
-      {{!-- <div class="col-xs-12 col-sm-12 col-md-6">
-        <div class="cart-total-amount">
-          <h6>Cart Totals :</h6>
-          <ul class="list-unstyled">
-            <li>Cart Subtotal :<span class="pull-right text-right">$ 140.00</span>
-            </li>
-            <li>Shipping :<span class="pull-right text-right">Free Shipping</span>
-            </li>
-            <li>Order Total :<span class="pull-right text-right">$ 140.00</span>
-            </li>
-          </ul>
-        </div>
-      </div> --}}
-    </div>
 
     {{else}}
     <center>
@@ -123,5 +115,11 @@
       <a class="btn btn-primary" href="/" style="margin-top: 67px;">Add some products</a>
     </center>
     {{/if}}
-  </div>
+
+    <!-- ============================ COMPONENT 1 END .// ================================= -->
+
+  </div> <!-- container .//  -->
+
+
+
 </section>

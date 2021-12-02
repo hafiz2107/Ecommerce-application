@@ -23,7 +23,7 @@
           </li>
 
           <li class="">
-            <a href="/shop" >shop</a>
+            <a href="/shop">shop</a>
 
           </li>
 
@@ -35,22 +35,27 @@
             <a href="/wishlist"><i class="bi bi-heart-fill" style="color: red;"></i></a>
           </li>
 
-          <div class="module module-cart pull-left">
+          <li>
+          <div class="module module-cart ">
             <div class="cart-icon">
-              <a href="/cart" style="color: #404040;"><i class="fa fa-shopping-cart"></i></a>
-              <span class="title">shop cart</span>
-                {{#gte cartCount '0'}}
-                <span class="cart-label" id="cartCount">{{cartCount}}</span>
-                {{/gte}}
+              <a href="/cart" style="color: #404040;">
+              <i class="fa fa-shopping-cart"></i>
+                <span class="title">shop cart</span>
+              </a>
+              {{#gte cartCount '0'}}
+              <span class="cart-label" id="cartCount">{{cartCount}}</span>
+              {{/gte}}
             </div>
           </div>
+          </li>
 
 
-
-
+          
           <div class="module module-search pull-left">
             <div class="search-icon" data-toggle="modal" data-target="#searchModal">
+              
               <i class="fa fa-search"></i>
+              
               <span class="title">search</span>
             </div>
             <!-- Modal -->
@@ -166,25 +171,27 @@
               </div>
             </div>
           </div>
+          
 
+          <li class="has-dropdown module pull-right">
 
-          <li class="has-dropdown pull-left">
-            
             {{#if currentUser}}
-            <a href="#" data-toggle="dropdown" class="dropdown-toggle">Hi, {{currentUser.username}}<img style="border-radius: 40px;height: 37px;margin-left: 30px;width: 37px;" src="/profileImages/{{currentUser.userId}}1.jpg" alt=""></a>
-                <ul class="dropdown-menu">
-                  <li>
-                    <a href="/userprofile">Profile</a>
-                  </li>
-                  <li>
-                    <a href="/yourorders">Orders</a>
-                  </li>
-                  <li>
-                    <a href="/logout">Logout</a>
-                  </li>
-                </ul>
+            <a data-toggle="dropdown" class="dropdown-toggle">Hi, {{currentUser.username}}<img
+                style="border-radius: 40px;height: 37px;margin-left: 30px;width: 37px;"
+                src="/profileImages/{{currentUser.userId}}1.jpg" alt=""></a>
+            <ul class="dropdown-menu">
+              <li>
+                <a href="/userprofile">Profile</a>
+              </li>
+              <li>
+                <a href="/yourorders">Orders</a>
+              </li>
+              <li>
+                <a href="/logout">Logout</a>
+              </li>
+            </ul>
             {{else}}
-            <a href="#" data-toggle="dropdown" class="dropdown-toggle"><i class="fa fa-user"></i></a>
+            <a data-toggle="dropdown" class="dropdown-toggle"><i class="fa fa-user"></i></a>
             <ul class="dropdown-menu">
               <li>
                 <a href="/login">Login</a>
@@ -194,8 +201,8 @@
               </li>
             </ul>
             {{/if}}
-            
-           
+
+
           </li>
         </ul>
 

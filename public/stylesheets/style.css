@@ -1719,7 +1719,7 @@ ul.dot-list li i {
   font-size: 14px;
   color: #404040;
   border-left: 1px solid #fff;
-  padding-left: 30px;
+  padding-left: 0px;
   padding-right: 20px;
   line-height: 23px;
 }
