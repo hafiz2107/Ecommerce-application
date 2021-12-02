@@ -103,13 +103,11 @@
           <div class="product-tabs" style="width: 80%;margin-top: 5em;">
 
             <ul class="nav nav-tabs" role="tablist">
+
               <li role="presentation" class="active">
                 <a href="#description" aria-controls="description" role="tab" data-toggle="tab">description</a>
               </li>
-              <li role="presentation">
-                <a href="#details" aria-controls="details" role="tab" data-toggle="tab">details</a>
-              </li>
-
+             
               <li role="presentation">
                 <a href="#reviews" aria-controls="reviews" role="tab" data-toggle="tab">reviews ({{reviewCount}})</a>
               </li>
@@ -117,44 +115,8 @@
             </ul>
 
             <div class="tab-content">
-              <div role="tabpanel" class="tab-pane active" id="description">
-                <p>{{singleProduct.productdes}}</p>
-              </div>
-
-              <div role="tabpanel" class="tab-pane" id="details">
-                <h5>Technical Details</h5>
-                <table class="table table-striped">
-                  <tbody>
-                    <tr>
-                      <td>Part Number</td>
-                      <td>60-MCTE</td>
-                    </tr>
-                    <tr>
-                      <td>Item Weight</td>
-                      <td>54 pounds</td>
-                    </tr>
-                    <tr>
-                      <td>Product Dimensions</td>
-                      <td>92.8 x 92.8 x 92.8 inches</td>
-                    </tr>
-                    <tr>
-                      <td>Item model number</td>
-                      <td>60-MCTE</td>
-                    </tr>
-                    <tr>
-                      <td>Item Package Quantity</td>
-                      <td>1</td>
-                    </tr>
-                    <tr>
-                      <td>Number of Handles</td>
-                      <td>1</td>
-                    </tr>
-                    <tr>
-                      <td>Batteries Required?</td>
-                      <td>No</td>
-                    </tr>
-                  </tbody>
-                </table>
+              <div role="tabpanel" class="tab-pane active" style="overflow-wrap: break-word;" id="description">
+                <h6 >{{singleProduct.productdes}}</h6>
               </div>
 
               {{!-- Review Section --}}
@@ -268,9 +230,10 @@
 
                 <hr>
                 {{else}}
+                <div class="">
                 <h3 style="color: rgb(122, 122, 122);">No reviews Yet !</h3><br>
-                <img src="/images/No review.svg" alt="" height="300px">
-
+                <img src="/images/No review.svg" alt="" height="200px">
+                </div>
                 {{#if checkUserPurchasedItem}}
                 <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#reviewModal"
                   style="margin-bottom: 3em;">
@@ -298,14 +261,14 @@
                               {{!-- Star Rating --}}
                               <label>Rating</label><br>
                               <span class="star-rating">
-                                <input type="radio" name="rating1" value="1"><i></i>
-                                <input type="radio" name="rating1" value="2"><i></i>
-                                <input type="radio" name="rating1" value="3"><i></i>
-                                <input type="radio" name="rating1" value="4"><i></i>
-                                <input type="radio" name="rating1" value="5"><i></i>
+                                <input type="radio" name="rating1" value="1" required-any="group1"><i></i>
+                                <input type="radio" name="rating1" value="2" required-any="group1"><i></i>
+                                <input type="radio" name="rating1" value="3" required-any="group1"><i></i>
+                                <input type="radio" name="rating1" value="4" required-any="group1"><i></i>
+                                <input type="radio" name="rating1" value="5" required-any="group1"><i></i>
                               </span>
                               {{!-- Start Rating --}}
-                              <textarea class="form-control" id="review" rows="2" placeholder="Review"></textarea>
+                              <textarea class="form-control" id="review" name="review" rows="2" placeholder="Your Review"></textarea>
                               <button
                                 onclick="postReviewForm('{{singleProduct._id}}','{{singleProduct.productname}}','{{theUser._id}}','{{theUser.username}}')"
                                 class="btn btn-primary btn-black btn-block">Post Your review</button>
@@ -406,13 +369,15 @@
   </div>
 
 </section>
-
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/jquery.validate.js"></script>
 <script>
+
   function postEditedReviewForm(proId, proName, userId, userName) {
     ratingCheck = document.querySelector('input[name="rating1"]:checked')
     var rating = ratingCheck ? parseInt(ratingCheck.value) : 0;
     var review = document.getElementById('review').value
-    alert(review)
+
     $.ajax({
       url: '/editreview',
       data: {
@@ -430,6 +395,7 @@
       }
     })
   }
+
 
   function postReviewForm(proId, proName, userId, userName) {
     //var rating = document.getElementById('reviewform').value
@@ -457,6 +423,7 @@
       }
     })
   }
+  
 </script>
 
 

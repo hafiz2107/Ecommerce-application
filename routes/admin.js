@@ -10,7 +10,7 @@ var weather = require('weather-js');
 
 const admin = {
   name: "admin",
-  pass: "123"
+  pass: "123456"
 }
 
 var weatherDet
