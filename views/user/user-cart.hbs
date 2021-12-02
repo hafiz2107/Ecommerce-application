@@ -64,7 +64,7 @@
                 <td>
                   <div class="price-wrap">
                     <span>₹ </span>
-                    <span class="price" id="{{this.product._id}}1"> {{this.totalprice}}</span>
+                    <span style="color: black;font-weight: 600;" class="price" id="{{this.product._id}}1"> {{this.totalprice}}</span>
                     
                   </div> <!-- price-wrap .// -->
                 </td>
@@ -87,14 +87,15 @@
           <div class="card-body">
             <dl class="dlist-align">
               <dt>Total price:</dt>
-              <dd class="text-right" id="total">₹ {{totalValue}}</dd>
+              <dd class="text-right" id="total" style="color: black;font-weight: 600;">₹ {{totalValue}}</dd>
             </dl>
            
             
 
             <hr>
             <p class="text-center mb-3">
-              <img src="{% static './images/misc/payments.png' %}" height="26">
+              <img src="/images/paypal-seeklogo.com.svg" height="20">
+              <img class="ml-3" src="/images/razorpay.svg" alt="" height="20"> 
             </p>
 
             <a onclick="confirmCheckOut('{{totalValue}}')" class="btn btn-primary btn-block"> Checkout </a>
